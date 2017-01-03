@@ -15,6 +15,7 @@ window.onload = function() {
 // Hash
 var Game = {
   display: {
+    SPACING: 1.1,
     main: {
       w: 80,
       h: 24,
@@ -26,18 +27,31 @@ var Game = {
     console.log("game init");
     this.display.main.o = new ROT.Display(
       { width: this.display.main.w,
-        height: this.display.main.h }
+        height: this.display.main.h,
+        spacing: Game.display.SPACING}
     );
+    this.renderMain();
+  },
 
+  getDisplay: function(displayId) {
+    if (this.display.hasOwnProperty(displayId)) {
+      return this.display[displayId].o;
+    }
+    return null;
+  },
+
+  renderMain: function() {
+    var d = this.display.main.o;
+    d.setOptions({bg: "#0a0"});
     for (var i = 0; i < 24; i++) {
-      this.display.main.o.drawText(0,i,"%c{red}helloworld");
-      this.display.main.o.drawText(10,i,"%c{blue}%b{white}helloworld");
-      this.display.main.o.drawText(20,i,"%c{green}helloworld");
-      this.display.main.o.drawText(30,i,"%c{yellow}helloworld");
-      this.display.main.o.drawText(40,i,"%c{purple}helloworld");
-      this.display.main.o.drawText(50,i,"%c{cyan}helloworld");
-      this.display.main.o.drawText(60,i,"%c{orange}helloworld");
-      this.display.main.o.drawText(70,i,"%c{gray}helloworld");
+      d.drawText(0,i,"%c{red}helloworld");
+      d.drawText(10,i,"%c{blue}%b{white}helloworld");
+      d.drawText(20,i,"%c{green}helloworld");
+      d.drawText(30,i,"%c{yellow}helloworld");
+      d.drawText(40,i,"%c{purple}helloworld");
+      d.drawText(50,i,"%c{cyan}helloworld");
+      d.drawText(60,i,"%c{orange}helloworld");
+      d.drawText(70,i,"%c{gray}helloworld");
     }
   }
 };
