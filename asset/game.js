@@ -31,9 +31,10 @@ window.onload = function() {
 
 // Hash
 var Game = {
+  _PERSISTENCE_NAMESPACE: "wsrlgame",
 
   _DISPLAY_SPACING: 1.1,
-  display: {
+  _display: {
     main: {
       w: 80,
       h: 24,
@@ -51,26 +52,28 @@ var Game = {
     }
   },
 
+  _game: null,
   _curUIMode: null,
 
   init: function() {
+    this._game = this;
     console.log("game init");
-    for (var display_key in this.display) {
-      this.display[display_key].o = new ROT.Display(
-        { width: this.display[display_key].w,
-          height: this.display[display_key].h,
+
+    for (var display_key in this._display) {
+      this._display[display_key].o = new ROT.Display(
+        { width: this._display[display_key].w,
+          height: this._display[display_key].h,
           spacing: Game._DISPLAY_SPACING }
       );
     }
-
     // console.dir(this.display);
 
     this.renderAll();
   },
 
   getDisplay: function(displayId) {
-    if (this.display.hasOwnProperty(displayId)) {
-      return this.display[displayId].o;
+    if (this._display.hasOwnProperty(displayId)) {
+      return this._display[displayId].o;
     }
     return null;
   },
@@ -101,11 +104,7 @@ var Game = {
   },
 
   renderAvatar: function() {
-    var a = this.display.avatar.o;
-    for (var i = 0; i < 24; i++) {
-      a.drawText(0,i,"%c{gray}youravatar");
-      a.drawText(10,i,"%c{pink}%b{white}youravatar");
-    }
+    this.getDisplay("avatar").drawText(1,1,"avatar display");
   },
 
   renderMessage: function() {
