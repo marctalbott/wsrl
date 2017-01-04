@@ -68,6 +68,9 @@ Game.UIMode.gameWin = {
   },
   handleInput: function (inputType, inputData) {
     console.log("input for gameWin");
+    if (inputData.key == "r") {
+      Game.switchUIMode(Game.UIMode.gameStart);
+    }
   }
 };
 
@@ -84,5 +87,8 @@ Game.UIMode.gameLose = {
   },
   handleInput: function (inputType, inputData) {
     console.log("input for gameLose");
+    if (inputData.key == "r") {
+      Game.switchUIMode(Game.UIMode.gameStart);
+    }
   }
 };

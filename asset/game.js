@@ -109,12 +109,7 @@ var Game = {
   },
 
   renderMessage: function() {
-    var m = this.display.message.o;
-    for (var i = 0; i < 8; i++) {
-      for (var j = 0; j < 100; j+= 8) {
-        m.drawText(j,i, "messages");
-      }
-    }
+    Game.Message.render(this.getDisplay("message"));
   },
 
   eventHandler: function(eventType, evt) {
