@@ -43,11 +43,11 @@ Game.UIMode.gamePlay = {
     console.log("input for gamePlay");
     Game.Message.send("you pressed the '" + String.fromCharCode(inputData.charCode)+ "' key");
     if (inputType == 'keypress') {
-      if (inputData.keyCode == 13) {
+      if (inputData.key == "Enter") {
         Game.switchUIMode(Game.UIMode.gameWin);
       }
     } else if (inputType == 'keydown') {
-      if (inputData.keyCode == 27) {
+      if (inputData.key == "Escape") {
         Game.switchUIMode(Game.UIMode.gameLose);
       }
     }
