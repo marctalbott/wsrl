@@ -7,6 +7,7 @@ window.onload = function() {
     alert("The rot.js library isn't supported by your browser.");
   } else {
     // Initialize the game
+
     Game.init();
 
     // add containers to html
@@ -14,6 +15,17 @@ window.onload = function() {
     document.getElementById('wsrl-main-display').appendChild(Game.getDisplay('main').getContainer());
     document.getElementById('wsrl-message-display').appendChild(Game.getDisplay('message').getContainer());
 
+    var bindEventToScreen = function(eventType) {
+      window.addEventListener(eventType, function(evt){
+        Game.eventHandler(eventType, evt);
+      });
+    };
+
+    //Bind Keyboard events
+    bindEventToScreen('keypress');
+    bindEventToScreen('keydown');
+
+    Game.switchUIMode(Game.UIMode.gameStart);
   }
 };
 
@@ -38,7 +50,9 @@ var Game = {
       o: null
     }
   },
-  // key init, value function <-- dope!
+
+  _curUIMode: null,
+
   init: function() {
     console.log("game init");
     for (var display_key in this.display) {
@@ -49,9 +63,9 @@ var Game = {
       );
     }
 
-    console.dir(this.display);
+    // console.dir(this.display);
 
-    this.renderMain();
+    this.renderAll();
   },
 
   getDisplay: function(displayId) {
@@ -61,28 +75,66 @@ var Game = {
     return null;
   },
 
+  renderAll: function() {
+    this.renderMain();
+    this.renderAvatar();
+    this.renderMessage();
+  },
+
   renderMain: function() {
-    var d = this.display.main.o;
-    for (var i = 0; i < 24; i++) {
-      d.drawText(0,i,"%c{red}mapdisplay");
-      d.drawText(10,i,"%c{blue}%b{white}mapdisplay");
-      d.drawText(20,i,"%c{green}mapdisplay");
-      d.drawText(30,i,"%c{yellow}mapdisplay");
-      d.drawText(40,i,"%c{purple}mapdisplay");
-      d.drawText(50,i,"%c{cyan}mapdisplay");
-      d.drawText(60,i,"%c{orange}mapdisplay");
-      d.drawText(70,i,"%c{gray}mapdisplay");
+    this.getDisplay("main").clear();
+    if(this._curUIMode) {
+      this._curUIMode.render(this.getDisplay("main"));
     }
+
+    // var d = this.display.main.o;
+    // for (var i = 0; i < 24; i++) {
+    //   d.drawText(0,i,"%c{red}mapdisplay");
+    //   d.drawText(10,i,"%c{blue}%b{white}mapdisplay");
+    //   d.drawText(20,i,"%c{green}mapdisplay");
+    //   d.drawText(30,i,"%c{yellow}mapdisplay");
+    //   d.drawText(40,i,"%c{purple}mapdisplay");
+    //   d.drawText(50,i,"%c{cyan}mapdisplay");
+    //   d.drawText(60,i,"%c{orange}mapdisplay");
+    //   d.drawText(70,i,"%c{gray}mapdisplay");
+    // }
+  },
+
+  renderAvatar: function() {
     var a = this.display.avatar.o;
     for (var i = 0; i < 24; i++) {
       a.drawText(0,i,"%c{gray}youravatar");
       a.drawText(10,i,"%c{pink}%b{white}youravatar");
     }
+  },
+
+  renderMessage: function() {
     var m = this.display.message.o;
     for (var i = 0; i < 8; i++) {
       for (var j = 0; j < 100; j+= 8) {
         m.drawText(j,i, "messages");
       }
     }
+  },
+
+  eventHandler: function(eventType, evt) {
+    if(this._curUIMode) {
+      this._curUIMode.handleInput(eventType, evt);
+      this.renderAll();
+    }
+  },
+
+  switchUIMode: function(newMode) {
+    // handle exit for old mode
+    if(this._curUIMode) {
+      this._curUIMode.exit();
+    }
+    // set new mode
+    this._curUIMode = newMode;
+    // handle enter for new mode
+    this._curUIMode.enter();
+    // render new mode
+    this.renderAll();
   }
+
 };
