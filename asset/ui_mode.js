@@ -21,7 +21,7 @@ Game.UIMode.gameStart = {
     console.dir(inputType);
     console.dir(inputData);
     if (inputData.charCode !== 0) {
-      Game.switchUIMode(Game.UIMode.gamePlay);
+      Game.switchUIMode(Game.UIMode.gamePersistence);
     }
   }
 };
@@ -42,12 +42,47 @@ Game.UIMode.gamePersistence = {
     console.log("input for gamePersistence");
 
     var inputChar = inputData.key;
-    if (inputData.key == "S") {
+    if (inputChar == "S" || inputChar == "s") {
       this.saveGame();
-    } else if (inputData.key == "L") {
+    } else if (inputChar == "L" || inputChar == "l") {
       this.loadGame();
-    } else if (inputData.key == "N") {
-      Game.switchUIMode(Game.UIMode.gamePlay);
+    } else if (inputChar == "N" || inputChar == "n") {
+      this.newGame();
+    }
+  },
+
+  saveGame: function(json_state_data) {
+    if (this.localStorageAvailable()) {
+      window.localStorage.setItem(Game._PERSISTENCE_NAMESPACE, JSON.stringify(Game._game));
+    }
+
+    Game.switchUIMode(Game.UIMode.gamePlay);
+  },
+
+  loadGame: function() {
+    if (this.localStorageAvailable()) {
+      var json_state_data = window.localStorage.getItem(Game._PERSISTENCE_NAMESPACE);
+      var state_data = JSON.parse(json_state_data);
+    }
+
+    Game.setRandomSeed(state_data._randomSeed)
+    Game.switchUIMode(Game.UIMode.gamePlay);
+  },
+
+  newGame: function() {
+    Game.setRandomSeed(5 + Math.floor(ROT.RNG.getUniform()*100000));
+    Game.switchUIMode(Game.UIMode.gamePlay);
+  },
+
+  localStorageAvailable: function() {
+    try {
+      var x = "__storage_test__";
+      window.localStorage.setItem(x, x);
+      window.localStorage.removeItem(x,x);
+      return true;
+    } catch (e) {
+      Game.Message.send("Sorry, there is no storage available for this browser");
+      return false;
     }
   }
 };

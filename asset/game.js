@@ -142,6 +142,11 @@ var Game = {
     this._curUIMode.enter();
     // render new mode
     this.renderAll();
+  },
+
+  toJSON: function() {
+    var json = {"_randomSeed":this.getRandomSeed()};
+    return json;
   }
 
 };
