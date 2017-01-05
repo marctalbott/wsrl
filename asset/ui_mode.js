@@ -65,12 +65,14 @@ Game.UIMode.gamePersistence = {
       var state_data = JSON.parse(json_state_data);
     }
 
-    Game.setRandomSeed(state_data._randomSeed)
+    Game.setRandomSeed(state_data._randomSeed);
+    Game.UIMode.gamePlay.setupPlay();
     Game.switchUIMode(Game.UIMode.gamePlay);
   },
 
   newGame: function() {
     Game.setRandomSeed(5 + Math.floor(ROT.RNG.getUniform()*100000));
+    Game.UIMode.gamePlay.setupPlay();
     Game.switchUIMode(Game.UIMode.gamePlay);
   },
 
@@ -89,6 +91,10 @@ Game.UIMode.gamePersistence = {
 
 
 Game.UIMode.gamePlay = {
+  attr: {
+    _map: null
+  },
+
   enter: function() {
     console.log("entered gamePlay");
     Game.Message.clear();
@@ -98,9 +104,11 @@ Game.UIMode.gamePlay = {
   },
   render: function (display) {
     console.log("rendered gamePlay");
+    this.attr._map.renderOn(display);
 
-    display.drawText(5,5,"[enter] to win, [esc] to lose.");
-    display.drawText(5,7,"[=] to save, load, or start over");
+    // display.drawText(5,5,"[enter] to win, [esc] to lose.");
+    // display.drawText(5,7,"[=] to save, load, or start over");
+
   },
   handleInput: function (inputType, inputData) {
     console.log("input for gamePlay");
@@ -116,6 +124,35 @@ Game.UIMode.gamePlay = {
         Game.switchUIMode(Game.UIMode.gameLose);
       }
     }
+  },
+
+  setupPlay: function() {
+    var mapTiles = Game.util.init2DArray(80, 24, Game.Tile.nullTile);
+    var generator = new ROT.Map.Cellular(80, 24);
+    generator.randomize(0.5);
+
+    //repeated cellular automata process
+    var totalIterations = 3;
+    for (var i = 0; i < totalIterations - 1; i++) {
+      generator.create();
+    }
+
+    // run again then update map
+    generator.create(function(x,y,v) {
+      if (v === 1) {
+        mapTiles[x][y] = Game.Tile.floorTile;
+      } else {
+        mapTiles[x][y] = Game.Tile.wallTile;
+      }
+    });
+
+    // create map from the tiles
+    this.attr._map = new Game.Map(mapTiles);
+
+    // // restore anything else if the data is available
+    // if (restorationData !== undefined && restorationData.hasOwnProperty(Game.UIMode.gamePlay.JSON_KEY)) {
+    //   this.fromJSON(restorationData[Game.UIMode.gamePlay.JSON_KEY]);
+    // }
   }
 };
 
