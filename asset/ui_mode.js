@@ -26,6 +26,33 @@ Game.UIMode.gameStart = {
   }
 };
 
+Game.UIMode.gamePersistence = {
+  enter: function() {
+    console.log("entered gamePersistence");
+    Game.Message.send("save, restore, or new game");
+  },
+  exit: function() {
+    console.log("exited gamePersistence");
+  },
+  render: function (display) {
+    console.log("rendered gamePersistence");
+    display.drawText(5,5,"S to save, L to load, N for a new game");
+  },
+  handleInput: function (inputType, inputData) {
+    console.log("input for gamePersistence");
+
+    var inputChar = inputData.key;
+    if (inputData.key == "S") {
+      this.saveGame();
+    } else if (inputData.key == "L") {
+      this.loadGame();
+    } else if (inputData.key == "N") {
+      Game.switchUIMode(Game.UIMode.gamePlay);
+    }
+  }
+};
+
+
 Game.UIMode.gamePlay = {
   enter: function() {
     console.log("entered gamePlay");
