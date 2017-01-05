@@ -6,7 +6,7 @@ Game.UIMode.DEFAULT_COLOR_STR = '%c{'+Game.UIMode.DEFAULT_COLOR_FG+'}%b{'+Game.U
 Game.UIMode.gameStart = {
   enter: function() {
     console.log("entered gameStart");
-    Game.Message.send("Welcome to WSRL");
+    Game.Message.send("welcome to WSRL");
   },
   exit: function() {
     console.log("exited gameStart");
@@ -36,7 +36,7 @@ Game.UIMode.gamePersistence = {
   },
   render: function (display) {
     console.log("rendered gamePersistence");
-    display.drawText(5,5,"S to save, L to load, N for a new game");
+    display.drawText(5,5,"s to save, l to load, n for a new game");
   },
   handleInput: function (inputType, inputData) {
     console.log("input for gamePersistence");
@@ -81,7 +81,7 @@ Game.UIMode.gamePersistence = {
       window.localStorage.removeItem(x,x);
       return true;
     } catch (e) {
-      Game.Message.send("Sorry, there is no storage available for this browser");
+      Game.Message.send("sorry, there is no storage available for this browser");
       return false;
     }
   }
@@ -99,7 +99,8 @@ Game.UIMode.gamePlay = {
   render: function (display) {
     console.log("rendered gamePlay");
 
-    display.drawText(5,5,"Press [Enter] to win, press [Esc] to lose.");
+    display.drawText(5,5,"[enter] to win, [esc] to lose.");
+    display.drawText(5,7,"[=] to save, load, or start over");
   },
   handleInput: function (inputType, inputData) {
     console.log("input for gamePlay");
@@ -107,6 +108,8 @@ Game.UIMode.gamePlay = {
     if (inputType == 'keypress') {
       if (inputData.key == "Enter") {
         Game.switchUIMode(Game.UIMode.gameWin);
+      } else if (inputData.key == "=") {
+        Game.switchUIMode(Game.UIMode.gamePersistence);
       }
     } else if (inputType == 'keydown') {
       if (inputData.key == "Escape") {
@@ -126,7 +129,7 @@ Game.UIMode.gameWin = {
   },
   render: function (display) {
     console.log("rendered gameWin");
-    display.drawText(5,5,"Congratulations, hope you're proud of yourself.");
+    display.drawText(5,5,"congratulations, hope you're proud of yourself.");
   },
   handleInput: function (inputType, inputData) {
     console.log("input for gameWin");
@@ -145,7 +148,7 @@ Game.UIMode.gameLose = {
   },
   render: function (display) {
     console.log("rendered gameLose");
-    display.drawText(5,5,"You're terrible.");
+    display.drawText(5,5,"you're terrible.");
   },
   handleInput: function (inputType, inputData) {
     console.log("input for gameLose");
