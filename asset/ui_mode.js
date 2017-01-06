@@ -41,12 +41,14 @@ Game.UIMode.gamePersistence = {
   handleInput: function (inputType, inputData) {
     console.log("input for gamePersistence");
 
-    var inputChar = inputData.key;
-    if (inputChar == "S" || inputChar == "s") {
+    // var inputChar = inputData.key;
+    var inputChar = inputData.charCode;
+    // if (inputChar == "S" || inputChar == "s") {
+    if (inputChar == 83 || inputChar == 115) {
       this.saveGame();
-    } else if (inputChar == "L" || inputChar == "l") {
+    } else if (inputChar == 76 || inputChar == 108) {
       this.loadGame();
-    } else if (inputChar == "N" || inputChar == "n") {
+    } else if (inputChar == 78 || inputChar == 110) {
       this.newGame();
     }
   },
