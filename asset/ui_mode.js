@@ -75,6 +75,7 @@ Game.UIMode.gamePersistence = {
   newGame: function() {
     Game.setRandomSeed(5 + Math.floor(ROT.RNG.getUniform()*100000));
     Game.UIMode.gamePlay.setupPlay();
+    console.log( "Check: " + Game.EntityTemplates );
     Game.switchUIMode(Game.UIMode.gamePlay);
   },
 
@@ -208,6 +209,9 @@ Game.UIMode.gamePlay = {
 
     // create map from the tiles
     this.attr._map = new Game.Map(mapTiles);
+
+    this.attr._avatar = new Game.Entity(Game.EntityTemplates.Avatar);
+    this.attr._avatar.setPos(100,100);
 
 
     // restore anything else if the data is available
