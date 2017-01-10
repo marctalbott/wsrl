@@ -102,18 +102,6 @@ var Game = {
     if(this._curUIMode) {
       this._curUIMode.render(this.getDisplay("main"));
     }
-
-    // var d = this.display.main.o;
-    // for (var i = 0; i < 24; i++) {
-    //   d.drawText(0,i,"%c{red}mapdisplay");
-    //   d.drawText(10,i,"%c{blue}%b{white}mapdisplay");
-    //   d.drawText(20,i,"%c{green}mapdisplay");
-    //   d.drawText(30,i,"%c{yellow}mapdisplay");
-    //   d.drawText(40,i,"%c{purple}mapdisplay");
-    //   d.drawText(50,i,"%c{cyan}mapdisplay");
-    //   d.drawText(60,i,"%c{orange}mapdisplay");
-    //   d.drawText(70,i,"%c{gray}mapdisplay");
-    // }
   },
 
   renderAvatar: function() {
