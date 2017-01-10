@@ -42,3 +42,37 @@ Game.EntityMixin.Chronicle = {
     this._Chronicle_attr.turnCounter = n;
   }
 };
+
+Game.Entity.HitPoints = {
+  META: {
+    mixinName: 'HitPoints',
+    mixinGroup: 'HitPoints',
+    init: function( template ) {
+      this._HitPoints_attr.maxHp = template.maxHp || 1;
+      this._HitPoints_attr.curHp = template.curHp || this._HitPoints_attr.maxHp;
+    }
+  },
+  _HitPoints_attr: {
+    maxHp: 1,
+    curHp: 1
+  },
+  // getters
+  getMaxHp: function() {
+    return this._HitPoints_attr.maxHp;
+  },
+  setMaxHp: function(n) {
+    this._HitPoints_attr.maxHp = n;
+  },
+  getCurHp: function() {
+    return this._HitPoints_attr.curHp;
+  },
+  setCurHp: function(n) {
+    this._HitPoints_attr.curHp = n;
+  },
+  takeHits: function(amt) {
+    this._HitPoints_attr.curHp -= amt;
+  },
+  recoverHits: function(amt) {
+    this._HitPoints_attr.curHp = Math.min(this._HitPoints_attr.curHp+amt, this._HitPoints_attr.maxHp);
+  }
+}
