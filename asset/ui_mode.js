@@ -44,10 +44,13 @@ Game.UIMode.gamePersistence = {
     // var inputChar = inputData.key;
     var inputChar = inputData.charCode;
     // if (inputChar == "S" || inputChar == "s") {
+      // S
     if (inputChar == 83 || inputChar == 115) {
       this.saveGame();
+      // L
     } else if (inputChar == 76 || inputChar == 108) {
       this.loadGame();
+      // N
     } else if (inputChar == 78 || inputChar == 110) {
       this.newGame();
     }
@@ -55,7 +58,10 @@ Game.UIMode.gamePersistence = {
 
   saveGame: function(json_state_data) {
     if (this.localStorageAvailable()) {
+      console.log(JSON.stringify(Game._game));
       window.localStorage.setItem(Game._PERSISTENCE_NAMESPACE, JSON.stringify(Game._game));
+    } else {
+      console.log( "Not enough storage" );
     }
 
     Game.switchUIMode(Game.UIMode.gamePlay);
@@ -75,7 +81,6 @@ Game.UIMode.gamePersistence = {
   newGame: function() {
     Game.setRandomSeed(5 + Math.floor(ROT.RNG.getUniform()*100000));
     Game.UIMode.gamePlay.setupPlay();
-    console.log( "Check: " + Game.EntityTemplates );
     Game.switchUIMode(Game.UIMode.gamePlay);
   },
 
@@ -130,7 +135,7 @@ Game.UIMode.gamePlay = {
       if (inputData.key == "Enter") {
         Game.switchUIMode(Game.UIMode.gameWin);
         return;
-      } else if (inputData.key == "=") {
+      } else if (inputData.charCode == 61) {
         Game.switchUIMode(Game.UIMode.gamePersistence);
       } else if (pressedKey == 'b') {
         this.moveAvatar(-1,1);
@@ -166,6 +171,7 @@ Game.UIMode.gamePlay = {
     var bg = Game.UIMode.DEFAULT_COLOR_BG;
     display.drawText(1,2,"avatar x: "+this.attr._avatar.getX(),fg,bg); // DEV
     display.drawText(1,3,"avatar y: "+this.attr._avatar.getY(),fg,bg); // DEV
+    display.drawText(1,4,"turns taken: "+this.attr._avatar.getTurns(),fg,bg);
   },
 
   moveAvatar: function(dx, dy) {
@@ -175,7 +181,6 @@ Game.UIMode.gamePlay = {
     //   this.attr._avatar.setY(Math.min(Math.max(0, this.attr._avatar.getY() + dy), this.attr._mapHeight));
     //   this.setCameraToAvatar();
     // }
-    console.log( this.attr._avatar );
     if (this.attr._avatar.tryWalk(this.attr._map, dx, dy)) {
       this.setCameraToAvatar();
     }
