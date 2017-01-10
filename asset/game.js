@@ -117,7 +117,14 @@ var Game = {
   },
 
   renderAvatar: function() {
-    this.getDisplay("avatar").drawText(1,1,"avatar display");
+    this.getDisplay("avatar").clear();
+    if (this._curUIMode === null) {
+      return;
+    }
+    if (this._curUIMode.hasOwnProperty('renderAvatarInfo')) {
+      this._curUIMode.renderAvatarInfo(this.getDisplay("avatar"));
+    }
+
   },
 
   renderMessage: function() {
@@ -145,7 +152,9 @@ var Game = {
   },
 
   toJSON: function() {
-    var json = {"_randomSeed":this.getRandomSeed()};
+    var json = {};
+    json._randomSeed = this.randomSeed;
+    json[Game.UIMode.gamePlay.JSON_KEY] = Game.UIMode.gamePlay.toJSON();
     return json;
   }
 

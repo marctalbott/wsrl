@@ -28,13 +28,15 @@ Game.Map.prototype.renderOn = function (display, camX, camY) {
   var yStart = camY - Math.round(dispH/2);
   for (var x = 0; x < dispW; x++) {
     for (var y = 0; y < dispH; y++) {
-     var tile = this.getTile(x + xStart, y + yStart);
-     if (tile.getName() == 'nullTile') {
-       tile = Game.Tile.wallTile;
-     }
-     var sym = tile.getSymbol();
+      var tile = this.getTile(x + xStart, y + yStart);
+      if (tile.getName() == 'nullTile') {
+        tile = Game.Tile.wallTile;
+      }
+      tile.draw(display, x, y);
 
-     display.draw(x,y,sym.getChar(),sym.getFg(),sym.getBg());
+      //  var sym = tile.getSymbol();
+      //
+      //  display.draw(x,y,sym.getChar(),sym.getFg(),sym.getBg());
     }
   }
 };

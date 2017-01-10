@@ -68,7 +68,7 @@ Game.UIMode.gamePersistence = {
     }
 
     Game.setRandomSeed(state_data._randomSeed);
-    Game.UIMode.gamePlay.setupPlay();
+    Game.UIMode.gamePlay.setupPlay(state_data);
     Game.switchUIMode(Game.UIMode.gamePlay);
   },
 
@@ -98,11 +98,14 @@ Game.UIMode.gamePlay = {
     _mapWidth: 300,
     _mapHeight: 200,
     _cameraX: 100,
-    _cameraY: 100
+    _cameraY: 100,
+    _avatarX: 100,
+    _avatarY: 100
   },
-
+  JSON_KEY: 'UIMode_gamePlay',
   enter: function() {
     console.log("entered gamePlay");
+
     Game.Message.clear();
   },
   exit: function() {
@@ -111,7 +114,7 @@ Game.UIMode.gamePlay = {
   render: function (display) {
     console.log("rendered gamePlay");
     this.attr._map.renderOn(display, this.attr._cameraX, this.attr._cameraY);
-
+    this.renderAvatar(display);
     // display.drawText(5,5,"[enter] to win, [esc] to lose.");
     // display.drawText(5,7,"[=] to save, load, or start over");
 
@@ -128,21 +131,21 @@ Game.UIMode.gamePlay = {
       } else if (inputData.key == "=") {
         Game.switchUIMode(Game.UIMode.gamePersistence);
       } else if (pressedKey == 'b') {
-        this.moveCamera(-1,1);
+        this.moveAvatar(-1,1);
       } else if (pressedKey == 'j') {
-        this.moveCamera(0,1);
+        this.moveAvatar(0,1);
       } else if (pressedKey == 'n') {
-        this.moveCamera(1,1);
+        this.moveAvatar(1,1);
       } else if (pressedKey == 'h') {
-        this.moveCamera(-1,0);
+        this.moveAvatar(-1,0);
       } else if (pressedKey == 'l') {
-        this.moveCamera(1,0);
+        this.moveAvatar(1,0);
       } else if (pressedKey == 'y') {
-        this.moveCamera(-1,-1);
+        this.moveAvatar(-1,-1);
       } else if (pressedKey == 'k') {
-        this.moveCamera(0,-1);
+        this.moveAvatar(0,-1);
       } else if (pressedKey == 'u') {
-        this.moveCamera(1,-1);
+        this.moveAvatar(1,-1);
       }
       Game.renderAll();
     } else if (inputType == 'keydown') {
@@ -152,12 +155,38 @@ Game.UIMode.gamePlay = {
     }
   },
 
-  moveCamera: function(dx, dy) {
-    this.attr._cameraX = Math.min(Math.max(0, this.attr._cameraX + dx), this.attr._mapWidth);
-    this.attr._cameraY = Math.min(Math.max(0, this.attr._cameraY + dy), this.attr._mapHeight);
+  renderAvatar: function(display) {
+    Game.Symbol.AVATAR.draw(display, this.attr._avatarX - this.attr._cameraX + display._options.width/2,
+                                      this.attr.avatarY - this.attr._cameraY + display._options.height/2);
   },
 
-  setupPlay: function() {
+  renderAvatarInfo: function(display) {
+    var fg = Game.UIMode.DEFAULT_COLOR_FG;
+    var bg = Game.UIMode.DEFAULT_COLOR_BG;
+    display.drawText(1,2,"avatar x: "+this.attr._avatarX,fg,bg); // DEV
+    display.drawText(1,3,"avatar y: "+this.attr._avatarY,fg,bg); // DEV
+  },
+
+  moveAvatar: function(dx, dy) {
+    this.attr._avatarX = Math.min(Math.max(0, this.attr._avatarX + dx), this.attr._mapWidth);
+    this.attr._avatarY = Math.min(Math.max(0, this.attr._avatarY + dy), this.attr._mapHeight);
+    this.setCameraToAvatar();
+  },
+
+  moveCamera: function(dx, dy) {
+    this.setCamera(this.attr._cameraX + dx,this.attr._cameraY + dy);
+  },
+
+  setCamera: function(sx, sy) {
+    this.attr._cameraX = Math.min(Math.max(0, sx), this.attr._mapWidth);
+    this.attr._cameraY = Math.min(Math.max(0, sy), this.attr._mapHeight);
+  },
+
+  setCameraToAvatar: function() {
+    this.setCamera(this.attr._avatarX, this.attr._avatarY);
+  },
+
+  setupPlay: function(restorationData) {
     var mapTiles = Game.util.init2DArray(this.attr._mapWidth, this.attr._mapHeight, Game.Tile.nullTile);
     var generator = new ROT.Map.Cellular(this.attr._mapWidth, this.attr._mapHeight);
     generator.randomize(0.5);
@@ -180,10 +209,28 @@ Game.UIMode.gamePlay = {
     // create map from the tiles
     this.attr._map = new Game.Map(mapTiles);
 
-    // // restore anything else if the data is available
-    // if (restorationData !== undefined && restorationData.hasOwnProperty(Game.UIMode.gamePlay.JSON_KEY)) {
-    //   this.fromJSON(restorationData[Game.UIMode.gamePlay.JSON_KEY]);
-    // }
+
+    // restore anything else if the data is available
+    if (restorationData !== undefined && restorationData.hasOwnProperty(Game.UIMode.gamePlay.JSON_KEY)) {
+      this.fromJSON(restorationData[Game.UIMode.gamePlay.JSON_KEY]);
+    }
+  },
+
+  toJSON: function() {
+    var json = {};
+    for (var at in this.attr) {
+      if (this.attr.hasOwnProperty(at) && at!='_map') {
+        json[at] = this.attr[at];
+      }
+    }
+    return json;
+  },
+  fromJSON: function (json) {
+    for (var at in this.attr) {
+      if (this.attr.hasOwnProperty(at) && at!='_map') {
+        this.attr[at] = json[at];
+      }
+    }
   }
 };
 
