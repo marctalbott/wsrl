@@ -80,30 +80,9 @@ Game.Entity.prototype.setY = function( y ) {
 }
 
 Game.Entity.prototype.toJSON = function () {
-	// var json = {};
-	// for (var at in this.attr) {
-	// 	if (this.attr.hasOwnProperty(at)) {
-	// 		if (this.attr[at] instanceof Object && 'toJSON' in this.attr[at]) {
-	// 			json[at] = this.attr[at].toJSON();
-	// 		} else {
-	// 			json[at] = this.attr[at];
-	// 		}
-	// 	}
-	// }
-	var json = Game.UIMode.gamePersistence.BASE_toJSON.call(this);
-	return json;
-
+	return Game.UIMode.gamePersistence.BASE_toJSON.call(this);
 };
 
 Game.Entity.prototype.fromJSON = function (json) {
-	for (var at in this.attr) {
-		if (this.attr.hasOwnProperty(at)) {
-			if (this.attr[at] instanceof Object && 'fromJSON' in this.attr[at]) {
-				this.attr[at].fromJSON(json[at]);
-			} else {
-				this.attr[at] = json[at];
-			}
-		}
-	}
-	Game.UIMode.gamePersistence.BASE_fromJSON.call(this);
+	Game.UIMode.gamePersistence.BASE_fromJSON.call(this, json);
 };

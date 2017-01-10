@@ -156,7 +156,6 @@ var Game = {
     var json = {};
     json._randomSeed = this._randomSeed;
     json[Game.UIMode.gamePlay.JSON_KEY] = Game.UIMode.gamePlay.toJSON();
-    console.log(json);
     return json;
   }
 

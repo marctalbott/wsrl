@@ -111,6 +111,7 @@ Game.UIMode.gamePersistence = {
         }
       }
     }
+    return json;
   },
 
   BASE_fromJSON: function(json, state_hash_name) {
@@ -138,8 +139,6 @@ Game.UIMode.gamePlay = {
     _mapHeight: 200,
     _cameraX: 100,
     _cameraY: 100,
-    _avatarX: 100,
-    _avatarY: 100,
     _avatar: null
   },
   JSON_KEY: 'UIMode_gamePlay',
@@ -208,16 +207,9 @@ Game.UIMode.gamePlay = {
   },
 
   moveAvatar: function(dx, dy) {
-    // if (this.attr._map.getTile(Math.min(Math.max(0, this.attr._avatar.getX() + dx), this.attr._mapWidth),
-    //                           Math.min(Math.max(0, this.attr._avatar.getY() + dy), this.attr._mapHeight)).isWalkable()) {
-    //   this.attr._avatar.setX(Math.min(Math.max(0, this.attr._avatar.getX() + dx), this.attr._mapWidth));
-    //   this.attr._avatar.setY(Math.min(Math.max(0, this.attr._avatar.getY() + dy), this.attr._mapHeight));
-    //   this.setCameraToAvatar();
-    // }
     if (this.attr._avatar.tryWalk(this.attr._map, dx, dy)) {
       this.setCameraToAvatar();
     }
-
   },
 
   moveCamera: function(dx, dy) {
@@ -260,9 +252,9 @@ Game.UIMode.gamePlay = {
     this.attr._avatar = new Game.Entity(Game.EntityTemplates.Avatar);
     this.attr._avatar.setPos(100,100);
 
-
     // restore anything else if the data is available
     if (restorationData !== undefined && restorationData.hasOwnProperty(Game.UIMode.gamePlay.JSON_KEY)) {
+      console.log(restorationData);
       this.fromJSON(restorationData[Game.UIMode.gamePlay.JSON_KEY]);
     }
 
@@ -270,30 +262,10 @@ Game.UIMode.gamePlay = {
   },
 
   toJSON: function() {
-    // var json = {};
-    // for (var at in this.attr) {
-    //   if (this.attr.hasOwnProperty(at)) {
-    //     if (this.attr[at] instanceof Object && 'toJSON' in this.attr[at]) {
-    //       json[at] = this.attr[at].toJSON();
-    //     } else {
-    //       json[at] = this.attr[at];
-    //     }
-    //   }
-    // }
-    // return json;
-    Game.UIMode.gamePersistence.BASE_toJSON.call(this);
+    return Game.UIMode.gamePersistence.BASE_toJSON.call(this);
   },
   fromJSON: function (json) {
-    // for (var at in this.attr) {
-    //   if (this.attr.hasOwnProperty(at)) {
-    //     if (this.attr[at] instanceof Object && 'fromJSON' in this.attr[at]) {
-    //       this.attr[at].fromJSON(json[at]);
-    //     } else {
-    //       this.attr[at] = json[at];
-    //     }
-    //   }
-    // }
-    Game.UIMode.gamePersistence.BASE_fromJSON.call(this);
+    Game.UIMode.gamePersistence.BASE_fromJSON.call(this, json);
   }
 };
 
