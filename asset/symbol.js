@@ -36,3 +36,4 @@ Game.Symbol.prototype.draw = function(display, dispX, dispY) {
 
 Game.Symbol.NULL_SYMBOL = new Game.Symbol();
 Game.Symbol.AVATAR = new Game.Symbol({chr: '@', fg:'#dda'});
+Game.Symbol.FUNGUS = new Game.Symbol({chr: 'f', fg: '#228b22'});

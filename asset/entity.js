@@ -72,9 +72,7 @@ Game.Entity.prototype.setY = function( y ) {
 	this.attr._y = y;
 }
 
-Game.Entity.prototype.getChar = function() {
-	return 
-}
+
 
 Game.Entity.prototype.toJSON = function () {
 	var json = {};

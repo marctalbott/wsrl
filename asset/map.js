@@ -41,11 +41,9 @@ Game.Map.prototype.renderOn = function (display, camX, camY) {
     }
   }
 
-  
-//  console.log(this.attr._entities);
-  for( var entity in this.attr._entities) {
-    console.log( entity._entityID );
-    display.draw(entity.getX(), entity.getY(), entity.getChar() );
+  for( var i=0; i<this.attr._entities.length; i++ ) {
+    var entity = this.attr._entities[i];
+    display.draw(entity.getX(), entity.getY(), Game.Symbol.AVATAR.getChar(), "#fff", "#000" );
   }
 };
 
