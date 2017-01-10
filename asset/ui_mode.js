@@ -149,7 +149,6 @@ Game.UIMode.gamePlay = {
       } else if (pressedKey == 'u') {
         this.moveAvatar(1,-1);
       }
-      Game.renderAll();
     } else if (inputType == 'keydown') {
       if (inputData.key == "Escape") {
         Game.switchUIMode(Game.UIMode.gameLose);
@@ -170,10 +169,14 @@ Game.UIMode.gamePlay = {
   },
 
   moveAvatar: function(dx, dy) {
-    if (this.attr._map.getTile(Math.min(Math.max(0, this.attr._avatar.getX() + dx), this.attr._mapWidth),
-                              Math.min(Math.max(0, this.attr._avatar.getY() + dy), this.attr._mapHeight)).isWalkable()) {
-      this.attr._avatar.setX(Math.min(Math.max(0, this.attr._avatar.getX() + dx), this.attr._mapWidth));
-      this.attr._avatar.setY(Math.min(Math.max(0, this.attr._avatar.getY() + dy), this.attr._mapHeight));
+    // if (this.attr._map.getTile(Math.min(Math.max(0, this.attr._avatar.getX() + dx), this.attr._mapWidth),
+    //                           Math.min(Math.max(0, this.attr._avatar.getY() + dy), this.attr._mapHeight)).isWalkable()) {
+    //   this.attr._avatar.setX(Math.min(Math.max(0, this.attr._avatar.getX() + dx), this.attr._mapWidth));
+    //   this.attr._avatar.setY(Math.min(Math.max(0, this.attr._avatar.getY() + dy), this.attr._mapHeight));
+    //   this.setCameraToAvatar();
+    // }
+
+    if (this.attr._avatar.tryWalk(this.attr._map, dx, dy)) {
       this.setCameraToAvatar();
     }
 
@@ -186,6 +189,7 @@ Game.UIMode.gamePlay = {
   setCamera: function(sx, sy) {
     this.attr._cameraX = Math.min(Math.max(0, sx), this.attr._mapWidth);
     this.attr._cameraY = Math.min(Math.max(0, sy), this.attr._mapHeight);
+    Game.renderAll();
   },
 
   setCameraToAvatar: function() {
