@@ -101,7 +101,8 @@ Game.UIMode.gamePlay = {
     _cameraX: 100,
     _cameraY: 100,
     _avatarX: 100,
-    _avatarY: 100
+    _avatarY: 100,
+    _avatar: null
   },
   JSON_KEY: 'UIMode_gamePlay',
   enter: function() {
@@ -157,21 +158,25 @@ Game.UIMode.gamePlay = {
   },
 
   renderAvatar: function(display) {
-    Game.Symbol.AVATAR.draw(display, this.attr._avatarX - this.attr._cameraX + display._options.width/2,
-                                      this.attr.avatarY - this.attr._cameraY + display._options.height/2);
+    Game.Symbol.AVATAR.draw(display, this.attr._avatar.getX() - this.attr._cameraX + display._options.width/2,
+                                      this.attr._avatar.getY() - this.attr._cameraY + display._options.height/2);
   },
 
   renderAvatarInfo: function(display) {
     var fg = Game.UIMode.DEFAULT_COLOR_FG;
     var bg = Game.UIMode.DEFAULT_COLOR_BG;
-    display.drawText(1,2,"avatar x: "+this.attr._avatarX,fg,bg); // DEV
-    display.drawText(1,3,"avatar y: "+this.attr._avatarY,fg,bg); // DEV
+    display.drawText(1,2,"avatar x: "+this.attr._avatar.getX(),fg,bg); // DEV
+    display.drawText(1,3,"avatar y: "+this.attr._avatar.getY(),fg,bg); // DEV
   },
 
   moveAvatar: function(dx, dy) {
-    this.attr._avatarX = Math.min(Math.max(0, this.attr._avatarX + dx), this.attr._mapWidth);
-    this.attr._avatarY = Math.min(Math.max(0, this.attr._avatarY + dy), this.attr._mapHeight);
-    this.setCameraToAvatar();
+    if (this.attr._map.getTile(Math.min(Math.max(0, this.attr._avatar.getX() + dx), this.attr._mapWidth),
+                              Math.min(Math.max(0, this.attr._avatar.getY() + dy), this.attr._mapHeight)).isWalkable()) {
+      this.attr._avatar.setX(Math.min(Math.max(0, this.attr._avatar.getX() + dx), this.attr._mapWidth));
+      this.attr._avatar.setY(Math.min(Math.max(0, this.attr._avatar.getY() + dy), this.attr._mapHeight));
+      this.setCameraToAvatar();
+    }
+
   },
 
   moveCamera: function(dx, dy) {
@@ -184,7 +189,7 @@ Game.UIMode.gamePlay = {
   },
 
   setCameraToAvatar: function() {
-    this.setCamera(this.attr._avatarX, this.attr._avatarY);
+    this.setCamera(this.attr._avatar.getX(), this.attr._avatar.getY());
   },
 
   setupPlay: function(restorationData) {
@@ -218,21 +223,31 @@ Game.UIMode.gamePlay = {
     if (restorationData !== undefined && restorationData.hasOwnProperty(Game.UIMode.gamePlay.JSON_KEY)) {
       this.fromJSON(restorationData[Game.UIMode.gamePlay.JSON_KEY]);
     }
+
+    this.setCameraToAvatar();
   },
 
   toJSON: function() {
     var json = {};
     for (var at in this.attr) {
-      if (this.attr.hasOwnProperty(at) && at!='_map') {
-        json[at] = this.attr[at];
+      if (this.attr.hasOwnProperty(at)) {
+        if (this.attr[at] instanceof Object && 'toJSON' in this.attr[at]) {
+          json[at] = this.attr[at].toJSON();
+        } else {
+          json[at] = this.attr[at];
+        }
       }
     }
     return json;
   },
   fromJSON: function (json) {
     for (var at in this.attr) {
-      if (this.attr.hasOwnProperty(at) && at!='_map') {
-        this.attr[at] = json[at];
+      if (this.attr.hasOwnProperty(at)) {
+        if (this.attr[at] instanceof Object && 'fromJSON' in this.attr[at]) {
+          this.attr[at].fromJSON(json[at]);
+        } else {
+          this.attr[at] = json[at];
+        }
       }
     }
   }
