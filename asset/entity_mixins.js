@@ -43,10 +43,10 @@ Game.EntityMixin.Chronicle = {
   }
 };
 
-Game.Entity.HitPoints = {
+Game.EntityMixin.HitPoints = {
   META: {
     mixinName: 'HitPoints',
-    mixinGroup: 'HitPoints',
+    mixinGroup: 'Destructable',
     init: function( template ) {
       this._HitPoints_attr.maxHp = template.maxHp || 1;
       this._HitPoints_attr.curHp = template.curHp || this._HitPoints_attr.maxHp;
@@ -75,4 +75,15 @@ Game.Entity.HitPoints = {
   recoverHits: function(amt) {
     this._HitPoints_attr.curHp = Math.min(this._HitPoints_attr.curHp+amt, this._HitPoints_attr.maxHp);
   }
+}
+
+Game.EntityMixin.Destructable = {
+  META: {
+    mixinName: 'Destructable',
+    mixinGroup: 'Destructable',
+  },
+  takeDamage: function(amt) {
+    this.takeHits(amt);
+  }
+
 }

@@ -121,7 +121,7 @@ Game.UIMode.gamePlay = {
   render: function (display) {
     console.log("rendered gamePlay");
     this.attr._map.renderOn(display, this.attr._cameraX, this.attr._cameraY);
-    this.renderAvatar(display);
+    /*this.renderAvatar(display);*/
     // display.drawText(5,5,"[enter] to win, [esc] to lose.");
     // display.drawText(5,7,"[=] to save, load, or start over");
 
@@ -161,10 +161,10 @@ Game.UIMode.gamePlay = {
     }
   },
 
-  renderAvatar: function(display) {
+  /*renderAvatar: function(display) {
     Game.Symbol.AVATAR.draw(display, this.attr._avatar.getX() - this.attr._cameraX + display._options.width/2,
-                                      this.attr._avatar.getY() - this.attr._cameraY + display._options.height/2);
-  },
+                                      this.attr._avatarYtar.getY() - this.attr._cameraY + display._options.height/2);
+  },*/
 
   renderAvatarInfo: function(display) {
     var fg = Game.UIMode.DEFAULT_COLOR_FG;
@@ -172,6 +172,7 @@ Game.UIMode.gamePlay = {
     display.drawText(1,2,"avatar x: "+this.attr._avatar.getX(),fg,bg); // DEV
     display.drawText(1,3,"avatar y: "+this.attr._avatar.getY(),fg,bg); // DEV
     display.drawText(1,4,"turns taken: "+this.attr._avatar.getTurns(),fg,bg);
+    display.drawText(1,5,"HP: "+this.attr._avatar.getCurHp(),fg,bg);
   },
 
   moveAvatar: function(dx, dy) {
@@ -223,9 +224,12 @@ Game.UIMode.gamePlay = {
 
     // create map from the tiles
     this.attr._map = new Game.Map(mapTiles);
-
     this.attr._avatar = new Game.Entity(Game.EntityTemplates.Avatar);
-    this.attr._avatar.setPos(100,100);
+    this.attr._map.addEntityAtRandomPosition( this.attr._avatar );
+//    this.attr._avatar.setPos(100,100);
+    for( var i=0; i<3; i++ ) {
+      this.attr._map.addEntityAtRandomPosition( new Game.Entity(Game.EntityTemplates.Fungus) );
+    }
 
 
     // restore anything else if the data is available

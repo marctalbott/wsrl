@@ -14,7 +14,6 @@ Game.Entity = function( template ) {
 	this._mixinTracker = {};
 	console.dir(template);
 	console.dir(template.mixins);
-	console.dir(template.mixins);
 	if (template.hasOwnProperty('mixins')) {
 		for (var i = 0; i < template.mixins.length; i++) {
 			var mixin = template.mixins[i];
@@ -71,6 +70,10 @@ Game.Entity.prototype.getY = function() {
 
 Game.Entity.prototype.setY = function( y ) {
 	this.attr._y = y;
+}
+
+Game.Entity.prototype.getChar = function() {
+	return 
 }
 
 Game.Entity.prototype.toJSON = function () {

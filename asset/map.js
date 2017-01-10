@@ -2,7 +2,8 @@ Game.Map = function (tilesGrid) {
   this.attr = {
     _tiles: tilesGrid,
     _width: tilesGrid.length,
-    _height: tilesGrid[0].length
+    _height: tilesGrid[0].length,
+    _entities: [],
   };
 };
 
@@ -39,6 +40,40 @@ Game.Map.prototype.renderOn = function (display, camX, camY) {
       //  display.draw(x,y,sym.getChar(),sym.getFg(),sym.getBg());
     }
   }
+
+  
+//  console.log(this.attr._entities);
+  for( var entity in this.attr._entities) {
+    console.log( entity._entityID );
+    display.draw(entity.getX(), entity.getY(), entity.getChar() );
+  }
+};
+
+Game.Map.prototype.addEntity = function(entity) {
+  if( entity.getX() < 0 || entity.getX() >= this._width ||
+      entity.getY() < 0 || entity.getY() >= this._height ) {
+    throw new Error('Adding entity out of bounds'); 
+  }
+  this.attr._entities.push(entity);
+};
+
+Game.Map.prototype.getRandomFloorPosition = function() {
+  // Randomly generate a tile which is a floor
+  var x, y;
+  do {
+    x = Math.floor( Math.random() * this.getWidth() );
+    y = Math.floor( Math.random() * this.getHeight() );
+  } while( !this.getTile( x, y ).isWalkable() );
+
+  return {x: x, y: y};
+};
+
+Game.Map.prototype.addEntityAtRandomPosition = function( entity ) {
+  var position = this.getRandomFloorPosition();
+  entity.setX(position.x);
+  entity.setY(position.y);
+//  console.log( "FIRST: "+entity.getX());
+  this.addEntity(entity);
 };
 
 Game.Map.prototype.toJSON = function(json) {
@@ -46,3 +81,5 @@ Game.Map.prototype.toJSON = function(json) {
 
 Game.Map.prototype.fromJSON = function(json){
 };
+
+
