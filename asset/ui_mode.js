@@ -175,7 +175,7 @@ Game.UIMode.gamePlay = {
     //   this.attr._avatar.setY(Math.min(Math.max(0, this.attr._avatar.getY() + dy), this.attr._mapHeight));
     //   this.setCameraToAvatar();
     // }
-
+    console.log( this.attr._avatar );
     if (this.attr._avatar.tryWalk(this.attr._map, dx, dy)) {
       this.setCameraToAvatar();
     }

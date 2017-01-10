@@ -3,15 +3,17 @@ Game.Entity = function( template ) {
 	template = template || {};
 	Game.Symbol.call( this, template );
 	if( !( 'attr' in this )) { this.attr= {}; }
-	this.attr_name = template.name || '';
+	this.attr._name = template.name || '';
 	this.attr._x = template.x || 0;
 	this.attr._y = template.y || 0;
 
 	this._entityID = Game.util.randomString(32);
 	Game.ALL_ENTITIES[this.entityID] = this;
 
+	this._mixins = template.mixins || [];
 	this._mixinTracker = {};
 	console.dir(template);
+	console.dir(template.mixins);
 	console.dir(template.mixins);
 	if (template.hasOwnProperty('mixins')) {
 		for (var i = 0; i < template.mixins.length; i++) {
