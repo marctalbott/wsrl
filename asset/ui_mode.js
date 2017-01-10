@@ -94,7 +94,11 @@ Game.UIMode.gamePersistence = {
 
 Game.UIMode.gamePlay = {
   attr: {
-    _map: null
+    _map: null,
+    _mapWidth: 300,
+    _mapHeight: 200,
+    _cameraX: 100,
+    _cameraY: 100
   },
 
   enter: function() {
@@ -106,21 +110,41 @@ Game.UIMode.gamePlay = {
   },
   render: function (display) {
     console.log("rendered gamePlay");
-    this.attr._map.renderOn(display);
+    this.attr._map.renderOn(display, this.attr._cameraX, this.attr._cameraY);
 
     // display.drawText(5,5,"[enter] to win, [esc] to lose.");
     // display.drawText(5,7,"[=] to save, load, or start over");
 
   },
   handleInput: function (inputType, inputData) {
+    var pressedKey = String.fromCharCode(inputData.charCode);
+
     console.log("input for gamePlay");
     Game.Message.send("you pressed the '" + String.fromCharCode(inputData.charCode)+ "' key");
     if (inputType == 'keypress') {
       if (inputData.key == "Enter") {
         Game.switchUIMode(Game.UIMode.gameWin);
+        return;
       } else if (inputData.key == "=") {
         Game.switchUIMode(Game.UIMode.gamePersistence);
+      } else if (pressedKey == 'b') {
+        this.moveCamera(-1,1);
+      } else if (pressedKey == 'j') {
+        this.moveCamera(0,1);
+      } else if (pressedKey == 'n') {
+        this.moveCamera(1,1);
+      } else if (pressedKey == 'h') {
+        this.moveCamera(-1,0);
+      } else if (pressedKey == 'l') {
+        this.moveCamera(1,0);
+      } else if (pressedKey == 'y') {
+        this.moveCamera(-1,-1);
+      } else if (pressedKey == 'k') {
+        this.moveCamera(0,-1);
+      } else if (pressedKey == 'u') {
+        this.moveCamera(1,-1);
       }
+      Game.renderAll();
     } else if (inputType == 'keydown') {
       if (inputData.key == "Escape") {
         Game.switchUIMode(Game.UIMode.gameLose);
@@ -128,9 +152,14 @@ Game.UIMode.gamePlay = {
     }
   },
 
+  moveCamera: function(dx, dy) {
+    this.attr._cameraX = Math.min(Math.max(0, this.attr._cameraX + dx), this.attr._mapWidth);
+    this.attr._cameraY = Math.min(Math.max(0, this.attr._cameraY + dy), this.attr._mapHeight);
+  },
+
   setupPlay: function() {
-    var mapTiles = Game.util.init2DArray(80, 24, Game.Tile.nullTile);
-    var generator = new ROT.Map.Cellular(80, 24);
+    var mapTiles = Game.util.init2DArray(this.attr._mapWidth, this.attr._mapHeight, Game.Tile.nullTile);
+    var generator = new ROT.Map.Cellular(this.attr._mapWidth, this.attr._mapHeight);
     generator.randomize(0.5);
 
     //repeated cellular automata process
