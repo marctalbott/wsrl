@@ -152,9 +152,11 @@ var Game = {
   },
 
   toJSON: function() {
+    // console.log("game toJSON");
     var json = {};
-    json._randomSeed = this.randomSeed;
+    json._randomSeed = this._randomSeed;
     json[Game.UIMode.gamePlay.JSON_KEY] = Game.UIMode.gamePlay.toJSON();
+    console.log(json);
     return json;
   }
 

@@ -14,21 +14,27 @@ Game.Entity = function( template ) {
 	this._mixinTracker = {};
 	console.dir(template);
 	console.dir(template.mixins);
-	console.dir(template.mixins);
-	if (template.hasOwnProperty('mixins')) {
-		for (var i = 0; i < template.mixins.length; i++) {
-			var mixin = template.mixins[i];
-			console.dir(mixin);
-			this._mixinTracker[mixin.META.mixinName] = true;
-			this._mixinTracker[mixin.META.mixinGroup] = true;
-			for (var mixinProp in mixinProp != 'META' && mixin) {
-				if (mixinProp != 'META' && mixin.hasOwnProperty(mixinProp)) {
-					this[mixinProp] = mixin[mixinProp];
-				}
+	console.dir(this._mixins);
+	for (var i = 0; i < template.mixins.length; i++) {
+		var mixin = template.mixins[i];
+		console.dir(mixin);
+		this._mixinTracker[mixin.META.mixinName] = true;
+		this._mixinTracker[mixin.META.mixinGroup] = true;
+		for (var mixinProp in mixinProp != 'META' && mixin) {
+			if (mixinProp != 'META' && mixin.hasOwnProperty(mixinProp)) {
+				this[mixinProp] = mixin[mixinProp];
 			}
-			if (mixin.META.hasOwnProperty('init')) {
-				mixin.META.init.call(this, template);
-			}
+		}
+		// if (mixin.META.hasOwnProperty('stateNamespace')) {
+		// 	this.attr[mixin.META.stateNamespace] = {};
+		// 	for (var mixinStateProp in mixin.META.stateModel) {
+		// 		if (mixin.META)
+		// 	}
+		// }
+
+
+		if (mixin.META.hasOwnProperty('init')) {
+			mixin.META.init.call(this, template);
 		}
 	}
 };
@@ -74,17 +80,19 @@ Game.Entity.prototype.setY = function( y ) {
 }
 
 Game.Entity.prototype.toJSON = function () {
-	var json = {};
-	for (var at in this.attr) {
-		if (this.attr.hasOwnProperty(at)) {
-			if (this.attr[at] instanceof Object && 'toJSON' in this.attr[at]) {
-				json[at] = this.attr[at].toJSON();
-			} else {
-				json[at] = this.attr[at];
-			}
-		}
-	}
+	// var json = {};
+	// for (var at in this.attr) {
+	// 	if (this.attr.hasOwnProperty(at)) {
+	// 		if (this.attr[at] instanceof Object && 'toJSON' in this.attr[at]) {
+	// 			json[at] = this.attr[at].toJSON();
+	// 		} else {
+	// 			json[at] = this.attr[at];
+	// 		}
+	// 	}
+	// }
+	var json = Game.UIMode.gamePersistence.BASE_toJSON.call(this);
 	return json;
+
 };
 
 Game.Entity.prototype.fromJSON = function (json) {
@@ -97,4 +105,5 @@ Game.Entity.prototype.fromJSON = function (json) {
 			}
 		}
 	}
+	Game.UIMode.gamePersistence.BASE_fromJSON.call(this);
 };
