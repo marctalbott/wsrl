@@ -35,6 +35,14 @@ Game.Entity = function( template ) {
 
 Game.Entity.extend( Game.Symbol );
 
+Game.Entity.prototype.hasMixin = function(checkThis) {
+	if (typeof checkThis == 'object') {
+		return this._mixinTracker.hasOwnProperty(checkThis.META.mixinName);
+	} else {
+		return this._mixinTracker.hasOwnProperty(checkThis);
+	}
+};
+
 // Basic getters
 Game.Entity.prototype.getName = function() {
 	return this.attr._name;
