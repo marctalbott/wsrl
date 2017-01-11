@@ -162,8 +162,8 @@ Game.UIMode.gamePlay = {
     var pressedKey = String.fromCharCode(inputData.charCode);
 
     console.log("input for gamePlay");
-    Game.Message.send("you pressed the '" + String.fromCharCode(inputData.charCode)+ "' key");
     if (inputType == 'keypress') {
+      Game.Message.send("you pressed the '" + String.fromCharCode(inputData.charCode) + "' key");
       if (inputData.key == "Enter") {
         Game.switchUIMode(Game.UIMode.gameWin);
         return;
@@ -220,7 +220,7 @@ Game.UIMode.gamePlay = {
   setCamera: function(sx, sy) {
     this.attr._cameraX = Math.min(Math.max(0, sx), this.attr._mapWidth);
     this.attr._cameraY = Math.min(Math.max(0, sy), this.attr._mapHeight);
-    Game.renderAll();
+    // Game.renderAll();
   },
 
   setCameraToAvatar: function() {
