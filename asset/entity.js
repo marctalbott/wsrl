@@ -11,14 +11,13 @@ Game.Entity = function( template ) {
 	this.attr._generator_template_key = template._generator_template_key || '';
 	this.attr._mapId = null;
 
-	this.attr._id = Game.util.randomString(32);
+	this.attr._id = this.attr._name + "-" + Game.util.randomString(32);
 	Game.DATASTORE.ENTITY[this.attr._id] = this;
 
-	this._map = null;
-
 	this._mixins = template.mixins || [];
-
 	this._mixinTracker = {};
+	console.log( "template: ");
+	console.log( template );
 //	console.dir(template);
 //	console.dir(template.mixins);
 //	if (template.hasOwnProperty('mixins')) {
@@ -103,6 +102,10 @@ Game.Entity.prototype.getMap = function() {
 Game.Entity.prototype.setMap = function( map ) {
 	this.attr._mapId = map.getId();
 };
+
+Game.Entity.prototype.getMixins = function() {
+	return this._mixins;
+}
 
 Game.Entity.prototype.toJSON = function () {
 	return Game.UIMode.gamePersistence.BASE_toJSON.call(this);

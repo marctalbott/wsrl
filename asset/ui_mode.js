@@ -73,6 +73,9 @@ Game.UIMode.gamePersistence = {
   },
   restoreGame: function () {
     if (this.localStorageAvailable()) {
+      Game.clearDataStore();
+      console.log( "after clear: ");
+      console.log( JSON.stringify(Game.DATASTORE) );
       var json_state_data = window.localStorage.getItem(Game._PERSISTENCE_NAMESPACE);
 //      console.log( Game._PERSISTANCE_NAMESPACE );
       var state_data = JSON.parse(json_state_data);
@@ -81,8 +84,6 @@ Game.UIMode.gamePersistence = {
       // console.dir(state_data);
 
       // game level stuff
-      console.log( "state data: ");
-      console.dir( state_data );
       Game.setRandomSeed(state_data[this.RANDOM_SEED_KEY]);
 
       // maps
@@ -95,17 +96,19 @@ Game.UIMode.gamePersistence = {
           Game.DATASTORE.MAP[mapId].fromJSON(state_data.MAP[mapId]);
         }
       }
-
+      console.log( "state data 2: ");
+      console.dir( state_data.ENTITY );
       // entities
       for (var entityId in state_data.ENTITY) {
         if (state_data.ENTITY.hasOwnProperty(entityId)) {
           var entAttr = JSON.parse(state_data.ENTITY[entityId]);
           Game.DATASTORE.ENTITY[entityId] = Game.EntityGenerator.create(entAttr._generator_template_key);
           Game.DATASTORE.ENTITY[entityId].fromJSON(state_data.ENTITY[entityId]);
-          console.dir( Game.DATASTORE.ENTITY[entityId] );
         }
       }
 
+      console.log( "state data 3: ");
+      console.dir( Game.DATASTORE.ENTITY );
       // game play
       Game.UIMode.gamePlay.attr = state_data.GAME_PLAY;
 
@@ -124,6 +127,7 @@ Game.UIMode.gamePersistence = {
   },*/
 
   newGame: function() {
+    Game.clearDataStore();
     Game.setRandomSeed(5 + Math.floor(ROT.RNG.getUniform()*100000));
     Game.UIMode.gamePlay.setupNewGame();
     Game.switchUIMode(Game.UIMode.gamePlay);
@@ -266,6 +270,7 @@ Game.UIMode.gamePlay = {
     var bg = Game.UIMode.DEFAULT_COLOR_BG;
     display.drawText(1,2,"avatar x: "+this.getAvatar().getX(),fg,bg); // DEV
     display.drawText(1,3,"avatar y: "+this.getAvatar().getY(),fg,bg); // DEV
+    console.dir( this.getAvatar() );
     display.drawText(1,4,"turns taken: "+this.getAvatar().getTurns(),fg,bg);
     display.drawText(1,5,"hp: "+this.getAvatar().getCurHp(),fg,bg);
   },
@@ -294,11 +299,13 @@ Game.UIMode.gamePlay = {
     this.setMap(new Game.Map('caves1'));
     this.setAvatar(Game.EntityGenerator.create('avatar'));
     this.getMap().addEntity(this.getAvatar(), this.getMap().getRandomWalkableLocation());
+    console.log( "avatar: ");
+    console.dir( this.getAvatar().getMixins() );
     this.setCameraToAvatar();
 
-    for( var ecount=0; ecount<50; ecount++ ) {
+    /*for( var ecount=0; ecount<3; ecount++ ) {
         this.getMap().addEntity(Game.EntityGenerator.create('fungus'),this.getMap().getRandomWalkableLocation());
-      }
+      }*/
     /*generator.randomize(0.5);
 
     //repeated cellular automata process
@@ -337,12 +344,14 @@ Game.UIMode.gamePlay = {
       this.getAvatar().setPos(randomWalkableLocation['x'], randomWalkableLocation['y']);
       this.getMap().updateEntityLocation(this.getAvatar());
       // add entities to map
-      for( var ecount=0; ecount<50; ecount++ ) {
+      for( var ecount=0; ecount<3; ecount++ ) {
         this.getMap().addEntity(Game.EntityGenerator.create('fungus'),this.getMap().getRandomWalkableLocation());
       }
     }
 
     this.setCameraToAvatar();
+    console.log("first:");
+    console.dir(Game.DATASTORE.ENTITY);
   },
 
   toJSON: function() {

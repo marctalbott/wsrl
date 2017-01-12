@@ -140,6 +140,13 @@ DATASTORE: {},
     this._curUIMode.enter();
     // render new mode
     this.renderAll();
+  },
+
+  clearDataStore: function() {
+    this.DATASTORE = {};
+    this.DATASTORE.ENTITY = {};
+    this.DATASTORE.MAP = {};
+    this.DATASTORE.GAME_PLAY = {};
   }
 
   /*toJSON: function() {
