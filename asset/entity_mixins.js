@@ -36,9 +36,9 @@ Game.EntityMixin.Chronicle = {
       turnCounter: 0
     }
   },
-  _Chronicle_attr: {
-    turnCounter: 0
-  },
+  // _Chronicle_attr: {
+  //   turnCounter: 0
+  // },
   trackTurn: function() {
     this.attr._Chronicle_attr.turnCounter++;
   },

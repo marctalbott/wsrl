@@ -258,10 +258,10 @@ Game.UIMode.gamePlay = {
   renderAvatarInfo: function(display) {
     var fg = Game.UIMode.DEFAULT_COLOR_FG;
     var bg = Game.UIMode.DEFAULT_COLOR_BG;
-    display.drawText(1,2,"avatar x: "+this.attr._avatar.getX(),fg,bg); // DEV
-    display.drawText(1,3,"avatar y: "+this.attr._avatar.getY(),fg,bg); // DEV
-    display.drawText(1,4,"turns taken: "+this.attr._avatar.getTurns(),fg,bg);
-    display.drawText(1,5,"hp: "+this.attr._avatar.getCurHp(),fg,bg);
+    display.drawText(1,2,"avatar x: "+this.getAvatar().getX(),fg,bg); // DEV
+    display.drawText(1,3,"avatar y: "+this.getAvatar().getY(),fg,bg); // DEV
+    display.drawText(1,4,"turns taken: "+this.getAvatar().getTurns(),fg,bg);
+    display.drawText(1,5,"hp: "+this.getAvatar().getCurHp(),fg,bg);
   },
 
   moveAvatar: function(dx, dy) {
