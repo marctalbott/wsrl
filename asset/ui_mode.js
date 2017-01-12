@@ -63,12 +63,11 @@ Game.UIMode.gamePersistence = {
   saveGame: function(json_state_data) {
     if (this.localStorageAvailable()) {
       // console.log(JSON.stringify(Game._game));
-      window.localStorage.setItem(Game._PERSISTENCE_NAMESPACE, JSON.stringify(Game._game));
-    } else {
-      console.log( "Not enough storage" );
-    }
+      Game.DATASTORE.GAME_PLAY = Game.UIMode.gamePlay.attr;
+      window.localStorage.setItem(Game._PERSISTENCE_NAMESPACE, JSON.stringify(Game.DATASTORE));
+      Game.switchUIMode(Game.UIMode.gamePlay);
+    } 
 
-    Game.switchUIMode(Game.UIMode.gamePlay);
   },
   restoreGame: function () {
     if (this.localStorageAvailable()) {
