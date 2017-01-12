@@ -147,7 +147,9 @@ Game.Map.prototype.addEntityAtRandomPosition = function( entity ) {
 };*/
 
 Game.Map.prototype.toJSON = function(json) {
+  return Game.UIMode.gamePersistence.BASE_toJSON.call(this);
 };
 
 Game.Map.prototype.fromJSON = function(json){
+  Game.UIMode.gamePersistence.BASE_toJSON.call(this, json);
 };

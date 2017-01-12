@@ -17,18 +17,18 @@ Game.Message = {
     var staleIndex = 0;
 
     for (freshIndex = 0; freshIndex < this.attr.freshMessages.length && dispRow < dispRowMax; freshIndex++) {
-      console.log("FRESH");
+      /*console.log("FRESH");
       console.log(this.attr.freshMessages);
       console.log("freshindex:" + freshIndex);
-      console.log("dispRow:" + dispRow);
+      console.log("dispRow:" + dispRow);*/
       dispRow += display.drawText(1, dispRow, '%c{#fff}%b{#000}' + this.attr.freshMessages[freshIndex] + '%c{}%b{}', 79);
     }
 
     for (staleIndex = 0; staleIndex < this.attr.staleMessages.length && dispRow < dispRowMax; staleIndex++) {
-      console.log("STALE");
+/*      console.log("STALE");
       console.log(this.attr.staleMessages);
       console.log("staleindex:" + staleIndex);
-      console.log("disprow: " + dispRow);
+      console.log("disprow: " + dispRow);*/
       dispRow += display.drawText(1, dispRow, '%c{#aaa}%b{#000}' + this.attr.staleMessages[staleIndex] + '%c{}%b{}', 79);
     }
 
@@ -53,12 +53,12 @@ Game.Message = {
     }
 
 
-    if (this.attr.staleMessages) {
+    /*if (this.attr.staleMessages) {
       console.log("STALE2");
       console.log(this.attr.staleMessages);
     }
     console.log("ARCHIVED");
-    console.log(this.attr.archivedMessages);
+    console.log(this.attr.archivedMessages);*/
 
     // for(i = _messages.length - 1; i > _messages.length - 7; i--) {
     //   display.drawText(1, count, this._messages[i], '#fff', '#000');

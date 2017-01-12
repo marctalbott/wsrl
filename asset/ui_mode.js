@@ -29,6 +29,8 @@ Game.UIMode.gameStart = {
 };
 
 Game.UIMode.gamePersistence = {
+  RANDOM_SEED_KEY: 'gameRandomSeed',
+
   enter: function() {
     console.log("entered gamePersistence");
     Game.Message.send("save, restore, or new game");
@@ -71,13 +73,16 @@ Game.UIMode.gamePersistence = {
   },
   restoreGame: function () {
     if (this.localStorageAvailable()) {
-      var json_state_data = window.localStorage.getItem(Game._PERSISTANCE_NAMESPACE);
+      var json_state_data = window.localStorage.getItem(Game._PERSISTENCE_NAMESPACE);
+//      console.log( Game._PERSISTANCE_NAMESPACE );
       var state_data = JSON.parse(json_state_data);
 
       // console.log('state data: ');
       // console.dir(state_data);
 
       // game level stuff
+      console.log( "state data: ");
+      console.dir( state_data );
       Game.setRandomSeed(state_data[this.RANDOM_SEED_KEY]);
 
       // maps
@@ -97,13 +102,14 @@ Game.UIMode.gamePersistence = {
           var entAttr = JSON.parse(state_data.ENTITY[entityId]);
           Game.DATASTORE.ENTITY[entityId] = Game.EntityGenerator.create(entAttr._generator_template_key);
           Game.DATASTORE.ENTITY[entityId].fromJSON(state_data.ENTITY[entityId]);
+          console.dir( Game.DATASTORE.ENTITY[entityId] );
         }
       }
 
       // game play
       Game.UIMode.gamePlay.attr = state_data.GAME_PLAY;
 
-      Game.switchUiMode(Game.UIMode.gamePlay);
+      Game.switchUIMode(Game.UIMode.gamePlay);
     }
   },/*
   loadGame: function() {
@@ -140,8 +146,8 @@ Game.UIMode.gamePersistence = {
     if (state_hash_name) {
       state = this[state_hash_name];
     }
-    var json = {};
-    for (var at in state) {
+    var json = JSON.stringify(state);
+    /*for (var at in state) {
       if (state.hasOwnProperty(at)) {
         if (state[at] instanceof Object && 'toJSON' in state[at]) {
           json[at] = state[at].toJSON();
@@ -149,7 +155,7 @@ Game.UIMode.gamePersistence = {
           json[at] = state[at];
         }
       }
-    }
+    }*/
     return json;
   },
 
@@ -158,7 +164,7 @@ Game.UIMode.gamePersistence = {
     if (state_hash_name) {
       using_state_hash = state_hash_name;
     }
-    for (var at in this[using_state_hash]) {
+    /*for (var at in this[using_state_hash]) {
       if (this[using_state_hash].hasOwnProperty(at)) {
         if (this[using_state_hash][at] instanceof Object && 'fromJSON' in this[using_state_hash][at]) {
           this[using_state_hash][at].fromJSON(json[at]);
@@ -166,7 +172,8 @@ Game.UIMode.gamePersistence = {
           this[using_state_hash][at] = json[at];
         }
       }
-    }
+    }*/
+    this[using_state_hash] = JSON.parse(json);
   }
 };
 
@@ -287,8 +294,6 @@ Game.UIMode.gamePlay = {
     this.setMap(new Game.Map('caves1'));
     this.setAvatar(Game.EntityGenerator.create('avatar'));
     this.getMap().addEntity(this.getAvatar(), this.getMap().getRandomWalkableLocation());
-    console.dir(this.getAvatar());
-    //this.getMap().addEntity(this.getAvatar(), this.getMap().getTile(50,50));
     this.setCameraToAvatar();
 
     for( var ecount=0; ecount<50; ecount++ ) {
