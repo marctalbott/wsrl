@@ -53,7 +53,6 @@ Game.Map.prototype.renderOn = function (display, camX, camY) {
   for (var x = 0; x < dispW; x++) {
     for (var y = 0; y < dispH; y++) {
       var mapPos = {x:x+xStart, y:y+yStart};
-      console.dir(mapPos);
       var tile = this.getTile(mapPos);
       if (tile.getName() == 'nullTile') {
         tile = Game.Tile.wallTile;

@@ -7,7 +7,6 @@ Game.UIMode.gameStart = {
   enter: function() {
     console.log("entered gameStart");
     Game.Message.send("welcome to WSRL");
-    console.dir( Game.EntityGenerator );
   },
   exit: function() {
     console.log("exited gameStart");
@@ -219,23 +218,16 @@ Game.UIMode.gamePlay = {
   renderAvatarInfo: function(display) {
     var fg = Game.UIMode.DEFAULT_COLOR_FG;
     var bg = Game.UIMode.DEFAULT_COLOR_BG;
-    /*display.drawText(1,2,"avatar x: "+this.getAvatar().getX(),fg,bg); // DEV
+    display.drawText(1,2,"avatar x: "+this.getAvatar().getX(),fg,bg); // DEV
     display.drawText(1,3,"avatar y: "+this.getAvatar().getY(),fg,bg); // DEV
     display.drawText(1,4,"turns taken: "+this.getAvatar().getTurns(),fg,bg);
-    display.drawText(1,5,"HP: "+this.getAvatar().getCurHp(),fg,bg);*/
+    display.drawText(1,5,"HP: "+this.getAvatar().getCurHp(),fg,bg);
   },
 
   moveAvatar: function(dx, dy) {
-    // if (this.getMap().getTile(Math.min(Math.max(0, this.getAvatar().getX() + dx), this.getMap()Width),
-    //                           Math.min(Math.max(0, this.getAvatar().getY() + dy), this.getMap()Height)).isWalkable()) {
-    //   this.getAvatar().setX(Math.min(Math.max(0, this.getAvatar().getX() + dx), this.getMap()Width));
-    //   this.getAvatar().setY(Math.min(Math.max(0, this.getAvatar().getY() + dy), this.getMap()Height));
-    //   this.setCameraToAvatar();
-    // }
     if (this.getAvatar().tryWalk(this.getMap(), dx, dy)) {
       this.setCameraToAvatar();
     }
-
   },
 
   moveCamera: function(dx, dy) {
@@ -255,8 +247,8 @@ Game.UIMode.gamePlay = {
   setupNewGame: function(restorationData) {
     this.setMap(new Game.Map('caves1'));
     this.setAvatar(Game.EntityGenerator.create('avatar'));
-//    this.getMap().addEntity(this.getAvatar(), this.getMap().getRandomWalkableLocation());
-    this.getMap().addEntity(this.getAvatar(), this.getMap().getTile(50,50));
+    this.getMap().addEntity(this.getAvatar(), this.getMap().getRandomWalkableLocation());
+    //this.getMap().addEntity(this.getAvatar(), this.getMap().getTile(50,50));
     this.setCameraToAvatar();
 
     for( var ecount=0; ecount<50; ecount++ ) {
