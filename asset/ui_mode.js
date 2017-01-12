@@ -45,19 +45,27 @@ Game.UIMode.gamePersistence = {
   },
   handleInput: function (inputType, inputData) {
     console.log("input for gamePersistence");
+    var actionBinding = Game.KeyBinding.getInputBinding(inputType, inputData);
+    console.log(actionBinding);
+
+    if (!actionBinding) {
+      return false;
+    }
 
     // var inputChar = inputData.key;
-    var inputChar = inputData.charCode;
+    // var inputChar = inputData.charCode;
     // if (inputChar == "S" || inputChar == "s") {
       // S
-    if (inputChar == 83 || inputChar == 115) {
+    if (actionBinding == 'PERSISTENCE_SAVE') {
       this.saveGame();
       // L
-    } else if (inputChar == 76 || inputChar == 108) {
+    } else if (actionBinding == 'PERSISTENCE_LOAD') {
       this.restoreGame();
       // N
-    } else if (inputChar == 78 || inputChar == 110) {
+    } else if (actionBinding == 'PERSISTENCE_NEW') {
       this.newGame();
+    } else if (actionBinding == 'CANCEL') {
+      Game.switchUIMode(Game.UIMode.gamePlay);
     }
   },
 
@@ -104,7 +112,7 @@ Game.UIMode.gamePersistence = {
       // game play
       Game.UIMode.gamePlay.attr = state_data.GAME_PLAY;
 
-      Game.switchUiMode(Game.UIMode.gamePlay);
+      Game.switchUIMode(Game.UIMode.gamePlay);
     }
   },/*
   loadGame: function() {
@@ -216,39 +224,43 @@ Game.UIMode.gamePlay = {
 
   },
   handleInput: function (inputType, inputData) {
-    var pressedKey = String.fromCharCode(inputData.charCode);
+    var actionBinding = Game.KeyBinding.getInputBinding(inputType, inputData);
+    // var pressedKey = String.fromCharCode(inputData.charCode);
+    if (!actionBinding) {
+      return false;
+    }
 
     console.log("input for gamePlay");
-    if (inputType == 'keypress') {
-      Game.Message.send("you pressed the '" + String.fromCharCode(inputData.charCode) + "' key");
-      if (inputData.key == "Enter") {
-        Game.switchUIMode(Game.UIMode.gameWin);
-        return;
-      } else if (inputData.charCode == 61) {
-        Game.switchUIMode(Game.UIMode.gamePersistence);
-      } else if (pressedKey == 'b') {
-        this.moveAvatar(-1,1);
-      } else if (pressedKey == 'j') {
-        this.moveAvatar(0,1);
-      } else if (pressedKey == 'n') {
-        this.moveAvatar(1,1);
-      } else if (pressedKey == 'h') {
-        this.moveAvatar(-1,0);
-      } else if (pressedKey == 'l') {
-        this.moveAvatar(1,0);
-      } else if (pressedKey == 'y') {
-        this.moveAvatar(-1,-1);
-      } else if (pressedKey == 'k') {
-        this.moveAvatar(0,-1);
-      } else if (pressedKey == 'u') {
-        this.moveAvatar(1,-1);
-      }
-      Game.Message.ageMessages();
-    } else if (inputType == 'keydown') {
-      if (inputData.key == "Escape") {
-        Game.switchUIMode(Game.UIMode.gameLose);
-      }
+    // if (inputType == 'keypress') {
+    Game.Message.send("you pressed the '" + String.fromCharCode(inputData.charCode) + "' key");
+    if (actionBinding.actionKey == 'WIN') {
+      Game.switchUIMode(Game.UIMode.gameWin);
+      return;
+    } else if (actionBinding.actionKey == 'PERSISTENCE') {
+      Game.switchUIMode(Game.UIMode.gamePersistence);
+    } else if (actionBinding.actionKey == 'MOVE_DL') {
+      this.moveAvatar(-1,1);
+    } else if (actionBinding.actionKey == 'MOVE_D') {
+      this.moveAvatar(0,1);
+    } else if (actionBinding.actionKey == 'MOVE_DR') {
+      this.moveAvatar(1,1);
+    } else if (actionBinding.actionKey == 'MOVE_L') {
+      this.moveAvatar(-1,0);
+    } else if (actionBinding.actionKey == 'MOVE_R') {
+      this.moveAvatar(1,0);
+    } else if (actionBinding.actionKey == 'MOVE_UL') {
+      this.moveAvatar(-1,-1);
+    } else if (actionBinding.actionKey == 'MOVE_U') {
+      this.moveAvatar(0,-1);
+    } else if (actionBinding.actionKey == 'MOVE_UR') {
+      this.moveAvatar(1,-1);
+    } else if (actionBinding.actionKey == 'CANCEL') {
+      Game.switchUIMode(Game.UIMode.gameLose);
     }
+
+    Game.Message.ageMessages();
+    // } else if (inputType == 'keydown') {
+
   },
 
   /*renderAvatar: function(display) {

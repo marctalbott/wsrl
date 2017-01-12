@@ -74,6 +74,8 @@ DATASTORE: {},
     // console.dir(this.display);
 
     this.renderAll();
+
+    Game.KeyBinding.useKeyBinding();
   },
 
   getRandomSeed: function() {
