@@ -288,6 +288,7 @@ Game.UIMode.gamePlay = {
     this.setMap(new Game.Map('caves1'));
     this.setAvatar(Game.EntityGenerator.create('avatar'));
     this.getMap().addEntity(this.getAvatar(), this.getMap().getRandomWalkableLocation());
+    console.dir(this.getAvatar());
     //this.getMap().addEntity(this.getAvatar(), this.getMap().getTile(50,50));
     this.setCameraToAvatar();
 

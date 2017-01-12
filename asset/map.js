@@ -31,8 +31,6 @@ Game.Map.prototype.getHeight = function() {
 
 Game.Map.prototype.getTile = function (x_or_pos,y) {
   var useX = x_or_pos,useY=y;
-  console.dir(x_or_pos);
-  console.dir(y);
 
   if (typeof x_or_pos == 'object') {
     useX = x_or_pos.x;

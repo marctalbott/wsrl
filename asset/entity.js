@@ -17,12 +17,17 @@ Game.Entity = function( template ) {
 	this._map = null;
 
 	this._mixins = template.mixins || [];
+	console.log( "CHECK MIXINS" );
+	console.dir( template );
+	console.dir( this._mixins );
+
 	this._mixinTracker = {};
 //	console.dir(template);
 //	console.dir(template.mixins);
-	if (template.hasOwnProperty('mixins')) {
-		for (var i = 0; i < template.mixins.length; i++) {
-			var mixin = template.mixins[i];
+//	if (template.hasOwnProperty('mixins')) {
+		for (var i = 0; i < this._mixins.length; i++) {
+//		for (var i = 0; i < template.mixins.length; i++) {
+			var mixin = this._mixins[i];
 			this._mixinTracker[mixin.META.mixinName] = true;
 			this._mixinTracker[mixin.META.mixinGroup] = true;
 			for (var mixinProp in mixinProp != 'META' && mixin) {
@@ -34,6 +39,9 @@ Game.Entity = function( template ) {
 		if (mixin.META.hasOwnProperty('stateNamespace')) {
 			this.attr[mixin.META.stateNamespace] = {};
 			for (var mixinStateProp in mixin.META.stateModel) {
+				console.log( "mixins" );
+				console.dir( mixin.META.stateModel );
+				console.dir( this._mixins );
 				if (mixin.META.stateModel.hasOwnProperty(mixinStateProp)) {
 					this.attr[mixin.META.stateNamespace][mixinStateProp] = mixin.META.stateModel[mixinStateProp];
 				}
@@ -42,7 +50,7 @@ Game.Entity = function( template ) {
 		if (mixin.META.hasOwnProperty('init')) {
 			mixin.META.init.call(this, template);
 		}
-	}
+	//}
 };
 
 Game.Entity.extend( Game.Symbol );
