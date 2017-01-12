@@ -30,9 +30,17 @@ Game.Entity = function( template ) {
 					this[mixinProp] = mixin[mixinProp];
 				}
 			}
-			if (mixin.META.hasOwnProperty('init')) {
-				mixin.META.init.call(this, template);
+		}
+		if (mixin.META.hasOwnProperty('stateNamespace')) {
+			this.attr[mixin.META.stateNamespace] = {};
+			for (var mixinStateProp in mixin.META.stateModel) {
+				if (mixin.META.stateModel.hasOwnProperty(mixinStateProp)) {
+					this.attr[mixin.META.stateNamespace][mixinStateProp] = mixin.META.stateModel[mixinStateProp];
+				}
 			}
+		}
+		if (mixin.META.hasOwnProperty('init')) {
+			mixin.META.init.call(this, template);
 		}
 	}
 };
@@ -93,27 +101,9 @@ Game.Entity.prototype.setMap = function( map ) {
 }
 
 Game.Entity.prototype.toJSON = function () {
-	var json = {};
-	for (var at in this.attr) {
-		if (this.attr.hasOwnProperty(at)) {
-			if (this.attr[at] instanceof Object && 'toJSON' in this.attr[at]) {
-				json[at] = this.attr[at].toJSON();
-			} else {
-				json[at] = this.attr[at];
-			}
-		}
-	}
-	return json;
+	return Game.UIMode.gamePersistence.BASE_toJSON.call(this);
 };
 
 Game.Entity.prototype.fromJSON = function (json) {
-	for (var at in this.attr) {
-		if (this.attr.hasOwnProperty(at)) {
-			if (this.attr[at] instanceof Object && 'fromJSON' in this.attr[at]) {
-				this.attr[at].fromJSON(json[at]);
-			} else {
-				this.attr[at] = json[at];
-			}
-		}
-	}
+	Game.UIMode.gamePersistence.BASE_fromJSON.call(this, json);
 };
