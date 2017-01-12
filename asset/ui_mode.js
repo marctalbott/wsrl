@@ -7,9 +7,11 @@ Game.UIMode.gameStart = {
   enter: function() {
     console.log("entered gameStart");
     Game.Message.send("welcome to WSRL");
+    Game.renderAll();
   },
   exit: function() {
     console.log("exited gameStart");
+    Game.renderAll();
   },
   render: function (display) {
     console.log("rendered gameStart");
@@ -30,9 +32,11 @@ Game.UIMode.gamePersistence = {
   enter: function() {
     console.log("entered gamePersistence");
     Game.Message.send("save, restore, or new game");
+    Game.renderAll();
   },
   exit: function() {
     console.log("exited gamePersistence");
+    Game.renderAll();
   },
   render: function (display) {
     console.log("rendered gamePersistence");
@@ -146,9 +150,11 @@ Game.UIMode.gamePlay = {
     console.log("entered gamePlay");
 
     Game.Message.clear();
+    Game.renderAll();
   },
   exit: function() {
     console.log("exited gamePlay");
+    Game.renderAll();
   },
   render: function (display) {
     console.log("rendered gamePlay");
@@ -220,7 +226,7 @@ Game.UIMode.gamePlay = {
   setCamera: function(sx, sy) {
     this.attr._cameraX = Math.min(Math.max(0, sx), this.attr._mapWidth);
     this.attr._cameraY = Math.min(Math.max(0, sy), this.attr._mapHeight);
-    // Game.renderAll();
+    Game.renderAll();
   },
 
   setCameraToAvatar: function() {

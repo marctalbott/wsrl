@@ -122,7 +122,7 @@ var Game = {
   eventHandler: function(eventType, evt) {
     if(this._curUIMode) {
       this._curUIMode.handleInput(eventType, evt);
-      this.renderAll();
+      // this.renderAll();
     }
   },
 
