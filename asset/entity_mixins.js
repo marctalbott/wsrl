@@ -40,13 +40,13 @@ Game.EntityMixin.Chronicle = {
   //   turnCounter: 0
   // },
   trackTurn: function() {
-    console.log("trackturns");
-    console.log(this.attr);
+    // console.log("trackturns");
+    // console.log(this.attr);
     this.attr._Chronicle_attr.turnCounter++;
   },
   getTurns: function() {
-    console.log("getturns");
-    console.log(this.attr);
+    // console.log("getturns");
+    // console.log(this.attr);
     return this.attr._Chronicle_attr.turnCounter;
   },
   setTurns: function(n) {

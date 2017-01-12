@@ -51,6 +51,10 @@ Game.Map.prototype.renderOn = function (display, camX, camY) {
   for (var x = 0; x < dispW; x++) {
     for (var y = 0; y < dispH; y++) {
       var mapPos = {x:x+xStart, y:y+yStart};
+<<<<<<< HEAD
+=======
+      // console.dir(mapPos);
+>>>>>>> 8260114d4b88763c26f89d449d3d56d7a21e12d1
       var tile = this.getTile(mapPos);
       if (tile.getName() == 'nullTile') {
         tile = Game.Tile.wallTile;
@@ -77,14 +81,14 @@ Game.Map.prototype.renderOn = function (display, camX, camY) {
 Game.Map.prototype.addEntity = function(entity) {
   if( entity.getX() < 0 || entity.getX() >= this._width ||
       entity.getY() < 0 || entity.getY() >= this._height ) {
-    throw new Error('Adding entity out of bounds'); 
+    throw new Error('Adding entity out of bounds');
   }
   this.attr._entities.push(entity);
 };*/
 
 Game.Map.prototype.addEntity = function (ent,pos) {
   this.attr._entitiesByLocation[pos.x+","+pos.y] = ent;
-  console.log(ent.getId());
+  // console.log(ent.getId());
   this.attr._locationsByEntity[ent.getId()] = pos.x+","+pos.y;
   ent.setMap(this);
   ent.setPos(pos.x, pos.y);
@@ -150,5 +154,3 @@ Game.Map.prototype.toJSON = function(json) {
 
 Game.Map.prototype.fromJSON = function(json){
 };
-
-

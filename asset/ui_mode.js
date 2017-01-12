@@ -62,7 +62,7 @@ Game.UIMode.gamePersistence = {
 
   saveGame: function(json_state_data) {
     if (this.localStorageAvailable()) {
-      console.log(JSON.stringify(Game._game));
+      // console.log(JSON.stringify(Game._game));
       window.localStorage.setItem(Game._PERSISTENCE_NAMESPACE, JSON.stringify(Game._game));
     } else {
       console.log( "Not enough storage" );
@@ -205,8 +205,8 @@ Game.UIMode.gamePlay = {
   render: function (display) {
     console.log("rendered gamePlay");
 
-    console.log(this.attr._cameraX);
-    console.dir(this.getAvatar());
+    // console.log(this.attr._cameraX);
+    // console.dir(this.getAvatar());
     this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY);
 
 //    this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY);
@@ -324,7 +324,7 @@ Game.UIMode.gamePlay = {
 
     // restore anything else if the data is available
     if (restorationData !== undefined && restorationData.hasOwnProperty(Game.UIMode.gamePlay.JSON_KEY)) {
-      console.log(restorationData);
+      // console.log(restorationData);
       this.fromJSON(restorationData[Game.UIMode.gamePlay.JSON_KEY]);
       // TODO: restore all entities
       this.getMap().updateEntityLocation(this.getAvatar());

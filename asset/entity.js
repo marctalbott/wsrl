@@ -28,6 +28,7 @@ Game.Entity = function( template ) {
 		for (var i = 0; i < this._mixins.length; i++) {
 //		for (var i = 0; i < template.mixins.length; i++) {
 			var mixin = this._mixins[i];
+	// if (template.hasOwnProperty('mixins')) {
 			this._mixinTracker[mixin.META.mixinName] = true;
 			this._mixinTracker[mixin.META.mixinGroup] = true;
 			for (var mixinProp in mixinProp != 'META' && mixin) {
@@ -35,7 +36,7 @@ Game.Entity = function( template ) {
 					this[mixinProp] = mixin[mixinProp];
 				}
 			}
-		}
+
 		if (mixin.META.hasOwnProperty('stateNamespace')) {
 			this.attr[mixin.META.stateNamespace] = {};
 			for (var mixinStateProp in mixin.META.stateModel) {
