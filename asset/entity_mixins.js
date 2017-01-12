@@ -9,8 +9,15 @@ Game.EntityMixin.WalkerCorporeal = {
   tryWalk: function (map, dx, dy) {
     var targetX = Math.min(Math.max(0,this.getX() + dx),map.getWidth());
     var targetY = Math.min(Math.max(0,this.getY() + dy),map.getHeight());
+    if(map.getEntity(targetX,targetY)){
+      // NOTE: attack/interact handling would go here
+      return false;
+    }
     if (map.getTile(targetX, targetY).isWalkable()) {
       this.setPos(targetX, targetY);
+      if( this._map ) {
+        this._map.updateEntityLocation(this);
+      }
       if( this.hasMixin('Chronicle')) {
         this.trackTurn();
       }
@@ -86,4 +93,20 @@ Game.EntityMixin.Destructable = {
     this.takeHits(amt);
   }
 
+}
+
+/* Not sure how this will work right now
+Game.EntityMixin.Friendly = {
+  META: {
+    mixinName: 'Friendly',
+    mixinGroup: 'Friendly',
+  },
+} */
+
+Game.EntityMixin.AvatarFollower = {
+  META: {
+    mixinName: 'AvatarFollower',
+    mixinGroup: 'Follower',
+  },
+  
 }

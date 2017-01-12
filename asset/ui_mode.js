@@ -7,6 +7,7 @@ Game.UIMode.gameStart = {
   enter: function() {
     console.log("entered gameStart");
     Game.Message.send("welcome to WSRL");
+    console.dir( Game.EntityGenerator );
   },
   exit: function() {
     console.log("exited gameStart");
@@ -49,7 +50,7 @@ Game.UIMode.gamePersistence = {
       this.saveGame();
       // L
     } else if (inputChar == 76 || inputChar == 108) {
-      this.loadGame();
+      this.restoreGame();
       // N
     } else if (inputChar == 78 || inputChar == 110) {
       this.newGame();
@@ -66,7 +67,43 @@ Game.UIMode.gamePersistence = {
 
     Game.switchUIMode(Game.UIMode.gamePlay);
   },
+  restoreGame: function () {
+    if (this.localStorageAvailable()) {
+      var json_state_data = window.localStorage.getItem(Game._PERSISTANCE_NAMESPACE);
+      var state_data = JSON.parse(json_state_data);
 
+      // console.log('state data: ');
+      // console.dir(state_data);
+
+      // game level stuff
+      Game.setRandomSeed(state_data[this.RANDOM_SEED_KEY]);
+
+      // maps
+      for (var mapId in state_data.MAP) {
+        if (state_data.MAP.hasOwnProperty(mapId)) {
+          var mapAttr = JSON.parse(state_data.MAP[mapId]);
+          // console.log("restoring map "+mapId+" with attributes:");
+          // console.dir(mapAttr);
+          Game.DATASTORE.MAP[mapId] = new Game.Map(mapAttr._mapTileSetName);
+          Game.DATASTORE.MAP[mapId].fromJSON(state_data.MAP[mapId]);
+        }
+      }
+
+      // entities
+      for (var entityId in state_data.ENTITY) {
+        if (state_data.ENTITY.hasOwnProperty(entityId)) {
+          var entAttr = JSON.parse(state_data.ENTITY[entityId]);
+          Game.DATASTORE.ENTITY[entityId] = Game.EntityGenerator.create(entAttr._generator_template_key);
+          Game.DATASTORE.ENTITY[entityId].fromJSON(state_data.ENTITY[entityId]);
+        }
+      }
+
+      // game play
+      Game.UIMode.gamePlay.attr = state_data.GAME_PLAY;
+
+      Game.switchUiMode(Game.UIMode.gamePlay);
+    }
+  },/*
   loadGame: function() {
     if (this.localStorageAvailable()) {
       var json_state_data = window.localStorage.getItem(Game._PERSISTENCE_NAMESPACE);
@@ -76,11 +113,11 @@ Game.UIMode.gamePersistence = {
     Game.setRandomSeed(state_data._randomSeed);
     Game.UIMode.gamePlay.setupPlay(state_data);
     Game.switchUIMode(Game.UIMode.gamePlay);
-  },
+  },*/
 
   newGame: function() {
     Game.setRandomSeed(5 + Math.floor(ROT.RNG.getUniform()*100000));
-    Game.UIMode.gamePlay.setupPlay();
+    Game.UIMode.gamePlay.setupNewGame();
     Game.switchUIMode(Game.UIMode.gamePlay);
   },
 
@@ -100,14 +137,10 @@ Game.UIMode.gamePersistence = {
 
 Game.UIMode.gamePlay = {
   attr: {
-    _map: null,
-    _mapWidth: 300,
-    _mapHeight: 200,
+    _mapId: '',
     _cameraX: 100,
     _cameraY: 100,
-    _avatarX: 100,
-    _avatarY: 100,
-    _avatar: null
+    _avatarId: ''
   },
   JSON_KEY: 'UIMode_gamePlay',
   enter: function() {
@@ -118,9 +151,26 @@ Game.UIMode.gamePlay = {
   exit: function() {
     console.log("exited gamePlay");
   },
+  getMap: function() {
+    return Game.DATASTORE.MAP[this.attr._mapId];
+  },
+  setMap: function(m) {
+    this.attr._mapId = m.getId();
+  },
+  getAvatar: function() {
+    return Game.DATASTORE.ENTITY[this.attr._avatarId];
+  },
+  setAvatar: function(a) {
+    this.attr._avatarId = a.getId();
+  },
   render: function (display) {
     console.log("rendered gamePlay");
-    this.attr._map.renderOn(display, this.attr._cameraX, this.attr._cameraY);
+
+    console.log(this.attr._cameraX);
+    console.dir(this.getAvatar());
+    this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY);
+
+//    this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY);
     /*this.renderAvatar(display);*/
     // display.drawText(5,5,"[enter] to win, [esc] to lose.");
     // display.drawText(5,7,"[=] to save, load, or start over");
@@ -162,27 +212,27 @@ Game.UIMode.gamePlay = {
   },
 
   /*renderAvatar: function(display) {
-    Game.Symbol.AVATAR.draw(display, this.attr._avatar.getX() - this.attr._cameraX + display._options.width/2,
-                                      this.attr._avatarYtar.getY() - this.attr._cameraY + display._options.height/2);
+    Game.Symbol.AVATAR.draw(display, this.getAvatar().getX() - this.attr._cameraX + display._options.width/2,
+                                      this.getAvatar()Ytar.getY() - this.attr._cameraY + display._options.height/2);
   },*/
 
   renderAvatarInfo: function(display) {
     var fg = Game.UIMode.DEFAULT_COLOR_FG;
     var bg = Game.UIMode.DEFAULT_COLOR_BG;
-    display.drawText(1,2,"avatar x: "+this.attr._avatar.getX(),fg,bg); // DEV
-    display.drawText(1,3,"avatar y: "+this.attr._avatar.getY(),fg,bg); // DEV
-    display.drawText(1,4,"turns taken: "+this.attr._avatar.getTurns(),fg,bg);
-    display.drawText(1,5,"HP: "+this.attr._avatar.getCurHp(),fg,bg);
+    /*display.drawText(1,2,"avatar x: "+this.getAvatar().getX(),fg,bg); // DEV
+    display.drawText(1,3,"avatar y: "+this.getAvatar().getY(),fg,bg); // DEV
+    display.drawText(1,4,"turns taken: "+this.getAvatar().getTurns(),fg,bg);
+    display.drawText(1,5,"HP: "+this.getAvatar().getCurHp(),fg,bg);*/
   },
 
   moveAvatar: function(dx, dy) {
-    // if (this.attr._map.getTile(Math.min(Math.max(0, this.attr._avatar.getX() + dx), this.attr._mapWidth),
-    //                           Math.min(Math.max(0, this.attr._avatar.getY() + dy), this.attr._mapHeight)).isWalkable()) {
-    //   this.attr._avatar.setX(Math.min(Math.max(0, this.attr._avatar.getX() + dx), this.attr._mapWidth));
-    //   this.attr._avatar.setY(Math.min(Math.max(0, this.attr._avatar.getY() + dy), this.attr._mapHeight));
+    // if (this.getMap().getTile(Math.min(Math.max(0, this.getAvatar().getX() + dx), this.getMap()Width),
+    //                           Math.min(Math.max(0, this.getAvatar().getY() + dy), this.getMap()Height)).isWalkable()) {
+    //   this.getAvatar().setX(Math.min(Math.max(0, this.getAvatar().getX() + dx), this.getMap()Width));
+    //   this.getAvatar().setY(Math.min(Math.max(0, this.getAvatar().getY() + dy), this.getMap()Height));
     //   this.setCameraToAvatar();
     // }
-    if (this.attr._avatar.tryWalk(this.attr._map, dx, dy)) {
+    if (this.getAvatar().tryWalk(this.getMap(), dx, dy)) {
       this.setCameraToAvatar();
     }
 
@@ -193,19 +243,26 @@ Game.UIMode.gamePlay = {
   },
 
   setCamera: function(sx, sy) {
-    this.attr._cameraX = Math.min(Math.max(0, sx), this.attr._mapWidth);
-    this.attr._cameraY = Math.min(Math.max(0, sy), this.attr._mapHeight);
+    this.attr._cameraX = Math.min(Math.max(0, sx), this.getMap().getWidth());
+    this.attr._cameraY = Math.min(Math.max(0, sy), this.getMap().getHeight());
     Game.renderAll();
   },
 
   setCameraToAvatar: function() {
-    this.setCamera(this.attr._avatar.getX(), this.attr._avatar.getY());
+    this.setCamera(this.getAvatar().getX(), this.getAvatar().getY());
   },
 
-  setupPlay: function(restorationData) {
-    var mapTiles = Game.util.init2DArray(this.attr._mapWidth, this.attr._mapHeight, Game.Tile.nullTile);
-    var generator = new ROT.Map.Cellular(this.attr._mapWidth, this.attr._mapHeight);
-    generator.randomize(0.5);
+  setupNewGame: function(restorationData) {
+    this.setMap(new Game.Map('caves1'));
+    this.setAvatar(Game.EntityGenerator.create('avatar'));
+//    this.getMap().addEntity(this.getAvatar(), this.getMap().getRandomWalkableLocation());
+    this.getMap().addEntity(this.getAvatar(), this.getMap().getTile(50,50));
+    this.setCameraToAvatar();
+
+    for( var ecount=0; ecount<50; ecount++ ) {
+        this.getMap().addEntity(Game.EntityGenerator.create('fungus'),this.getMap().getRandomWalkableLocation());
+      }
+    /*generator.randomize(0.5);
 
     //repeated cellular automata process
     var totalIterations = 3;
@@ -223,18 +280,29 @@ Game.UIMode.gamePlay = {
     });
 
     // create map from the tiles
-    this.attr._map = new Game.Map(mapTiles);
-    this.attr._avatar = new Game.Entity(Game.EntityTemplates.Avatar);
-    this.attr._map.addEntityAtRandomPosition( this.attr._avatar );
-//    this.attr._avatar.setPos(100,100);
+    this.getMap() = new Game.Map(mapTiles);
+    this.getAvatar() = new Game.EntityGenerator.create('avatar');
+    this.getAvatar().setMap(this.getMap());
+/*    this.getMap().addEntityAtRandomPosition( this.getAvatar() );
+//    this.getAvatar().setPos(100,100);
     for( var i=0; i<3; i++ ) {
-      this.attr._map.addEntityAtRandomPosition( new Game.Entity(Game.EntityTemplates.Fungus) );
-    }
+      this.getMap().addEntityAtRandomPosition( new Game.Entity(Game.EntityTemplates.Fungus) );
+    }*/
 
 
     // restore anything else if the data is available
     if (restorationData !== undefined && restorationData.hasOwnProperty(Game.UIMode.gamePlay.JSON_KEY)) {
       this.fromJSON(restorationData[Game.UIMode.gamePlay.JSON_KEY]);
+      // TODO: restore all entities
+      this.getMap().updateEntityLocation(this.getAvatar());
+    } else {
+      var randomWalkableLocation = this.getMap().getRandomWalkableLocation();
+      this.getAvatar().setPos(randomWalkableLocation['x'], randomWalkableLocation['y']);
+      this.getMap().updateEntityLocation(this.getAvatar());
+      // add entities to map
+      for( var ecount=0; ecount<50; ecount++ ) {
+        this.getMap().addEntity(Game.EntityGenerator.create('fungus'),this.getMap().getRandomWalkableLocation());
+      }
     }
 
     this.setCameraToAvatar();

@@ -56,6 +56,8 @@ var Game = {
   _curUIMode: null,
   _randomSeed: 0,
 
+DATASTORE: {},
+
   init: function() {
     this._game = this;
     console.log("game init");
