@@ -17,9 +17,9 @@ Game.Entity = function( template ) {
 	this._map = null;
 
 	this._mixins = template.mixins || [];
-	console.log( "CHECK MIXINS" );
-	console.dir( template );
-	console.dir( this._mixins );
+	// console.log( "CHECK MIXINS" );
+	// console.dir( template );
+	// console.dir( this._mixins );
 
 	this._mixinTracker = {};
 //	console.dir(template);
@@ -40,9 +40,9 @@ Game.Entity = function( template ) {
 		if (mixin.META.hasOwnProperty('stateNamespace')) {
 			this.attr[mixin.META.stateNamespace] = {};
 			for (var mixinStateProp in mixin.META.stateModel) {
-				console.log( "mixins" );
-				console.dir( mixin.META.stateModel );
-				console.dir( this._mixins );
+				// console.log( "mixins" );
+				// console.dir( mixin.META.stateModel );
+				// console.dir( this._mixins );
 				if (mixin.META.stateModel.hasOwnProperty(mixinStateProp)) {
 					this.attr[mixin.META.stateNamespace][mixinStateProp] = mixin.META.stateModel[mixinStateProp];
 				}

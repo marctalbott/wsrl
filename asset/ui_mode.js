@@ -31,6 +31,7 @@ Game.UIMode.gameStart = {
 Game.UIMode.gamePersistence = {
   enter: function() {
     console.log("entered gamePersistence");
+    Game.Message.ageMessages();
     Game.Message.send("save, restore, or new game");
     Game.renderAll();
   },
@@ -66,7 +67,7 @@ Game.UIMode.gamePersistence = {
       Game.DATASTORE.GAME_PLAY = Game.UIMode.gamePlay.attr;
       window.localStorage.setItem(Game._PERSISTENCE_NAMESPACE, JSON.stringify(Game.DATASTORE));
       Game.switchUIMode(Game.UIMode.gamePlay);
-    } 
+    }
 
   },
   restoreGame: function () {
@@ -242,6 +243,7 @@ Game.UIMode.gamePlay = {
       } else if (pressedKey == 'u') {
         this.moveAvatar(1,-1);
       }
+      Game.Message.ageMessages();
     } else if (inputType == 'keydown') {
       if (inputData.key == "Escape") {
         Game.switchUIMode(Game.UIMode.gameLose);
