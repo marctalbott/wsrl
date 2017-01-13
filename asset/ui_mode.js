@@ -76,6 +76,7 @@ Game.UIMode.gamePersistence = {
       Game.clearDataStore();
       console.log( "after clear: ");
       console.log( JSON.stringify(Game.DATASTORE) );
+      console.dir( Game.DATASTORE.ENTITY );
       var json_state_data = window.localStorage.getItem(Game._PERSISTENCE_NAMESPACE);
 //      console.log( Game._PERSISTANCE_NAMESPACE );
       var state_data = JSON.parse(json_state_data);
@@ -97,12 +98,14 @@ Game.UIMode.gamePersistence = {
         }
       }
       console.log( "state data 2: ");
-      console.dir( state_data.ENTITY );
+      console.dir( Game.DATASTORE.ENTITY );
       // entities
       for (var entityId in state_data.ENTITY) {
         if (state_data.ENTITY.hasOwnProperty(entityId)) {
           var entAttr = JSON.parse(state_data.ENTITY[entityId]);
           Game.DATASTORE.ENTITY[entityId] = Game.EntityGenerator.create(entAttr._generator_template_key);
+          console.log( "addition: " + entityId);
+          console.dir( Game.DATASTORE.ENTITY );
           Game.DATASTORE.ENTITY[entityId].fromJSON(state_data.ENTITY[entityId]);
         }
       }
@@ -268,9 +271,10 @@ Game.UIMode.gamePlay = {
   renderAvatarInfo: function(display) {
     var fg = Game.UIMode.DEFAULT_COLOR_FG;
     var bg = Game.UIMode.DEFAULT_COLOR_BG;
+    console.log( "avatar:");
+    console.dir( this.getAvatar() );
     display.drawText(1,2,"avatar x: "+this.getAvatar().getX(),fg,bg); // DEV
     display.drawText(1,3,"avatar y: "+this.getAvatar().getY(),fg,bg); // DEV
-    console.dir( this.getAvatar() );
     display.drawText(1,4,"turns taken: "+this.getAvatar().getTurns(),fg,bg);
     display.drawText(1,5,"hp: "+this.getAvatar().getCurHp(),fg,bg);
   },
