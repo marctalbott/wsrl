@@ -18,9 +18,14 @@ Game.Generator.prototype.learn = function (template, createKeyName) {
 //  this._templates[nameOfTemplate] = template;
 };
 
-Game.Generator.prototype.create = function (createKeyName) {
+Game.Generator.prototype.create = function (createKeyName, entityId) {
   var templateToUse = this._templates[createKeyName];
+  console.log( "template" );
+  console.dir( templateToUse );
   if (!templateToUse) { templateToUse = '_DEFAULT';  }
+  if( entityId ) {
+  	templateToUse[entityId] = entityId;
+  }
   templateToUse.generator_template_key = createKeyName;
   return new this._constructorToUse(templateToUse);
 };

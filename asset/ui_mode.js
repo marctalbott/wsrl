@@ -65,6 +65,9 @@ Game.UIMode.gamePersistence = {
   saveGame: function(json_state_data) {
     if (this.localStorageAvailable()) {
       // console.log(JSON.stringify(Game._game));
+      console.log( "Save data:");
+      console.dir( Game.DATASTORE);
+
       Game.DATASTORE.GAME_PLAY = Game.UIMode.gamePlay.attr;
       window.localStorage.setItem(Game._PERSISTENCE_NAMESPACE, JSON.stringify(Game.DATASTORE));
       Game.switchUIMode(Game.UIMode.gamePlay);
@@ -75,18 +78,21 @@ Game.UIMode.gamePersistence = {
     if (this.localStorageAvailable()) {
       Game.clearDataStore();
       console.log( "after clear: ");
-      console.log( JSON.stringify(Game.DATASTORE) );
+//      console.log( JSON.stringify(Game.DATASTORE) );
       console.dir( Game.DATASTORE.ENTITY );
       var json_state_data = window.localStorage.getItem(Game._PERSISTENCE_NAMESPACE);
 //      console.log( Game._PERSISTANCE_NAMESPACE );
       var state_data = JSON.parse(json_state_data);
 
-      // console.log('state data: ');
-      // console.dir(state_data);
+/*      console.log('state data: ');
+      console.dir(state_data);
+      console.dir( JSON.parse(json_state_data));*/
 
       // game level stuff
       Game.setRandomSeed(state_data[this.RANDOM_SEED_KEY]);
 
+      console.log( "state data 1: ");
+      console.dir( Game.DATASTORE.ENTITY );
       // maps
       for (var mapId in state_data.MAP) {
         if (state_data.MAP.hasOwnProperty(mapId)) {
@@ -98,14 +104,16 @@ Game.UIMode.gamePersistence = {
         }
       }
       console.log( "state data 2: ");
-      console.dir( Game.DATASTORE.ENTITY );
+      console.dir( Game.DATASTORE );
       // entities
       for (var entityId in state_data.ENTITY) {
         if (state_data.ENTITY.hasOwnProperty(entityId)) {
           var entAttr = JSON.parse(state_data.ENTITY[entityId]);
-          Game.DATASTORE.ENTITY[entityId] = Game.EntityGenerator.create(entAttr._generator_template_key);
+          console.log( "endATTR: ");
+          console.dir( state_data.ENTITY[entityId] );
+          Game.DATASTORE.ENTITY[entityId] = Game.EntityGenerator.create(entAttr._name, entAttr._id );
           console.log( "addition: " + entityId);
-          console.dir( Game.DATASTORE.ENTITY );
+          console.dir( Game.DATASTORE.ENTITY[entityId]);
           Game.DATASTORE.ENTITY[entityId].fromJSON(state_data.ENTITY[entityId]);
         }
       }
@@ -271,8 +279,8 @@ Game.UIMode.gamePlay = {
   renderAvatarInfo: function(display) {
     var fg = Game.UIMode.DEFAULT_COLOR_FG;
     var bg = Game.UIMode.DEFAULT_COLOR_BG;
-    console.log( "avatar:");
-    console.dir( this.getAvatar() );
+/*    console.log( "avatar:");
+    console.dir( this.getAvatar() );*/
     display.drawText(1,2,"avatar x: "+this.getAvatar().getX(),fg,bg); // DEV
     display.drawText(1,3,"avatar y: "+this.getAvatar().getY(),fg,bg); // DEV
     display.drawText(1,4,"turns taken: "+this.getAvatar().getTurns(),fg,bg);

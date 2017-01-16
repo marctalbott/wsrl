@@ -16,22 +16,20 @@ Game.Entity = function( template ) {
 
 	this._mixins = template.mixins || [];
 	this._mixinTracker = {};
-	console.log( "template: ");
-	console.log( template );
 //	console.dir(template);
 //	console.dir(template.mixins);
 //	if (template.hasOwnProperty('mixins')) {
 	for (var i = 0; i < this._mixins.length; i++) {
 //		for (var i = 0; i < template.mixins.length; i++) {
-			var mixin = this._mixins[i];
+		var mixin = this._mixins[i];
 	// if (template.hasOwnProperty('mixins')) {
-			this._mixinTracker[mixin.META.mixinName] = true;
-			this._mixinTracker[mixin.META.mixinGroup] = true;
-			for (var mixinProp in mixinProp != 'META' && mixin) {
-				if (mixinProp != 'META' && mixin.hasOwnProperty(mixinProp)) {
-					this[mixinProp] = mixin[mixinProp];
-				}
+		this._mixinTracker[mixin.META.mixinName] = true;
+		this._mixinTracker[mixin.META.mixinGroup] = true;
+		for (var mixinProp in mixinProp != 'META' && mixin) {
+			if (mixinProp != 'META' && mixin.hasOwnProperty(mixinProp)) {
+				this[mixinProp] = mixin[mixinProp];
 			}
+		}
 
 		if (mixin.META.hasOwnProperty('stateNamespace')) {
 			this.attr[mixin.META.stateNamespace] = {};
@@ -45,7 +43,7 @@ Game.Entity = function( template ) {
 			mixin.META.init.call(this, template);
 		}
 	}
-	//}
+
 };
 
 Game.Entity.extend( Game.Symbol );

@@ -143,10 +143,12 @@ DATASTORE: {},
   },
 
   clearDataStore: function() {
+    console.log( "Clearing datastore");
     this.DATASTORE = {};
     this.DATASTORE.ENTITY = {};
     this.DATASTORE.MAP = {};
     this.DATASTORE.GAME_PLAY = {};
+
   }
 
   /*toJSON: function() {
