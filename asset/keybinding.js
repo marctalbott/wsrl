@@ -59,11 +59,11 @@ Game.KeyBinding = {
 
   getInputBinding: function (inputType, inputData) {
     var metaKey = 'nometa';
-    if (inputData.inputMetaCtrl && inputData.inputMetaShift) {
+    if (inputData.ctrlKey && inputData.shiftKey) {
       metaKey = 'ctrlshift';
-    } else if (inputData.inputMetaShift) {
+    } else if (inputData.shiftKey) {
       metaKey = 'shift';
-    } else if (inputData.inputMetaCtrl) {
+    } else if (inputData.ctrlKey) {
       metaKey = 'ctrl';
     }
 
@@ -72,6 +72,8 @@ Game.KeyBinding = {
       bindingKey = String.fromCharCode(inputData.charCode);
     }
 
+    console.log("bindingLookup");
+    console.log(this._currentBindingLookup[inputType][metaKey]);
     return this._currentBindingLookup[inputType][metaKey][bindingKey] || false;
   },
 
@@ -126,31 +128,31 @@ Game.KeyBinding = {
 };
 
 Game.KeyBinding.BindingSet = {};
-
-//-----------------------------------------------------------------------------
-
-Game.KeyBinding.BindingSet.numpad = {};
-Game.KeyBinding.BindingSet.numpad._NAME = 'numpad-based';
-
-Game.KeyBinding.BindingSet.numpad.CANCEL          = {label:'Esc' ,inputMatch:ROT.VK_ESCAPE     ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
-Game.KeyBinding.BindingSet.numpad.CHANGE_BINDINGS = {label:'\\'  ,inputMatch:ROT.VK_BACK_SLASH ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
-Game.KeyBinding.BindingSet.numpad.WIN             = {label:'Enter',inputMatch:ROT.VK_ENTER     ,inputType:'keypress',inputMetaShift:false ,inputMetaCtrl:false};
-
-
-Game.KeyBinding.BindingSet.numpad.PERSISTENCE      = {label:'='       ,inputMatch:'='      ,inputType:'keypress' ,inputMetaShift:false ,inputMetaCtrl:false};
-Game.KeyBinding.BindingSet.numpad.PERSISTENCE_SAVE = {label:'shift-s' ,inputMatch:ROT.VK_S ,inputType:'keydown'  ,inputMetaShift:true  ,inputMetaCtrl:false};
-Game.KeyBinding.BindingSet.numpad.PERSISTENCE_LOAD = {label:'shift-l' ,inputMatch:ROT.VK_L ,inputType:'keydown'  ,inputMetaShift:true  ,inputMetaCtrl:false};
-Game.KeyBinding.BindingSet.numpad.PERSISTENCE_NEW  = {label:'shift-n' ,inputMatch:ROT.VK_N ,inputType:'keydown'  ,inputMetaShift:true  ,inputMetaCtrl:false};
-
-Game.KeyBinding.BindingSet.numpad.MOVE_UL   = {label:'7' ,inputMatch:ROT.VK_NUMPAD7 ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
-Game.KeyBinding.BindingSet.numpad.MOVE_U    = {label:'8' ,inputMatch:ROT.VK_NUMPAD8 ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
-Game.KeyBinding.BindingSet.numpad.MOVE_UR   = {label:'9' ,inputMatch:ROT.VK_NUMPAD9 ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
-Game.KeyBinding.BindingSet.numpad.MOVE_L    = {label:'4' ,inputMatch:ROT.VK_NUMPAD4 ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
-Game.KeyBinding.BindingSet.numpad.MOVE_WAIT = {label:'5' ,inputMatch:ROT.VK_NUMPAD5 ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
-Game.KeyBinding.BindingSet.numpad.MOVE_R    = {label:'6' ,inputMatch:ROT.VK_NUMPAD6 ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
-Game.KeyBinding.BindingSet.numpad.MOVE_DL   = {label:'1' ,inputMatch:ROT.VK_NUMPAD1 ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
-Game.KeyBinding.BindingSet.numpad.MOVE_D    = {label:'2' ,inputMatch:ROT.VK_NUMPAD2 ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
-Game.KeyBinding.BindingSet.numpad.MOVE_DR   = {label:'3' ,inputMatch:ROT.VK_NUMPAD3 ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
+//
+// //-----------------------------------------------------------------------------
+//
+// Game.KeyBinding.BindingSet.numpad = {};
+// Game.KeyBinding.BindingSet.numpad._NAME = 'numpad-based';
+//
+// Game.KeyBinding.BindingSet.numpad.CANCEL          = {label:'Esc' ,inputMatch:ROT.VK_ESCAPE     ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
+// Game.KeyBinding.BindingSet.numpad.CHANGE_BINDINGS = {label:'\\'  ,inputMatch:ROT.VK_BACK_SLASH ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
+// Game.KeyBinding.BindingSet.numpad.WIN             = {label:'Enter',inputMatch:ROT.VK_ENTER     ,inputType:'keypress',inputMetaShift:false ,inputMetaCtrl:false};
+//
+//
+// Game.KeyBinding.BindingSet.numpad.PERSISTENCE      = {label:'='       ,inputMatch:'='      ,inputType:'keypress' ,inputMetaShift:false ,inputMetaCtrl:false};
+// Game.KeyBinding.BindingSet.numpad.PERSISTENCE_SAVE = {label:'shift-s' ,inputMatch:ROT.VK_S ,inputType:'keydown'  ,inputMetaShift:true  ,inputMetaCtrl:false};
+// Game.KeyBinding.BindingSet.numpad.PERSISTENCE_LOAD = {label:'shift-l' ,inputMatch:ROT.VK_L ,inputType:'keydown'  ,inputMetaShift:true  ,inputMetaCtrl:false};
+// Game.KeyBinding.BindingSet.numpad.PERSISTENCE_NEW  = {label:'shift-n' ,inputMatch:ROT.VK_N ,inputType:'keydown'  ,inputMetaShift:true  ,inputMetaCtrl:false};
+//
+// Game.KeyBinding.BindingSet.numpad.MOVE_UL   = {label:'7' ,inputMatch:ROT.VK_NUMPAD7 ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
+// Game.KeyBinding.BindingSet.numpad.MOVE_U    = {label:'8' ,inputMatch:ROT.VK_NUMPAD8 ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
+// Game.KeyBinding.BindingSet.numpad.MOVE_UR   = {label:'9' ,inputMatch:ROT.VK_NUMPAD9 ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
+// Game.KeyBinding.BindingSet.numpad.MOVE_L    = {label:'4' ,inputMatch:ROT.VK_NUMPAD4 ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
+// Game.KeyBinding.BindingSet.numpad.MOVE_WAIT = {label:'5' ,inputMatch:ROT.VK_NUMPAD5 ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
+// Game.KeyBinding.BindingSet.numpad.MOVE_R    = {label:'6' ,inputMatch:ROT.VK_NUMPAD6 ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
+// Game.KeyBinding.BindingSet.numpad.MOVE_DL   = {label:'1' ,inputMatch:ROT.VK_NUMPAD1 ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
+// Game.KeyBinding.BindingSet.numpad.MOVE_D    = {label:'2' ,inputMatch:ROT.VK_NUMPAD2 ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
+// Game.KeyBinding.BindingSet.numpad.MOVE_DR   = {label:'3' ,inputMatch:ROT.VK_NUMPAD3 ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
 
 Game.KeyBinding.BindingSet.laptop = {};
 Game.KeyBinding.BindingSet.laptop._NAME = 'laptop-based';

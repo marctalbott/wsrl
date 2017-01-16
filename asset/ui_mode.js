@@ -56,15 +56,15 @@ Game.UIMode.gamePersistence = {
     // var inputChar = inputData.charCode;
     // if (inputChar == "S" || inputChar == "s") {
       // S
-    if (actionBinding == 'PERSISTENCE_SAVE') {
+    if (actionBinding.actionKey == 'PERSISTENCE_SAVE') {
       this.saveGame();
       // L
-    } else if (actionBinding == 'PERSISTENCE_LOAD') {
+    } else if (actionBinding.actionKey == 'PERSISTENCE_LOAD') {
       this.restoreGame();
       // N
-    } else if (actionBinding == 'PERSISTENCE_NEW') {
+    } else if (actionBinding.actionKey == 'PERSISTENCE_NEW') {
       this.newGame();
-    } else if (actionBinding == 'CANCEL') {
+    } else if (actionBinding.actionKey == 'CANCEL') {
       Game.switchUIMode(Game.UIMode.gamePlay);
     }
   },
