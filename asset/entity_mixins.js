@@ -180,10 +180,102 @@ Game.EntityMixin.Friendly = {
   },
 } */
 
+Game.EntityMixin.PlayerActor = {
+  Meta: {
+    mixinName: 'PlayerActor',
+    mixinGroup: 'Actor',
+    stateNamespace: '_PlayerActor_attr',
+    stateModel: {
+      baseActionDuration: 1000,
+      actingState: false,
+      currentActionDuration: 1000
+    },
+    init: function(template) {
+      Game.Scheduler.add(this, true, this.getBaseActionDuration());
+    },
+    listeners: {
+      'actionDone': function( evtData ) {
+        Game.Scheduler.setDuration(this.getCurrentActionDuration());
+        this.setCurrentActionDuration(this.getBaseActionDuration());
+        Game.TimeEngine.unlock();
+      }
+    }
+  },
+  getBaseActionDuration: function() {
+    return this.attr._PlayerActor_attr.baseActionDuration;
+  },
+
+  setBaseActionDuration: function(n) {
+    this.attr._PlayerActor_attr.baseActionDuration = n;
+  },
+  getCurrentActionDuration: function() {
+    return this.attr._PlayerActor_attr.currentActionDuration;
+  },
+  setCurrentActionDuration: function(n) {
+    this.attr._PlayerActor_attr.currentActionDuration = n;
+  },
+  isActing: function(state) {
+    if( state !== undefined ) {
+      this.attr._PlayerActor_attr.actingState = state;
+    }
+    return this.attr._PlayerActor_attr.actingState;
+  },
+  act: function() {
+    if( this.isActing()) { return; } // A gate to deal with JS timing issues
+    this.isActing(true);
+    Game.refresh();
+    Game.TimeEngine.lock();
+    this.isActing(false);
+  }
+};
+
+Game.EntityMixin.PeacefulWanderActor = {
+  META: {
+    mixinName: 'PeacefulWanderActor',
+    mixinGroup: 'Actor',
+    stateNamespace: '_PeacefulWanderActor_attr',
+    stateModel:  {
+      baseActionDuration: 1000,
+      currentActionDuration: 1000
+    },
+    init: function (template) {
+      Game.Scheduler.add(this,true, this.getBaseActionDuration());
+    }
+  },
+  getBaseActionDuration: function () {
+    return this.attr._PlayerActor_attr.baseActionDuration;
+  },
+  setBaseActionDuration: function (n) {
+    this.attr._PlayerActor_attr.baseActionDuration = n;
+  },
+  getCurrentActionDuration: function () {
+    return this.attr._PlayerActor_attr.currentActionDuration;
+  },
+  setCurrentActionDuration: function (n) {
+    this.attr._PlayerActor_attr.currentActionDuration = n;
+  },
+  getMoveDeltas: function () {
+    return Game.util.positionsAdjacentTo({x:0,y:0}).random();
+  },
+  act: function () {
+    console.log('wander for '+this.getName());
+    var moveDeltas = this.getMoveDeltas();
+    if( this.hasMixin('Walker')) {
+      this.tryWalk(this.getMap(), moveDeltas.x, moveDeltas.y);
+    }
+    Game.Scheduler.setDuration(this.getCurrentActionDuration());
+    this.setCurrentActionDuration(this.getBaseActionDuration());
+    this.raiseEntityEvent('actionDone');
+  }
+};
+
 Game.EntityMixin.AvatarFollower = {
   META: {
     mixinName: 'AvatarFollower',
     mixinGroup: 'Follower',
   },
+  followAvatar: function() {
+
+  }
 
 }

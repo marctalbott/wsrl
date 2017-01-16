@@ -58,11 +58,19 @@ var Game = {
 
 DATASTORE: {},
 
+Scheduler: null,
+TimeEngine: null,
+
   init: function() {
     this._game = this;
     console.log("game init");
 
     Game.setRandomSeed(5 + Math.floor(ROT.RNG.getUniform()*100000));
+
+    Game.Scheduler = new ROT.Scheduler.Action();
+    Game.TimeEngine = new ROT.Engine(Game.Scheduler);
+    Game.TimeEngine.start();
+    Game.TimeEngine.lock();
 
     for (var display_key in this._display) {
       this._display[display_key].o = new ROT.Display(

@@ -215,10 +215,13 @@ Game.UIMode.gamePlay = {
 
     Game.Message.clear();
     Game.renderAll();
+    Game.refresh();
+    Game.TimeEngine.unlock();
   },
   exit: function() {
     console.log("exited gamePlay");
     Game.renderAll();
+    Game.TimeEngine.lock();
   },
   getMap: function() {
     return Game.DATASTORE.MAP[this.attr._mapId];
@@ -247,7 +250,9 @@ Game.UIMode.gamePlay = {
   },
   handleInput: function (inputType, inputData) {
     var actionBinding = Game.KeyBinding.getInputBinding(inputType, inputData);
-    // var pressedKey = String.fromCharCode(inputData.charCode);
+
+    //var pressedKey = String.fromCharCode(inputData.charCode);
+    var tookTurn = false;
     if (!actionBinding) {
       return false;
     }
@@ -261,27 +266,33 @@ Game.UIMode.gamePlay = {
     } else if (actionBinding.actionKey == 'PERSISTENCE') {
       Game.switchUIMode(Game.UIMode.gamePersistence);
     } else if (actionBinding.actionKey == 'MOVE_DL') {
-      this.moveAvatar(-1,1);
+      tookTurn = this.moveAvatar(-1,1);
     } else if (actionBinding.actionKey == 'MOVE_D') {
-      this.moveAvatar(0,1);
+      tookTurn = this.moveAvatar(0,1);
     } else if (actionBinding.actionKey == 'MOVE_DR') {
-      this.moveAvatar(1,1);
+      tookTurn = this.moveAvatar(1,1);
     } else if (actionBinding.actionKey == 'MOVE_L') {
-      this.moveAvatar(-1,0);
+      tookTurn = this.moveAvatar(-1,0);
     } else if (actionBinding.actionKey == 'MOVE_R') {
-      this.moveAvatar(1,0);
+      tookTurn = this.moveAvatar(1,0);
     } else if (actionBinding.actionKey == 'MOVE_UL') {
-      this.moveAvatar(-1,-1);
+      tookTurn = this.moveAvatar(-1,-1);
     } else if (actionBinding.actionKey == 'MOVE_U') {
-      this.moveAvatar(0,-1);
+      tookTurn = this.moveAvatar(0,-1);
     } else if (actionBinding.actionKey == 'MOVE_UR') {
-      this.moveAvatar(1,-1);
+      tookTurn = this.moveAvatar(1,-1);
     } else if (actionBinding.actionKey == 'CANCEL') {
       Game.switchUIMode(Game.UIMode.gameLose);
     }
 
-    Game.Message.ageMessages();
-    // } else if (inputType == 'keydown') {
+    //Game.Message.ageMessages();
+//    } else if (inputType == 'keydown') {
+    if( tookTurn ) {
+      this.getAvatar().raiseEntityEvent('actionDone');
+      Game.Message.ageMessages();
+      return true;
+    }
+
 
   },
 
@@ -304,7 +315,9 @@ Game.UIMode.gamePlay = {
   moveAvatar: function(dx, dy) {
     if (this.getAvatar().tryWalk(this.getMap(), dx, dy)) {
       this.setCameraToAvatar();
+      return true;
     }
+    return false;
   },
 
   moveCamera: function(dx, dy) {
@@ -372,6 +385,7 @@ Game.UIMode.gamePlay = {
       // add entities to map
       for( var ecount=0; ecount<3; ecount++ ) {
         this.getMap().addEntity(Game.EntityGenerator.create('fungus'),this.getMap().getRandomWalkableLocation());
+        this.getMap().addEntity(Game.EntityGenerator.create('jerry'), this.getMap().getRandomWalkableLocation());
       }
     }
 
