@@ -5,7 +5,7 @@ Game.Message = {
     freshMessages: [],
     staleMessages: [],
     archivedMessages: [],
-    archiveMessageCount: 150
+    archiveMessageLimit: 150
   },
 
   render: function(display) {
@@ -17,32 +17,28 @@ Game.Message = {
     var staleIndex = 0;
 
     for (freshIndex = 0; freshIndex < this.attr.freshMessages.length && dispRow < dispRowMax; freshIndex++) {
-      /*console.log("FRESH");
-      console.log(this.attr.freshMessages);
-      console.log("freshindex:" + freshIndex);
-      console.log("dispRow:" + dispRow);*/
+
       dispRow += display.drawText(1, dispRow, '%c{#fff}%b{#000}' + this.attr.freshMessages[freshIndex] + '%c{}%b{}', 79);
     }
 
     for (staleIndex = 0; staleIndex < this.attr.staleMessages.length && dispRow < dispRowMax; staleIndex++) {
-/*      console.log("STALE");
-      console.log(this.attr.staleMessages);
-      console.log("staleindex:" + staleIndex);
-      console.log("disprow: " + dispRow);*/
+
       dispRow += display.drawText(1, dispRow, '%c{#aaa}%b{#000}' + this.attr.staleMessages[staleIndex] + '%c{}%b{}', 79);
     }
+  },
 
-    if (this.attr.staleMessages.length > 0) {
+  ageMessages: function(lastStaleMessageIndex) {
+    if (this.attr.staleMessages.length > 5) {
       console.log("archive oldest stale message");
       this.attr.archivedMessages.unshift(this.attr.staleMessages.pop());
     }
 
-    while (this.attr.staleMessages.length > staleIndex) {
+    while (this.attr.staleMessages.length > 5) {
       console.log("archive all messages that weren't displayed");
       this.attr.archivedMessages.unshift(this.attr.staleMessages.pop());
     }
 
-    while (this.attr.archivedMessages.length > this.attr.archiveMessageCount) {
+    while (this.attr.archivedMessages.length > this.attr.archiveMessageLimit) {
       console.log("dump archived messages that are too old");
       this.attr.archivedMessages.pop();
     }
@@ -52,13 +48,6 @@ Game.Message = {
       this.attr.staleMessages.unshift(this.attr.freshMessages.pop());
     }
 
-
-    /*if (this.attr.staleMessages) {
-      console.log("STALE2");
-      console.log(this.attr.staleMessages);
-    }
-    console.log("ARCHIVED");
-    console.log(this.attr.archivedMessages);*/
 
     // for(i = _messages.length - 1; i > _messages.length - 7; i--) {
     //   display.drawText(1, count, this._messages[i], '#fff', '#000');
@@ -77,5 +66,17 @@ Game.Message = {
     // this._curMessage = '';
     this.attr.freshMessages = [];
     this.attr.staleMessages = [];
+  },
+
+  getArchives: function() {
+    return this.attr.archivedMessages;
+  },
+
+  getArchiveMessageLimit: function() {
+    return this.attr.archiveMessageLimit;
+  },
+
+  setArchiveMessageLimit: function(n) {
+    this.attr.archiveMessageLimit = n;
   }
 };

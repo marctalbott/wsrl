@@ -15,6 +15,7 @@ Game.Entity = function( template ) {
 	Game.DATASTORE.ENTITY[this.attr._id] = this;
 
 	this._mixins = template.mixins || [];
+
 	this._mixinTracker = {};
 //	console.dir(template);
 //	console.dir(template.mixins);
@@ -34,6 +35,7 @@ Game.Entity = function( template ) {
 		if (mixin.META.hasOwnProperty('stateNamespace')) {
 			this.attr[mixin.META.stateNamespace] = {};
 			for (var mixinStateProp in mixin.META.stateModel) {
+
 				if (mixin.META.stateModel.hasOwnProperty(mixinStateProp)) {
 					this.attr[mixin.META.stateNamespace][mixinStateProp] = mixin.META.stateModel[mixinStateProp];
 				}
