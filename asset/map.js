@@ -81,6 +81,8 @@ Game.Map.prototype.addEntity = function(entity) {
   this.attr._entities.push(entity);
 };*/
 
+
+
 Game.Map.prototype.addEntity = function (ent,pos) {
   this.attr._entityIdsByLocation[pos.x+","+pos.y] = ent;
   // console.log(ent.getId());
@@ -105,6 +107,21 @@ Game.Map.prototype.getEntity = function (x_or_pos,y) {
     useY = x_or_pos.y;
   }
   return this.attr._entityIdsByLocation[useX+','+useY] || false;
+};
+
+Game.Map.prototype.extractEntity = function (ent) {
+  this.attr._entityIdsByLocation[ent.getX()+","+ent.getY()] = undefined;
+  this.attr._locationsByEntityId[ent.getId()] = undefined;
+  return ent;
+};
+
+Game.Map.prototype.extractEntityAt = function (x_or_pos,y) {
+  var ent = this.getEntity(x_or_pos,y);
+  if (ent) {
+    this.attr._entityIdsByLocation[ent.getX()+","+ent.getY()] = undefined;
+    this.attr._locationsByEntityId[ent.getId()] = undefined;
+  }
+  return ent;
 };
 
 Game.Map.prototype.getRandomLocation = function(filter_func) {
