@@ -29,7 +29,6 @@ Game.Tile.prototype.getName = function() {
   return this.attr._name;
 };
 
-
 Game.Tile.prototype.isTransparent = function() {
   return this.attr._transparent;
 };
@@ -39,5 +38,5 @@ Game.Tile.prototype.isOpaque = function() {
 };
 
 Game.Tile.nullTile = new Game.Tile({name:'nullTile'});
-Game.Tile.floorTile = new Game.Tile({name:'floor', chr: '.', walkable:true});//, transparent:true});
+Game.Tile.floorTile = new Game.Tile({name:'floor', chr: '.', walkable:true, transparent:true});
 Game.Tile.wallTile = new Game.Tile({name:'wall', chr: '#'});

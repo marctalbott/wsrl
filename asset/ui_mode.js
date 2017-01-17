@@ -249,7 +249,8 @@ Game.UIMode.gamePlay = {
     console.log("seen cells:");
     console.dir( seenCells );
     /*for( var vis in seenCells ) {
-      display.draw(vis.getX(), vis.getY(), vis.getChar(), '#aa000', '#ff000');
+      var visTile = this.getMap().getTile(vis);
+      display.draw(visTile.getX(), visTile.getY(), visTile.getChar(), '#aa000', '#ff000');
     }*/
 
 //    this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY);
