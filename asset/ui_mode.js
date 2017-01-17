@@ -240,7 +240,17 @@ Game.UIMode.gamePlay = {
 
     // console.log(this.attr._cameraX);
     // console.dir(this.getAvatar());
-    this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY);
+    var seenCells = this.getAvatar().getVisibleCells();
+    this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY, {
+      visibleCells: seenCells,
+      maskedCells: this.getAvatar().getRememberedCoordsForMap()
+    });
+    this.getAvatar().rememberCoords(seenCells);
+    console.log("seen cells:");
+    console.dir( seenCells );
+    /*for( var vis in seenCells ) {
+      display.draw(vis.getX(), vis.getY(), vis.getChar(), '#aa000', '#ff000');
+    }*/
 
 //    this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY);
     /*this.renderAvatar(display);*/

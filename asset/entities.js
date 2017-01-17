@@ -7,7 +7,13 @@ Game.EntityGenerator.learn({
 	chr: '@',
 	fg: '#dda',
 	maxHp: 10,
-	mixins: [Game.EntityMixin.PlayerActor, Game.EntityMixin.WalkerCorporeal, Game.EntityMixin.Chronicle, Game.EntityMixin.HitPoints, Game.EntityMixin.MeleeAttacker]
+	mixins: [Game.EntityMixin.PlayerActor, 
+			 Game.EntityMixin.WalkerCorporeal, 
+			 Game.EntityMixin.Chronicle, 
+			 Game.EntityMixin.HitPoints, 
+			 Game.EntityMixin.MeleeAttacker,
+			 Game.EntityMixin.Sight,
+			 Game.EntityMixin.MapMemory]
 
 });
 
@@ -15,7 +21,9 @@ Game.EntityGenerator.learn({
 	name: 'puppy',
 	chr: 'p',
 	fg: '#964b00',
-	mixins: [Game.EntityMixin.WalkerCorporeal, Game.EntityMixin.Chronicle, Game.EntityMixin.AvatarFollower]
+	mixins: [Game.EntityMixin.WalkerCorporeal, 
+		     Game.EntityMixin.Chronicle, 
+		     Game.EntityMixin.AvatarFollower]
 });
 
 Game.EntityGenerator.learn({
@@ -31,5 +39,7 @@ Game.EntityGenerator.learn({
 	chr: 'j',
 	fg: '#00ffff',
 	maxHp: 1,
-	mixins: [Game.EntityMixin.HitPoints, Game.EntityMixin.PeacefulWanderActor, Game.EntityMixin.WalkerCorporeal]
+	mixins: [Game.EntityMixin.HitPoints, 
+			 Game.EntityMixin.PeacefulWanderActor, 
+			 Game.EntityMixin.WalkerCorporeal]
 })

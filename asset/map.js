@@ -10,13 +10,29 @@ Game.Map = function (mapTileSetName) {
     _width: this._tiles.length,
     _height: this._tiles[0].length,
     _entityIdsByLocation: {},
-    _locationsByEntityId: {}
+    _locationsByEntityId: {},
+    _rememberCoords: {}
   };
+
+  this._fov = null;
+  this.setUpFov();
+
   Game.DATASTORE.MAP[this.attr._id] = this;
+};
+
+Game.Map.prototype.setUpFov = function () {
+  var map = this;
+  this._fov = new ROT.FOV.DiscreteShadowcasting(function(x, y) {
+                    return !map.getTile(x, y).isOpaque();
+                }, {topology: 8});
 };
 
 Game.Map.prototype.getId = function() {
   return this.attr._id;
+}
+
+Game.Map.prototype.getFov = function() {
+  return this._fov;
 }
 
 Game.Map.prototype.getWidth = function() {
@@ -81,8 +97,6 @@ Game.Map.prototype.addEntity = function(entity) {
   this.attr._entities.push(entity);
 };*/
 
-
-
 Game.Map.prototype.addEntity = function (ent,pos) {
   this.attr._entityIdsByLocation[pos.x+","+pos.y] = ent;
   // console.log(ent.getId());
@@ -94,7 +108,7 @@ Game.Map.prototype.addEntity = function (ent,pos) {
 Game.Map.prototype.updateEntityLocation = function (ent) {
   var origLoc = this.attr._locationsByEntityId[ent.getId()];
   if (origLoc) {
-    this.attr._entityIdsByLocation[origLoc] = undefined;
+    delete this.attr._entityIdsByLocation[origLoc];
   }
   var pos = ent.getPos();
   this.attr._entityIdsByLocation[pos.x+","+pos.y] = ent;
@@ -110,16 +124,16 @@ Game.Map.prototype.getEntity = function (x_or_pos,y) {
 };
 
 Game.Map.prototype.extractEntity = function (ent) {
-  this.attr._entityIdsByLocation[ent.getX()+","+ent.getY()] = undefined;
-  this.attr._locationsByEntityId[ent.getId()] = undefined;
+  delete this.attr._entityIdsByLocation[ent.getX()+","+ent.getY()];
+  delete this.attr._locationsByEntityId[ent.getId()];
   return ent;
 };
 
 Game.Map.prototype.extractEntityAt = function (x_or_pos,y) {
   var ent = this.getEntity(x_or_pos,y);
   if (ent) {
-    this.attr._entityIdsByLocation[ent.getX()+","+ent.getY()] = undefined;
-    this.attr._locationsByEntityId[ent.getId()] = undefined;
+    delete this.attr._entityIdsByLocation[ent.getX()+","+ent.getY()];
+    delete this.attr._locationsByEntityId[ent.getId()];
   }
   return ent;
 };
@@ -139,6 +153,14 @@ Game.Map.prototype.getRandomLocation = function(filter_func) {
 
 Game.Map.prototype.getRandomWalkableLocation = function() {
   return this.getRandomLocation(function(t){ return t.isWalkable(); });
+};
+
+Game.Map.prototype.rememberCoords = function( toRemember ) {
+  for ( var coord in toRemember ) {
+    if( toRemember.hasOwnProperty(coord)) {
+      this.attr._rememberCoords[coord] = true;
+    }
+  }
 };
 /*
 

@@ -7,6 +7,9 @@ Game.Tile = function(properties) {
   this.attr._name = properties.name || 'unknown';
   this.attr._walkable = properties.walkable||false;
   this.attr._diggable = properties.diggable||false;
+  this.attr._transparent = properties.transparent||false;
+  this.attr._opaque = (properties.opaque !== undefined) ? properties.opaque : (! this.attr._transparent);
+  this.attr._transparent = !this.attr._opaque;
   // this.attr = {
   //   _name: name,
   //   _sym: symbol
@@ -26,6 +29,15 @@ Game.Tile.prototype.getName = function() {
   return this.attr._name;
 };
 
+
+Game.Tile.prototype.isTransparent = function() {
+  return this.attr._transparent;
+};
+
+Game.Tile.prototype.isOpaque = function() {
+  return this.attr._opaque;
+};
+
 Game.Tile.nullTile = new Game.Tile({name:'nullTile'});
-Game.Tile.floorTile = new Game.Tile({name:'floor', chr: '.', walkable:true});
+Game.Tile.floorTile = new Game.Tile({name:'floor', chr: '.', walkable:true});//, transparent:true});
 Game.Tile.wallTile = new Game.Tile({name:'wall', chr: '#'});
