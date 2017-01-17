@@ -133,6 +133,7 @@ Game.Map.prototype.getRandomLocation = function(filter_func) {
     tX = Game.util.randomInt(0,this.attr._width - 1);
     tY = Game.util.randomInt(0,this.attr._height - 1);
     t = this.getTile(tX,tY);
+    console.log("getting location");
   } while (! filter_func(t));
   return {x:tX,y:tY};
 };

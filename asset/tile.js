@@ -29,3 +29,5 @@ Game.Tile.prototype.getName = function() {
 Game.Tile.nullTile = new Game.Tile({name:'nullTile'});
 Game.Tile.floorTile = new Game.Tile({name:'floor', chr: '.', walkable:true});
 Game.Tile.wallTile = new Game.Tile({name:'wall', chr: '#'});
+Game.Tile.desertTile = new Game.Tile({name:'desert', chr: '.', walkable:true, fg: '#f4a460'});
+Game.Tile.desertWallTile = new Game.Tile({name:'desertWall', chr: '#', fg:'#db9356'});
