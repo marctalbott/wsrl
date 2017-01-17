@@ -65,6 +65,7 @@ Game.UIMode.gamePersistence = {
       this.restoreGame();
       // N
     } else if (actionBinding.actionKey == 'PERSISTENCE_NEW') {
+      console.log( "NEW GAME");
       this.newGame();
     } else if (actionBinding.actionKey == 'CANCEL') {
       Game.switchUIMode(Game.UIMode.gamePlay);
@@ -215,7 +216,6 @@ Game.UIMode.gamePlay = {
 
     Game.Message.clear();
     Game.renderAll();
-    Game.refresh();
     Game.TimeEngine.unlock();
   },
   exit: function() {

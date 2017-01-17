@@ -181,7 +181,7 @@ Game.EntityMixin.Friendly = {
 } */
 
 Game.EntityMixin.PlayerActor = {
-  Meta: {
+  META: {
     mixinName: 'PlayerActor',
     mixinGroup: 'Actor',
     stateNamespace: '_PlayerActor_attr',
@@ -223,7 +223,7 @@ Game.EntityMixin.PlayerActor = {
   act: function() {
     if( this.isActing()) { return; } // A gate to deal with JS timing issues
     this.isActing(true);
-    Game.refresh();
+    Game.renderAll();
     Game.TimeEngine.lock();
     this.isActing(false);
   }
@@ -243,16 +243,16 @@ Game.EntityMixin.PeacefulWanderActor = {
     }
   },
   getBaseActionDuration: function () {
-    return this.attr._PlayerActor_attr.baseActionDuration;
+    return this.attr._PeacefulWanderActor_attr.baseActionDuration;
   },
   setBaseActionDuration: function (n) {
-    this.attr._PlayerActor_attr.baseActionDuration = n;
+    this.attr._PeacefulWanderActor_attr.baseActionDuration = n;
   },
   getCurrentActionDuration: function () {
-    return this.attr._PlayerActor_attr.currentActionDuration;
+    return this.attr._PeacefulWanderActor_attr.currentActionDuration;
   },
   setCurrentActionDuration: function (n) {
-    this.attr._PlayerActor_attr.currentActionDuration = n;
+    this.attr._PeacefulWanderActor_attr.currentActionDuration = n;
   },
   getMoveDeltas: function () {
     return Game.util.positionsAdjacentTo({x:0,y:0}).random();

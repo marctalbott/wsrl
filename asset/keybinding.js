@@ -72,8 +72,9 @@ Game.KeyBinding = {
       bindingKey = String.fromCharCode(inputData.charCode);
     }
 
-    console.log("bindingLookup");
-    console.log(this._currentBindingLookup[inputType][metaKey]);
+    //console.log("bindingLookup");
+//    console.log(this._currentBindingLookup[inputType][metaKey]);
+  //  console.log(inputData);
     return this._currentBindingLookup[inputType][metaKey][bindingKey] || false;
   },
 
