@@ -111,8 +111,11 @@ Game.EntityMixin.HitPoints = {
         }
       },
       'killed': function(evtData) {
-        console.log('HitPoints killed');
+        //console.log('HitPoints killed');
         this.destroy();
+        this.raiseEntityEvent('entityDestroyed');
+        console.log("entity destroyed");
+        console.dir(this);
       }
     }
   },
@@ -240,6 +243,11 @@ Game.EntityMixin.PeacefulWanderActor = {
     },
     init: function (template) {
       Game.Scheduler.add(this,true, this.getBaseActionDuration());
+    },
+    listeners: {
+      'entityDestroyed': function(evt) {
+        Game.Scheduler.remove(this);
+      }
     }
   },
   getBaseActionDuration: function () {
