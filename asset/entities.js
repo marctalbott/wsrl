@@ -30,6 +30,6 @@ Game.EntityGenerator.learn({
 	name: 'jerry',
 	chr: 'j',
 	fg: '#00ffff',
-	maxHp: 5,
+	maxHp: 1,
 	mixins: [Game.EntityMixin.HitPoints, Game.EntityMixin.PeacefulWanderActor, Game.EntityMixin.WalkerCorporeal]
 })
