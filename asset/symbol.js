@@ -30,8 +30,10 @@ Game.Symbol.prototype.getBg = function() {
   return this.attr._bg;
 };
 
-Game.Symbol.prototype.draw = function(display, dispX, dispY) {
-  display.draw(dispX, dispY, this.attr._char, this.attr._fg, this.attr._bg);
+Game.Symbol.prototype.draw = function(display, dispX, dispY, foreground, background) {
+  var foreg = foreground || this.attr._fg;
+  var backg = background || this.attr._bg
+  display.draw(dispX, dispY, this.attr._char, foreg, backg );
 };
 
 Game.Symbol.NULL_SYMBOL = new Game.Symbol();

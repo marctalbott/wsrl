@@ -246,16 +246,22 @@ Game.UIMode.gamePlay = {
       maskedCells: this.getAvatar().getRememberedCoordsForMap()
     });
     this.getAvatar().rememberCoords(seenCells);
-    console.log("seen cells:");
-    console.dir( seenCells );
+
     for( var cell in seenCells ) {
       if( cell == 'byDistance') continue;
       var cellTile = cell.split(',');
-      var tileX = cellTile[0];
-      var tileY = cellTile[1];
-      var fullTile = this.getMap().getTile(tileX, tileY);
-      console.dir( fullTile );
-      display.draw(tileX, tileY, fullTile.getChar(), '#aa000', '#ff000');
+      var tileX = parseInt(cellTile[0]);
+      tileX += Math.floor(this.getAvatar().getX()/2);
+      var tileY = parseInt(cellTile[1]);
+      tileY += Math.floor(this.getAvatar().getY()/2);
+      var fullTile = tileX+','+tileY;
+//      var fullTile = this.getMap().getTile(tileX, tileY);
+//      console.log( this.getMap().getWidth());
+/*      console.dir( fullTile );
+      console.log( "display cell");
+      console.dir( display._data[fullTile] );*/
+      display._data[fullTile][3] = "ff0000";
+      //fullTile.draw(display, tileX+this.attr._cameraX, tileY+this.attr._cameraY, '#ff0000', '#00ff00');
     }
 
 //    this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY);
@@ -406,8 +412,6 @@ Game.UIMode.gamePlay = {
     }
 
     this.setCameraToAvatar();
-    console.log("first:");
-    console.dir(Game.DATASTORE.ENTITY);
   },
 
   toJSON: function() {
