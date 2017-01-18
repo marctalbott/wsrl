@@ -248,10 +248,15 @@ Game.UIMode.gamePlay = {
     this.getAvatar().rememberCoords(seenCells);
     console.log("seen cells:");
     console.dir( seenCells );
-    /*for( var vis in seenCells ) {
-      var visTile = this.getMap().getTile(vis);
-      display.draw(visTile.getX(), visTile.getY(), visTile.getChar(), '#aa000', '#ff000');
-    }*/
+    for( var cell in seenCells ) {
+      if( cell == 'byDistance') continue;
+      var cellTile = cell.split(',');
+      var tileX = cellTile[0];
+      var tileY = cellTile[1];
+      var fullTile = this.getMap().getTile(tileX, tileY);
+      console.dir( fullTile );
+      display.draw(tileX, tileY, fullTile.getChar(), '#aa000', '#ff000');
+    }
 
 //    this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY);
     /*this.renderAvatar(display);*/
