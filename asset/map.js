@@ -57,7 +57,10 @@ Game.Map.prototype.getTile = function (x_or_pos,y) {
   return this._tiles[useX][useY] || Game.Tile.nullTile;
 };
 
-Game.Map.prototype.renderOn = function (display, camX, camY) {
+Game.Map.prototype.renderOn = function (display, camX, camY, renderOptions) {
+  var renderOps = renderOptions || {};
+  if( renderOps ) var visCells = renderOps.visibleCells;
+//  console.dir( visCells );
   var dispW = display._options.width;
   var dispH = display._options.height;
   var xStart = camX - Math.round(dispW/2);
@@ -65,12 +68,16 @@ Game.Map.prototype.renderOn = function (display, camX, camY) {
   for (var x = 0; x < dispW; x++) {
     for (var y = 0; y < dispH; y++) {
       var mapPos = {x:x+xStart, y:y+yStart};
-
       var tile = this.getTile(mapPos);
       if (tile.getName() == 'nullTile') {
         tile = Game.Tile.wallTile;
       }
-      tile.draw(display, x, y);
+      if( visCells.hasOwnProperty(mapPos.x+','+mapPos.y) ) {
+        console.dir( tile );
+        tile.draw(display,x,y,'#ff0000', '#00ff00');
+      } else {
+        tile.draw(display, x, y);
+      }
       var ent = this.getEntity(mapPos);
       if(ent) {
         ent.draw(display,x,y);
@@ -82,6 +89,31 @@ Game.Map.prototype.renderOn = function (display, camX, camY) {
     }
   }
 };
+
+// Game.Map.prototype.renderSeenCells = function( display, seenCells ) {
+//   for( var cell in seenCells ) {
+//       if( cell == 'byDistance') continue;
+// //      console.dir( cell );
+//       var mapCellTile = cell.split(',');
+// //      console.log(mapCellTile);
+      
+//       // var screenTileX = parseInt(mapCellTile[0]) + this.attr._cameraX - Math.round(display._options.width/2);;
+//       // var screenTileY = parseInt(mapCellTile[1]) + this.attr._cameraY - Math.round(display._options.height/2);;
+     
+//       var screenTileX = this.attr._cameraX - parseInt(mapCellTile[0]) + Math.round(display._options.width/2);
+//       var screenTileY = this.attr._cameraY - parseInt(mapCellTile[1]) + Math.round(display._options.height/2);
+
+//       //var fullTile = screenTileX+','+screenTileY;
+//       var fullTile = this.getMap().getTile(mapCellTile[0], mapCellTile[1]);
+//       fullTile.draw(display, screenTileX, screenTileY, '#ff0000', '#00ff00');
+// //      console.log( this.getMap().getWidth());
+// /*      console.dir( fullTile );
+//       console.log( "display cell");
+//       console.dir( display._data[fullTile] );*/
+//       //display._data[fullTile][3] = "ff0000";
+      
+//     }
+// }
 /*
   for( var i=0; i<this.attr._entities.length; i++ ) {
     var entity = this.attr._entities[i];

@@ -247,22 +247,28 @@ Game.UIMode.gamePlay = {
     });
     this.getAvatar().rememberCoords(seenCells);
 
-    for( var cell in seenCells ) {
-      if( cell == 'byDistance') continue;
-      var cellTile = cell.split(',');
-      var tileX = parseInt(cellTile[0]);
-      tileX += Math.floor(this.getAvatar().getX()/2);
-      var tileY = parseInt(cellTile[1]);
-      tileY += Math.floor(this.getAvatar().getY()/2);
-      var fullTile = tileX+','+tileY;
-//      var fullTile = this.getMap().getTile(tileX, tileY);
+//     for( var cell in seenCells ) {
+//       if( cell == 'byDistance') continue;
+// //      console.dir( cell );
+//       var mapCellTile = cell.split(',');
+// //      console.log(mapCellTile);
+      
+//       // var screenTileX = parseInt(mapCellTile[0]) + this.attr._cameraX - Math.round(display._options.width/2);;
+//       // var screenTileY = parseInt(mapCellTile[1]) + this.attr._cameraY - Math.round(display._options.height/2);;
+     
+//       var screenTileX = this.attr._cameraX - parseInt(mapCellTile[0]) + Math.round(display._options.width/2);
+//       var screenTileY = this.attr._cameraY - parseInt(mapCellTile[1]) + Math.round(display._options.height/2);
+
+//       //var fullTile = screenTileX+','+screenTileY;
+//       var fullTile = this.getMap().getTile(mapCellTile[0], mapCellTile[1]);
+//       fullTile.draw(display, screenTileX, screenTileY, '#ff0000', '#00ff00');
 //      console.log( this.getMap().getWidth());
 /*      console.dir( fullTile );
       console.log( "display cell");
       console.dir( display._data[fullTile] );*/
-      display._data[fullTile][3] = "ff0000";
-      //fullTile.draw(display, tileX+this.attr._cameraX, tileY+this.attr._cameraY, '#ff0000', '#00ff00');
-    }
+      //display._data[fullTile][3] = "ff0000";
+      
+    
 
 //    this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY);
     /*this.renderAvatar(display);*/
