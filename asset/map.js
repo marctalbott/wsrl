@@ -52,7 +52,7 @@ Game.Map.prototype.renderOn = function (display, camX, camY) {
 
       var tile = this.getTile(mapPos);
       if (tile.getName() == 'nullTile') {
-        tile = Game.Tile.wallTile;
+        tile = Game.MapTileSets[this.attr._mapTileSetName]._wallTile;
       }
       tile.draw(display, x, y);
       var ent = this.getEntity(mapPos);
