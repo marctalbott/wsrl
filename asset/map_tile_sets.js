@@ -1,14 +1,14 @@
 Game.MapTileSets = {
   caves1: {
-    _width: 300,
-    _height: 200,
+    _width: 30,
+    _height: 20,
     _wallTile: Game.Tile.wallTile,
     _floorTile: Game.Tile.floorTile,
 
     getMapTiles: function () {
       var wallTile = this._wallTile;
       var floorTile = this._floorTile;
-      var mapTiles = Game.util.init2DArray(this._width,this._height,Game.Tile.nullTile);
+      var mapTiles = Game.util.init2DArray(this._width + 1,this._height + 1,Game.Tile.nullTile);
       var generator = new ROT.Map.Cellular(this._width,this._height, {connected: true});
       generator.randomize(0.5);
 
@@ -38,8 +38,8 @@ Game.MapTileSets = {
   },
 
   desert1: {
-    _width: 300,
-    _height: 200,
+    _width: 30,
+    _height: 20,
     _wallTile: Game.Tile.desertWallTile,
     _floorTile: Game.Tile.desertTile,
     getMapTiles: function () {

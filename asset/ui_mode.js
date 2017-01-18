@@ -167,8 +167,10 @@ Game.UIMode.gamePersistence = {
 
   newGame: function() {
     Game.clearDataStore();
+    Game.initializeTimingEngine();
     Game.setRandomSeed(5 + Math.floor(ROT.RNG.getUniform()*100000));
     Game.UIMode.gamePlay.setupNewGame();
+    // Game.TimeEngine.lock();
     Game.switchUIMode(Game.UIMode.gamePlay);
   },
 
@@ -355,43 +357,14 @@ Game.UIMode.gamePlay = {
   },
 
   setupNewGame: function(restorationData) {
-    // this.setMap(new Game.Map('caves1'));
-    this.setMap(new Game.Map('desert1'));
+    this.setMap(new Game.Map('caves1'));
+    // this.setMap(new Game.Map('desert1'));
     this.setAvatar(Game.EntityGenerator.create('avatar'));
     this.getMap().addEntity(this.getAvatar(), this.getMap().getRandomWalkableLocation());
     console.log( "avatar: ");
     console.dir( this.getAvatar().getMixins() );
     this.setCameraToAvatar();
 
-    /*for( var ecount=0; ecount<3; ecount++ ) {
-        this.getMap().addEntity(Game.EntityGenerator.create('fungus'),this.getMap().getRandomWalkableLocation());
-      }*/
-    /*generator.randomize(0.5);
-
-    //repeated cellular automata process
-    var totalIterations = 3;
-    for (var i = 0; i < totalIterations - 1; i++) {
-      generator.create();
-    }
-
-    // run again then update map
-    generator.create(function(x,y,v) {
-      if (v === 1) {
-        mapTiles[x][y] = Game.Tile.floorTile;
-      } else {
-        mapTiles[x][y] = Game.Tile.wallTile;
-      }
-    });
-
-    // create map from the tiles
-    this.getMap() = new Game.Map(mapTiles);
-    this.getAvatar() = new Game.EntityGenerator.create('avatar');
-    this.getAvatar().setMap(this.getMap());
-/*    this.getMap().addEntityAtRandomPosition( this.getAvatar() );
-//    this.getAvatar().setPos(100,100);
-    for( var i=0; i<3; i++ ) {
-      this.getMap().addEntityAtRandomPosition( new Game.Entity(Game.EntityTemplates.Fungus) );
-    }*/
 
     // restore anything else if the data is available
     if (restorationData !== undefined && restorationData.hasOwnProperty(Game.UIMode.gamePlay.JSON_KEY)) {
@@ -404,7 +377,7 @@ Game.UIMode.gamePlay = {
       this.getAvatar().setPos(randomWalkableLocation['x'], randomWalkableLocation['y']);
       this.getMap().updateEntityLocation(this.getAvatar());
       // add entities to map
-      for( var ecount=0; ecount<3; ecount++ ) {
+      for( var ecount=0; ecount<2; ecount++ ) {
         this.getMap().addEntity(Game.EntityGenerator.create('fungus'),this.getMap().getRandomWalkableLocation());
         this.getMap().addEntity(Game.EntityGenerator.create('jerry'), this.getMap().getRandomWalkableLocation());
       }
