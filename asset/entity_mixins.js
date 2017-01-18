@@ -200,6 +200,7 @@ Game.EntityMixin.PlayerActor = {
       'actionDone': function( evtData ) {
         Game.Scheduler.setDuration(this.getCurrentActionDuration());
         this.setCurrentActionDuration(this.getBaseActionDuration());
+        // Game.TimeEngine.lock();
         Game.TimeEngine.unlock();
       }
     }
@@ -362,6 +363,7 @@ Game.EntityMixin.PeacefulWanderActor = {
     console.log('wander for '+this.getName());
     var moveDeltas = this.getMoveDeltas();
     if( this.hasMixin('Walker')) {
+      console.log (this.getMap());
       this.tryWalk(this.getMap(), moveDeltas.x, moveDeltas.y);
     }
     Game.Scheduler.setDuration(this.getCurrentActionDuration());

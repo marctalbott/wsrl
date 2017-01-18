@@ -56,10 +56,10 @@ var Game = {
   _curUIMode: null,
   _randomSeed: 0,
 
-DATASTORE: {},
+  DATASTORE: {},
 
-Scheduler: null,
-TimeEngine: null,
+  Scheduler: null,
+  TimeEngine: null,
 
   init: function() {
     this._game = this;
@@ -67,8 +67,9 @@ TimeEngine: null,
 
     Game.setRandomSeed(5 + Math.floor(ROT.RNG.getUniform()*100000));
 
-    Game.Scheduler = new ROT.Scheduler.Action();
-    Game.TimeEngine = new ROT.Engine(Game.Scheduler);
+    // Game.Scheduler = new ROT.Scheduler.Action();
+    // Game.TimeEngine = new ROT.Engine(Game.Scheduler);
+    Game.initializeTimingEngine();
     Game.TimeEngine.start();
     Game.TimeEngine.lock();
 
@@ -84,6 +85,11 @@ TimeEngine: null,
     this.renderAll();
 
     Game.KeyBinding.useKeyBinding();
+  },
+
+  initializeTimingEngine: function() {
+    Game.Scheduler = new ROT.Scheduler.Action();
+    Game.TimeEngine = new ROT.Engine(Game.Scheduler);
   },
 
   getRandomSeed: function() {

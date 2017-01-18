@@ -70,7 +70,7 @@ Game.Map.prototype.renderOn = function (display, camX, camY, renderOptions) {
       var mapPos = {x:x+xStart, y:y+yStart};
       var tile = this.getTile(mapPos);
       if (tile.getName() == 'nullTile') {
-        tile = Game.Tile.wallTile;
+        tile = Game.MapTileSets[this.attr._mapTileSetName]._wallTile;
       }
       if( visCells.hasOwnProperty(mapPos.x+','+mapPos.y) ) {
         console.dir( tile );
@@ -179,6 +179,7 @@ Game.Map.prototype.getRandomLocation = function(filter_func) {
     tX = Game.util.randomInt(0,this.attr._width - 1);
     tY = Game.util.randomInt(0,this.attr._height - 1);
     t = this.getTile(tX,tY);
+    console.log("getting location");
   } while (! filter_func(t));
   return {x:tX,y:tY};
 };
