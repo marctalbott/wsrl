@@ -36,7 +36,7 @@ Game.EntityGenerator.learn({
 
 Game.EntityGenerator.learn({
 	name: 'jerry',
-	chr: '🕺',
+	chr: 'j',
 	fg: '#00ffff',
 	maxHp: 1,
 	mixins: [Game.EntityMixin.HitPoints, 

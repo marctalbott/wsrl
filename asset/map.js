@@ -73,7 +73,6 @@ Game.Map.prototype.renderOn = function (display, camX, camY, renderOptions) {
         tile = Game.MapTileSets[this.attr._mapTileSetName]._wallTile;
       }
       if( visCells.hasOwnProperty(mapPos.x+','+mapPos.y) ) {
-        console.dir( tile );
         tile.draw(display,x,y,'#ff0000', '#00ff00');
       } else {
         tile.draw(display, x, y);
