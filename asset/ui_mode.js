@@ -40,6 +40,7 @@ Game.UIMode.gamePersistence = {
   exit: function() {
     console.log("exited gamePersistence");
     Game.renderAll();
+    // Game.Message.clear();
   },
   render: function (display) {
     console.log("rendered gamePersistence");
@@ -54,10 +55,6 @@ Game.UIMode.gamePersistence = {
       return false;
     }
 
-    // var inputChar = inputData.key;
-    // var inputChar = inputData.charCode;
-    // if (inputChar == "S" || inputChar == "s") {
-      // S
     if (actionBinding.actionKey == 'PERSISTENCE_SAVE') {
       this.saveGame();
       // L
@@ -78,7 +75,16 @@ Game.UIMode.gamePersistence = {
       console.log( "Save data:");
       console.dir( Game.DATASTORE);
 
+      Game.DATASTORE.SCHEDULE = {};
+      Game.DATASTORE.SCHEDULE[Game.Scheduler._current.getId()] = 1;
+      for (var i = 0; i < Game.Scheduler._queue._eventTimes.length; i++) {
+        Game.DATASTORE.SCHEDULE[Game.Scheduler._queue._events[i].getId()] = Game.Scheduler._queue._eventTimes[i] + 1;
+      }
+
+      Game.DATASTORE.SCHEDULE_TIME = Game.Scheduler._queue.getTime() - 1;
       Game.DATASTORE.GAME_PLAY = Game.UIMode.gamePlay.attr;
+      Game.DATASTORE.MESSAGES = Game.Message.attr;
+
       window.localStorage.setItem(Game._PERSISTENCE_NAMESPACE, JSON.stringify(Game.DATASTORE));
       Game.switchUIMode(Game.UIMode.gamePlay);
     }
@@ -93,6 +99,7 @@ Game.UIMode.gamePersistence = {
       var json_state_data = window.localStorage.getItem(Game._PERSISTENCE_NAMESPACE);
 //      console.log( Game._PERSISTANCE_NAMESPACE );
       var state_data = JSON.parse(json_state_data);
+      Game.initializeTimingEngine();
 
 /*      console.log('state data: ');
       console.dir(state_data);
@@ -132,6 +139,17 @@ Game.UIMode.gamePersistence = {
       console.dir( Game.DATASTORE.ENTITY );
       // game play
       Game.UIMode.gamePlay.attr = state_data.GAME_PLAY;
+      Game.Message.attr = state_data.MESSAGES;
+
+      Game.initializeTimingEngine();
+      for (var schedItemId in state_data.SCHEDULE) {
+        if (state_data.SCHEDULE.hasOwnProperty(schedItemId)) {
+          if (Game.DATASTORE.ENTITY.hasOwnProperty(schedItemId)) {
+            Game.Scheduler.add(Game.DATASTORE.ENTITY[schedItemId], true, state_data.SCHEDULE[schedItemId]);
+          }
+        }
+      }
+      Game.Scheduler._queue._time = state_data.SCHEDULE_TIME;
 
       Game.switchUIMode(Game.UIMode.gamePlay);
     }
@@ -214,7 +232,7 @@ Game.UIMode.gamePlay = {
   enter: function() {
     console.log("entered gamePlay");
 
-    Game.Message.clear();
+    // Game.Message.clear();
     Game.renderAll();
     Game.TimeEngine.unlock();
   },
