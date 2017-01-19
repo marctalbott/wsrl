@@ -336,7 +336,7 @@ Game.UIMode.gamePlay = {
       tookTurn = this.moveAvatar(1,-1);
     } else if (actionBinding.actionKey == 'CANCEL') {
       Game.switchUIMode(Game.UIMode.gameLose);
-    } else if (actionBinding.actionKey == 'WAIT') {
+    } else if (actionBinding.actionKey == 'MOVE_WAIT') {
       tookTurn = true;
     }
 
