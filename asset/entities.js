@@ -43,3 +43,16 @@ Game.EntityGenerator.learn({
 			 Game.EntityMixin.PeacefulWanderActor, 
 			 Game.EntityMixin.WalkerCorporeal]
 })
+
+Game.EntityGenerator.learn({
+	name: 'binger',
+	chr: 'b',
+	fg: '#00ff00',
+	maxHp: 3,
+//	sightRadius: 3,
+	mixins: [Game.EntityMixin.HitPoints,
+			 Game.EntityMixin.WalkerCorporeal,
+			 Game.EntityMixin.MeleeAttacker,
+			 Game.EntityMixin.EnemyWanderActor,
+			 Game.EntityMixin.Sight]
+})

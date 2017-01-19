@@ -3,7 +3,34 @@ Game.EntityMixin = {};
 Game.EntityMixin.WalkerCorporeal = {
   META: {
     mixinName: 'WalkerCorporeal',
-    mixinGroup: 'Walker'
+    mixinGroup: 'Walker',
+    listeners: {
+      'adjacentMove': function( evt ) {
+        var map = this.getMap();
+        var dx = evt.dx, dy = evt.dy;
+
+        var targetX = this.getX() + dx;
+        var targetY = this.getY() + dy;
+        if((targetX < 0 || targetX >= map.getWidth() || targetY < 0 || targetY >= map.getHeight())) {
+          return {madeAdjacentMove: false};
+        }
+
+        if( map.getEntity(targetX, targetY)) { // cant walk into spaces occupied by other entities
+          this.raiseEntityEvent('bumpEntity', {actor: this, recipient: map.getEntity(targetX, targetY)});
+          return {madeAdjacentMove: true};
+        }
+        var targetTile = map.getTile(targetX, targetY);
+        if( targetTile.isWalkable()) {
+          this.setPos(targetX, targetY);
+          var myMap = this.getMap();
+          if( myMap ) {
+            myMap.updateEntityLocation(this);
+          }
+          return {madeAdjacentMove: true};
+        }
+        return {madeAdjacentMove: false};
+      }
+    }
   },
 
   tryWalk: function (map, dx, dy) {
@@ -244,6 +271,12 @@ Game.EntityMixin.Sight = {
     },
     init: function (template) {
       this.attr._Sight_attr.sightRadius = template.sightRadius || 3;
+    },
+    listeners: {
+      'senseForEntity': function(evt) {
+        console.log("sensing");
+        return {entitySensed: this.canSeeEntity(evt.senseForEntity)};
+      }
     }
   },
   getSightRadius: function () {
@@ -258,21 +291,33 @@ Game.EntityMixin.Sight = {
       if (!entity || this.getMapId() !== entity.getMapId()) {
           return false;
       }
+      console.log( "still sensing");
+      console.dir( entity.getX() );
+//      console.dir( this.canSeeCoord(entity.getX().entity.getY()));
       return this.canSeeCoord(entity.getX(),entity.getY());
   },
   canSeeCoord: function(x_or_pos,y) {
     var otherX = x_or_pos,otherY=y;
+    console.log("sight attr:");
+    console.dir( this );
+    console.dir(this.attr._Sight_attr);
     if (typeof x_or_pos == 'object') {
       otherX = x_or_pos.x;
       otherY = x_or_pos.y;
     }
-
+    console.log("math");
+    console.dir( this.getVisibleCells() );
+    console.dir( this );
+    console.log( otherX );
+    console.log(Math.max(Math.abs(otherX - this.getX()),Math.abs(otherY - this.getY())) > this.attr._Sight_attr.sightRadius) 
     // If we're not within the sight radius, then we won't be in a real field of view either.
     if (Math.max(Math.abs(otherX - this.getX()),Math.abs(otherY - this.getY())) > this.attr._Sight_attr.sightRadius) {
+      console.log("here");
       return false;
     }
 
     var inFov = this.getVisibleCells();
+    console.log( "inFov:"); console.dir( inFov );
     return inFov[otherX+','+otherY] || false;
   },
   getVisibleCells: function() {
@@ -280,6 +325,9 @@ Game.EntityMixin.Sight = {
       for (var i=0;i<=this.getSightRadius();i++) {
           visibleCells.byDistance[i] = {};
       }
+      // console.log("this");
+      // console.dir( this );
+      // console.dir(this.getSightRadius());
       this.getMap().getFov().compute(
           this.getX(), this.getY(),
           this.getSightRadius(),
@@ -371,6 +419,93 @@ Game.EntityMixin.PeacefulWanderActor = {
     this.raiseEntityEvent('actionDone');
   }
 };
+
+Game.EntityMixin.EnemyWanderActor = {
+  META: {
+    mixinName: 'EnemyWanderActor',
+    mixinGroup: 'Actor',
+    stateNamespace: '_EnemyWanderActor_attr',
+    stateModel: {
+      baseActionDuration: 1000,
+      currentActionDuration: 1000
+    },
+    init: function(template) {
+      Game.Scheduler.add( this, true, this.getBaseActionDuration() );
+      this.attr._EnemyWanderActor_attr.baseActionDuration = template.EnemyWanderActionDuration || 1000;
+      this.attr._EnemyWanderActor_attr.currentActionDuration = this.attr._EnemyWanderActor_attr.baseActionDuration;
+    }
+    // },
+    // listeners: {
+    //   'adjacentMove': function( evt )
+    // }
+  },
+  getBaseActionDuration: function () {
+    return this.attr._EnemyWanderActor_attr.baseActionDuration;
+  },
+  setBaseActionDuration: function (n) {
+    this.attr._EnemyWanderActor_attr.baseActionDuration = n;
+  },
+  getCurrentActionDuration: function () {
+    return this.attr._EnemyWanderActor_attr.currentActionDuration;
+  },
+  setCurrentActionDuration: function (n) {
+    this.attr._EnemyWanderActor_attr.currentActionDuration = n;
+  },
+  getMoveDeltas: function() {
+    var avatar = Game.UIMode.gamePlay.getAvatar();
+    var senseResp = this.raiseEntityEvent('senseForEntity', {senseForEntity:avatar});
+    console.log( "senseResp");
+    console.dir(senseResp);
+
+    if( Game.util.compactBooleanArray_or(senseResp.entitySensed)) {
+
+      // Build path instance for avatar
+      var source = this;
+      var map = this.getMap();
+      var path = new ROT.Path.AStar(avatar.getX(), avatar.getY(), function(x, y) {
+        // If entity is present at tile, can't move there.
+        var entity = map.getEntity(x, y);
+        if( entity && entity !== avatar && entity !== source ) {
+          return false;
+        }
+        return map.getTile(x, y).isWalkable();
+      },{ topology: 8});
+      
+      // Compute path from here to there
+      var count = 0;
+      var moveDeltas = {x:0,y:0};
+      path.compute(this.getX(), this.getY(), function(x, y) {
+        if( count == 1 ) {
+          moveDeltas.x = x - source.getX();
+          moveDeltas.y = y - source.getY();
+        }
+        count++;
+      });
+
+      return moveDeltas;
+    }
+    return Game.util.positionsAdjacentTo({x:0, y:0}).random();
+  },
+  act: function() {
+    Game.TimeEngine.lock();
+    var moveDeltas = this.getMoveDeltas();
+    this.raiseEntityEvent('adjacentMove', {dx: moveDeltas.x, dy: moveDeltas.y});
+    Game.Scheduler.setDuration(this.getCurrentActionDuration());
+    this.setCurrentActionDuration(this.setCurrentActionDuration(this.getBaseActionDuration()+Game.util.randomInt(-10,10)));
+    Game.TimeEngine.unlock();
+  }
+  // listeners: {
+  //   'entityDestroyed': function(evt) {
+  //     Game.Scheduler.remove( this );
+  //   },
+  //   'avatarNearby': function(evt) {
+  //     if( this.canSeeEntity( this.getMap().getAvatar() ) ) {
+  //       this.attackAvatar()
+  //     }
+  //   }
+  // }
+
+}
 
 Game.EntityMixin.AvatarFollower = {
   META: {

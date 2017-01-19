@@ -405,9 +405,10 @@ Game.UIMode.gamePlay = {
       this.getAvatar().setPos(randomWalkableLocation['x'], randomWalkableLocation['y']);
       this.getMap().updateEntityLocation(this.getAvatar());
       // add entities to map
-      for( var ecount=0; ecount<2; ecount++ ) {
-        this.getMap().addEntity(Game.EntityGenerator.create('fungus'),this.getMap().getRandomWalkableLocation());
-        this.getMap().addEntity(Game.EntityGenerator.create('jerry'), this.getMap().getRandomWalkableLocation());
+      for( var ecount=0; ecount<1; ecount++ ) {
+        this.getMap().addEntity(Game.EntityGenerator.create('fungus'), this.getMap().getRandomWalkableLocation());
+        this.getMap().addEntity(Game.EntityGenerator.create('jerry') , this.getMap().getRandomWalkableLocation());
+        this.getMap().addEntity(Game.EntityGenerator.create('binger'), {x: this.getAvatar().getX()+4, y: this.getAvatar().getY() + 4});//this.getMap().getRandomWalkableLocation());
       }
     }
 

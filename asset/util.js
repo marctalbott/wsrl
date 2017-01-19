@@ -37,6 +37,14 @@ Game.util = {
         }
       }
     return adjPos;
+  },
+  compactBooleanArray_or: function(ar) {
+    if( !ar ) { return false; }
+    var ret = false;
+    for( var i=0; i<ar.length; i++ ) {
+      ret = ret || ar[i];
+    }
+    return ret;
   }
 };
 
