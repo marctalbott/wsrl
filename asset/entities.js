@@ -52,7 +52,7 @@ Game.EntityGenerator.learn({
 //	sightRadius: 3,
 	mixins: [Game.EntityMixin.HitPoints,
 			 Game.EntityMixin.WalkerCorporeal,
-			 Game.EntityMixin.MeleeAttacker,
+			 //Game.EntityMixin.MeleeAttacker,
 			 Game.EntityMixin.EnemyWanderActor,
 			 Game.EntityMixin.Sight]
 })

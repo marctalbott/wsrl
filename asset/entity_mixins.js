@@ -274,8 +274,7 @@ Game.EntityMixin.Sight = {
     },
     listeners: {
       'senseForEntity': function(evt) {
-        console.log("sensing");
-        return {entitySensed: this.canSeeEntity(evt.senseForEntity)};
+       return {entitySensed: this.canSeeEntity(evt.senseForEntity)};
       }
     }
   },
@@ -291,33 +290,22 @@ Game.EntityMixin.Sight = {
       if (!entity || this.getMapId() !== entity.getMapId()) {
           return false;
       }
-      console.log( "still sensing");
-      console.dir( entity.getX() );
-//      console.dir( this.canSeeCoord(entity.getX().entity.getY()));
       return this.canSeeCoord(entity.getX(),entity.getY());
   },
   canSeeCoord: function(x_or_pos,y) {
     var otherX = x_or_pos,otherY=y;
-    console.log("sight attr:");
-    console.dir( this );
-    console.dir(this.attr._Sight_attr);
+
     if (typeof x_or_pos == 'object') {
       otherX = x_or_pos.x;
       otherY = x_or_pos.y;
     }
-    console.log("math");
-    console.dir( this.getVisibleCells() );
-    console.dir( this );
-    console.log( otherX );
-    console.log(Math.max(Math.abs(otherX - this.getX()),Math.abs(otherY - this.getY())) > this.attr._Sight_attr.sightRadius) 
+  
     // If we're not within the sight radius, then we won't be in a real field of view either.
     if (Math.max(Math.abs(otherX - this.getX()),Math.abs(otherY - this.getY())) > this.attr._Sight_attr.sightRadius) {
-      console.log("here");
       return false;
     }
 
     var inFov = this.getVisibleCells();
-    console.log( "inFov:"); console.dir( inFov );
     return inFov[otherX+','+otherY] || false;
   },
   getVisibleCells: function() {
@@ -332,6 +320,8 @@ Game.EntityMixin.Sight = {
           this.getX(), this.getY(),
           this.getSightRadius(),
           function(x, y, radius, visibility) {
+            // console.log( "radius:");
+            // console.log( radius );
               visibleCells[x+','+y] = true;
               visibleCells.byDistance[radius][x+','+y] = true;
           }
@@ -454,8 +444,6 @@ Game.EntityMixin.EnemyWanderActor = {
   getMoveDeltas: function() {
     var avatar = Game.UIMode.gamePlay.getAvatar();
     var senseResp = this.raiseEntityEvent('senseForEntity', {senseForEntity:avatar});
-    console.log( "senseResp");
-    console.dir(senseResp);
 
     if( Game.util.compactBooleanArray_or(senseResp.entitySensed)) {
 
