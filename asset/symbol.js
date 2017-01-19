@@ -6,6 +6,8 @@ Game.Symbol = function(properties) {
   this.attr._char = properties.chr || ' ';
   this.attr._fg = properties.fg || Game.UIMode.DEFAULT_COLOR_FG;
   this.attr._bg = properties.bg || Game.UIMode.DEFAULT_COLOR_BG;
+  this.attr._maskedFg = properties.maskedFg || '#444';
+  this.attr._maskedBg = properties.maskedBg || '#000';
   // this.attr = {
   //   _char: chr,
   //   _fg: fg||Game.UIMode.DEFAULT_COLOR_FG,
@@ -30,10 +32,15 @@ Game.Symbol.prototype.getBg = function() {
   return this.attr._bg;
 };
 
-Game.Symbol.prototype.draw = function(display, dispX, dispY, foreground, background) {
-  var foreg = foreground || this.attr._fg;
-  var backg = background || this.attr._bg
-  display.draw(dispX, dispY, this.attr._char, foreg, backg );
+Game.Symbol.prototype.draw = function(display, dispX, dispY, isMasked) {
+  // var foreg = foreground || this.attr._fg;
+  // var backg = background || this.attr._bg;
+  // display.draw(dispX, dispY, this.attr._char, foreg, backg );
+  if (isMasked) {
+    display.draw(dispX, dispY, this.attr._char, this.attr._maskedFg, this.attr._maskedBg);
+  } else {
+    display.draw(dispX, dispY, this.attr._char, this.attr._fg, this.attr._bg);
+  }
 };
 
 Game.Symbol.NULL_SYMBOL = new Game.Symbol();

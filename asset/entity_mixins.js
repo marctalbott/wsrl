@@ -132,6 +132,7 @@ Game.EntityMixin.HitPoints = {
         this.takeHits(evtData.attackPower);
         this.raiseEntityEvent('damagedBy',{damager:evtData.attacker,damageAmount:evtData.attackPower});
         evtData.attacker.raiseEntityEvent('dealtDamage',{damagee:this,damageAmount:evtData.attackPower});
+        // Game.Message.send(this.getName() + " hit for " + evtData.attackPower + " damage!");
         if (this.getCurHp() <= 0) {
           this.raiseEntityEvent('killed',{entKilled: this, killedBy: evtData.attacker});
           evtData.attacker.raiseEntityEvent('madeKill',{entKilled: this, killedBy: evtData.attacker});
@@ -139,6 +140,7 @@ Game.EntityMixin.HitPoints = {
       },
       'killed': function(evtData) {
         //console.log('HitPoints killed');
+        Game.Message.send(this.getName() + " killed!");
         this.destroy();
         this.raiseEntityEvent('entityDestroyed');
         console.log("entity destroyed");
@@ -193,6 +195,8 @@ Game.EntityMixin.MeleeAttacker = {
     listeners: {
       'bumpEntity': function(evtData) {
         console.log('MeleeAttacker bumpEntity');
+        Game.Message.send(evtData.recipient.getName() + " hit for " + this.getAttackPower() + " damage!");
+        Game.Message.ageMessages();
         evtData.recipient.raiseEntityEvent('attacked',{attacker:evtData.actor,attackPower:this.getAttackPower()});
       }
     }
@@ -325,7 +329,7 @@ Game.EntityMixin.Sight = {
               visibleCells[x+','+y] = true;
               visibleCells.byDistance[radius][x+','+y] = true;
           }
-      );  
+      );
       return visibleCells;
   },
   canSeeCoord_delta: function(dx,dy) {
