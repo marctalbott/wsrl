@@ -312,7 +312,7 @@ Game.UIMode.gamePlay = {
 
     console.log("input for gamePlay");
     // if (inputType == 'keypress') {
-    Game.Message.send("you pressed the '" + String.fromCharCode(inputData.charCode) + "' key");
+    // Game.Message.send("you pressed the '" + String.fromCharCode(inputData.charCode) + "' key");
     if (actionBinding.actionKey == 'WIN') {
       Game.switchUIMode(Game.UIMode.gameWin);
       return;
