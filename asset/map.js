@@ -57,9 +57,73 @@ Game.Map.prototype.getTile = function (x_or_pos,y) {
   return this._tiles[useX][useY] || Game.Tile.nullTile;
 };
 
-Game.Map.prototype.renderOn = function (display, camX, camY, renderOptions) {
+Game.Map.prototype.getEntitiesNearby = function (radius, x_or_pos, y) {
+  var useX = x_or_pos, useY = y;
+  if (typeof x_or_pos == 'object') {
+    useX = x_or_pos.x;
+    useY = x_or_pos.y;
+  }
+
+  var entLocs = Object.keys(this.attr._entitiesByLocation);
+  var foundEnts = [];
+  if (entLocs.length < radius*radius*4) {
+    for (var i = 0; i < entLocs.length; i++) {
+      var el = entLocs[i].split(',');
+      if ((Math.abs(el[0] - useX) <= radius) && (Math.abs(el[1] - useY) <= radius)) {
+        foundEnts.push(Game.DATASTORE.ENTITY[this.attr._entitiesByLocation[entLocs[i]]]);
+      }
+    }
+  } else {
+    for (var cx = radius * -1; cx <= radius; cx++) {
+      for (var cy = radius * -1; cy <= radius; cy++) {
+        var entId = this.getEntity(useX + cx, useY + cy);
+        if (entId) {
+          foundEnts.push(Game.DATASTORE.ENTITY[entId]);
+        }
+      }
+    }
+  }
+  return foundEnts;
+};
+
+// Game.Map.prototype.getEntitiesNearby_LoS = function (radius, x_or_pos, y) {
+//   var useX = x_or_pos,useY=y;
+//   if (typeof x_or_pos == 'object') {
+//     useX = x_or_pos.x;
+//     useY = x_or_pos.y;
+//   }
+//   var entLocs = Object.keys(this.attr._entitiesByLocation);
+//   var foundEnts = [];
+//   if (entLocs.length < radius*radius*4) {
+//     for (var i = 0; i < entLocs.length; i++) {
+//       var el = entLocs[i].split(',');
+//       if ((Math.abs(el[0]-useX) <= radius) && (Math.abs(el[1]-useY) <= radius)) {
+//         foundEnts.push(Game.DATASTORE.ENTITY[this.attr._entitiesByLocation[entLocs[i]]]);
+//       }
+//     }
+//   } else {
+//     for (var cx = radius*-1; cx <= radius; cx++) {
+//       for (var cy = radius*-1; cy <= radius; cy++) {
+//         var entId = this.getEntity(useX+cx,useY+cy);
+//         if (entId) {
+//           foundEnts.push(Game.DATASTORE.ENTITY[entId]);
+//         }
+//       }
+//     }
+//   }
+//   return foundEnts;
+// };
+
+Game.Map.prototype.renderOn = function (display, camX, camY, showEntities, showTiles, maskRendered, memoryOnly, renderOptions) {
   var renderOps = renderOptions || {};
   if( renderOps ) var visCells = renderOps.visibleCells;
+  var entitiesVisible = (showEntities !== undefined) ? showEntities : true;
+  var tilesVisible = (showTiles !== undefined) ? showTiles : true;
+  var isMasked = (maskRendered !== undefined) ? maskRendered : true;
+  var filterForRemembered = (memoryOnly !== undefined) ? memoryOnly : true;
+
+  if (!entitiesVisible && !tilesVisible) { return; }
+
 //  console.dir( visCells );
   var dispW = display._options.width;
   var dispH = display._options.height;
@@ -68,65 +132,63 @@ Game.Map.prototype.renderOn = function (display, camX, camY, renderOptions) {
   for (var x = 0; x < dispW; x++) {
     for (var y = 0; y < dispH; y++) {
       var mapPos = {x:x+xStart, y:y+yStart};
-      var tile = this.getTile(mapPos);
-      if (tile.getName() == 'nullTile') {
-        tile = Game.MapTileSets[this.attr._mapTileSetName]._wallTile;
+      if (filterForRemembered) {
+        if (!this.attr._rememberCoords[mapPos.x + ',' + mapPos.y]) {
+          continue; 
+        }
       }
-      if( visCells.hasOwnProperty(mapPos.x+','+mapPos.y) ) {
-        tile.draw(display,x,y,'#ff0000', '#00ff00');
-      } else {
-        tile.draw(display, x, y);
+      if (tilesVisible) {
+        var tile = this.getTile(mapPos);
+        if (tile.getName() == 'nullTile') {
+          tile = Game.MapTileSets[this.attr._mapTileSetName]._wallTile;
+        }
+        tile.draw(display, x, y, isMasked);
+        // if( visCells.hasOwnProperty(mapPos.x+','+mapPos.y) ) {
+        //   tile.draw(display,x,y,'#ff0000', '#00ff00');
+        // } else {
+        //   tile.draw(display, x, y);
+        // }
       }
-      var ent = this.getEntity(mapPos);
-      if(ent) {
-        ent.draw(display,x,y);
+      if (entitiesVisible) {
+        var ent = this.getEntity(mapPos);
+        if(ent) {
+          ent.draw(display,x,y, isMasked);
+        }
       }
-
-      //  var sym = tile.getSymbol();
-      //
-      //  display.draw(x,y,sym.getChar(),sym.getFg(),sym.getBg());
     }
   }
 };
 
-// Game.Map.prototype.renderSeenCells = function( display, seenCells ) {
-//   for( var cell in seenCells ) {
-//       if( cell == 'byDistance') continue;
-// //      console.dir( cell );
-//       var mapCellTile = cell.split(',');
-// //      console.log(mapCellTile);
-      
-//       // var screenTileX = parseInt(mapCellTile[0]) + this.attr._cameraX - Math.round(display._options.width/2);;
-//       // var screenTileY = parseInt(mapCellTile[1]) + this.attr._cameraY - Math.round(display._options.height/2);;
-     
-//       var screenTileX = this.attr._cameraX - parseInt(mapCellTile[0]) + Math.round(display._options.width/2);
-//       var screenTileY = this.attr._cameraY - parseInt(mapCellTile[1]) + Math.round(display._options.height/2);
+Game.Map.prototype.renderFovOn = function (display, camX, camY, radius) {
+  var dispW = display._options.width;
+  var dispH = display._options.height;
+  var xStart = camX - Math.round(dispW/2);
+  var yStart = camY - Math.round(dispH/2);
 
-//       //var fullTile = screenTileX+','+screenTileY;
-//       var fullTile = this.getMap().getTile(mapCellTile[0], mapCellTile[1]);
-//       fullTile.draw(display, screenTileX, screenTileY, '#ff0000', '#00ff00');
-// //      console.log( this.getMap().getWidth());
-// /*      console.dir( fullTile );
-//       console.log( "display cell");
-//       console.dir( display._data[fullTile] );*/
-//       //display._data[fullTile][3] = "ff0000";
-      
-//     }
-// }
-/*
-  for( var i=0; i<this.attr._entities.length; i++ ) {
-    var entity = this.attr._entities[i];
-    display.draw(entity.getX(), entity.getY(), Game.Symbol.AVATAR.getChar(), "#fff", "#000" );
+  var inFov = {};
+  this._fov.compute(camX, camY, radius, function (x, y , radius, visibility) {
+    inFov[x+","+y] = true;
+  });
+
+  for (var x = 0; x < dispW; x++) {
+    for (var y = 0; y < dispH; y++) {
+      var mapPos = {x: x + xStart, y: y + yStart};
+      if (inFov[mapPos.x + ',' + mapPos.y]) {
+        var tile = this.getTile(mapPos);
+        if (tile.getName() == 'nullTile') {
+          tile = Game.MapTileSets[this.attr._mapTileSetName]._wallTile;
+        }
+        tile.draw(display, x, y);
+        var ent = this.getEntity(mapPos);
+        if (ent) {
+          ent.draw(display, x, y);
+        }
+      }
+    }
   }
+  return inFov;
 };
 
-Game.Map.prototype.addEntity = function(entity) {
-  if( entity.getX() < 0 || entity.getX() >= this._width ||
-      entity.getY() < 0 || entity.getY() >= this._height ) {
-    throw new Error('Adding entity out of bounds');
-  }
-  this.attr._entities.push(entity);
-};*/
 
 Game.Map.prototype.addEntity = function (ent,pos) {
   this.attr._entityIdsByLocation[pos.x+","+pos.y] = ent;

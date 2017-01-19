@@ -260,22 +260,27 @@ Game.UIMode.gamePlay = {
 
     // console.log(this.attr._cameraX);
     // console.dir(this.getAvatar());
-    var seenCells = this.getAvatar().getVisibleCells();
-    this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY, {
-      visibleCells: seenCells,
-      maskedCells: this.getAvatar().getRememberedCoordsForMap()
-    });
-    this.getAvatar().rememberCoords(seenCells);
+
+
+    // var seenCells = this.getAvatar().getVisibleCells();
+    // this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY, {
+    //   visibleCells: seenCells,
+    //   maskedCells: this.getAvatar().getRememberedCoordsForMap()
+    // });
+    // this.getAvatar().rememberCoords(seenCells);
+
+    this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY, false, true, true);
+    this.getMap().rememberCoords(this.getMap().renderFovOn(display, this.attr._cameraX, this.attr._cameraY, this.getAvatar().getSightRadius()));
 
 //     for( var cell in seenCells ) {
 //       if( cell == 'byDistance') continue;
 // //      console.dir( cell );
 //       var mapCellTile = cell.split(',');
 // //      console.log(mapCellTile);
-      
+
 //       // var screenTileX = parseInt(mapCellTile[0]) + this.attr._cameraX - Math.round(display._options.width/2);;
 //       // var screenTileY = parseInt(mapCellTile[1]) + this.attr._cameraY - Math.round(display._options.height/2);;
-     
+
 //       var screenTileX = this.attr._cameraX - parseInt(mapCellTile[0]) + Math.round(display._options.width/2);
 //       var screenTileY = this.attr._cameraY - parseInt(mapCellTile[1]) + Math.round(display._options.height/2);
 
@@ -287,8 +292,8 @@ Game.UIMode.gamePlay = {
       console.log( "display cell");
       console.dir( display._data[fullTile] );*/
       //display._data[fullTile][3] = "ff0000";
-      
-    
+
+
 
 //    this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY);
     /*this.renderAvatar(display);*/
@@ -385,8 +390,8 @@ Game.UIMode.gamePlay = {
   },
 
   setupNewGame: function(restorationData) {
-    this.setMap(new Game.Map('caves1'));
-    // this.setMap(new Game.Map('desert1'));
+    // this.setMap(new Game.Map('caves1'));
+    this.setMap(new Game.Map('desert1'));
     this.setAvatar(Game.EntityGenerator.create('avatar'));
     this.getMap().addEntity(this.getAvatar(), this.getMap().getRandomWalkableLocation());
     console.log( "avatar: ");
