@@ -10,8 +10,8 @@ Game.EntityMixin.WalkerCorporeal = {
     var targetX = Math.min(Math.max(0,this.getX() + dx),map.getWidth());
     var targetY = Math.min(Math.max(0,this.getY() + dy),map.getHeight());
     if(map.getEntity(targetX,targetY)){
-      this.raiseEntityEvent('bumpEntity', {actor:this, recipient:map.getEntity(targetX, targetY)});
-      this.raiseEntityEvent('tookTurn');
+      this.raiseSymbolActiveEvent('bumpEntity', {actor:this, recipient:map.getEntity(targetX, targetY)});
+      this.raiseSymbolActiveEvent('tookTurn');
       return true;
     }
     if (map.getTile(targetX, targetY).isWalkable()) {
@@ -23,7 +23,8 @@ Game.EntityMixin.WalkerCorporeal = {
       // if( this.hasMixin('Chronicle')) {
       //   this.trackTurn();
       // }
-      this.raiseEntityEvent('tookTurn');
+
+      this.raiseSymbolActiveEvent('tookTurn');
       return true;
     }
     return false;
@@ -103,19 +104,19 @@ Game.EntityMixin.HitPoints = {
         console.log('HitPoints attacked');
 
         this.takeHits(evtData.attackPower);
-        this.raiseEntityEvent('damagedBy',{damager:evtData.attacker,damageAmount:evtData.attackPower});
-        evtData.attacker.raiseEntityEvent('dealtDamage',{damagee:this,damageAmount:evtData.attackPower});
+        this.raiseSymbolActiveEvent('damagedBy',{damager:evtData.attacker,damageAmount:evtData.attackPower});
+        evtData.attacker.raiseSymbolActiveEvent('dealtDamage',{damagee:this,damageAmount:evtData.attackPower});
         // Game.Message.send(this.getName() + " hit for " + evtData.attackPower + " damage!");
         if (this.getCurHp() <= 0) {
-          this.raiseEntityEvent('killed',{entKilled: this, killedBy: evtData.attacker});
-          evtData.attacker.raiseEntityEvent('madeKill',{entKilled: this, killedBy: evtData.attacker});
+          this.raiseSymbolActiveEvent('killed',{entKilled: this, killedBy: evtData.attacker});
+          evtData.attacker.raiseSymbolActiveEvent('madeKill',{entKilled: this, killedBy: evtData.attacker});
         }
       },
       'killed': function(evtData) {
         //console.log('HitPoints killed');
         Game.Message.send(this.getName() + " killed!");
         this.destroy();
-        this.raiseEntityEvent('entityDestroyed');
+        this.raiseSymbolActiveEvent('entityDestroyed');
         console.log("entity destroyed");
         console.dir(this);
       }
@@ -170,7 +171,7 @@ Game.EntityMixin.MeleeAttacker = {
         console.log('MeleeAttacker bumpEntity');
         Game.Message.send(evtData.recipient.getName() + " hit for " + this.getAttackPower() + " damage!");
         Game.Message.ageMessages();
-        evtData.recipient.raiseEntityEvent('attacked',{attacker:evtData.actor,attackPower:this.getAttackPower()});
+        evtData.recipient.raiseSymbolActiveEvent('attacked',{attacker:evtData.actor,attackPower:this.getAttackPower()});
       }
     }
   },
@@ -372,7 +373,7 @@ Game.EntityMixin.PeacefulWanderActor = {
     }
     Game.Scheduler.setDuration(this.getCurrentActionDuration());
     this.setCurrentActionDuration(this.getBaseActionDuration());
-    this.raiseEntityEvent('actionDone');
+    this.raiseSymbolActiveEvent('actionDone');
   }
 };
 

@@ -9,7 +9,7 @@ Game.util = {
 
     return res;
   },
-  
+
   init2DArray: function(xdim, ydim, initVal) {
     var a = [];
     for (var x = 0; x < xdim; x++) {
@@ -27,6 +27,13 @@ Game.util = {
     return offset+min;
   },
 
+  ID_SEQUENCE: 0,
+
+  uniqueId: function () {
+    Game.util.ID_SEQUENCE++;
+    return Date.now() + '-' + Game.util.ID_SEQUENCE + '-' + Game.util.randomString(24);
+  },
+
   positionsAdjacentTo: function (pos) {
     var adjPos = [];
     for (var dx = -1; dx <= 1; dx++) {
@@ -39,4 +46,3 @@ Game.util = {
     return adjPos;
   }
 };
-

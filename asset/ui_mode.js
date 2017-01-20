@@ -135,6 +135,14 @@ Game.UIMode.gamePersistence = {
         }
       }
 
+      for (var itemId in state_data.ITEM) {
+        if (state_data.ITEM.hasOwnProperty(itemId)) {
+          var itemAttr = JSON.parse(state_data.ITEM[itemId]);
+          var newI = Game.ItemGenerator.create(itemAttr._generator_template_key,itemAttr._id);
+          Game.DATASTORE.ITEM[itemId] = newI;
+          Game.DATASTORE.ITEM[itemId].fromJSON(state_data.ITEM[itemId]);
+        }
+      }
       console.log( "state data 3: ");
       console.dir( Game.DATASTORE.ENTITY );
       // game play
@@ -153,17 +161,8 @@ Game.UIMode.gamePersistence = {
 
       Game.switchUIMode(Game.UIMode.gamePlay);
     }
-  },/*
-  loadGame: function() {
-    if (this.localStorageAvailable()) {
-      var json_state_data = window.localStorage.getItem(Game._PERSISTENCE_NAMESPACE);
-      var state_data = JSON.parse(json_state_data);
-    }
 
-    Game.setRandomSeed(state_data._randomSeed);
-    Game.UIMode.gamePlay.setupPlay(state_data);
-    Game.switchUIMode(Game.UIMode.gamePlay);
-  },*/
+  },
 
   newGame: function() {
     Game.clearDataStore();
@@ -262,15 +261,16 @@ Game.UIMode.gamePlay = {
     // console.dir(this.getAvatar());
 
 
-    // var seenCells = this.getAvatar().getVisibleCells();
-    // this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY, {
-    //   visibleCells: seenCells,
-    //   maskedCells: this.getAvatar().getRememberedCoordsForMap()
-    // });
-    // this.getAvatar().rememberCoords(seenCells);
 
-    this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY, false, true, true);
-    this.getMap().rememberCoords(this.getMap().renderFovOn(display, this.attr._cameraX, this.attr._cameraY, this.getAvatar().getSightRadius()));
+    var seenCells = this.getAvatar().getVisibleCells();
+    this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY, {
+      visibleCells: seenCells,
+      maskedCells: this.getAvatar().getRememberedCoordsForMap()
+    });
+    this.getAvatar().rememberCoords(seenCells);
+
+    // this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY, false, true, true);
+    // this.getMap().rememberCoords(this.getMap().renderFovOn(display, this.attr._cameraX, this.attr._cameraY, this.getAvatar().getSightRadius()));
 
 //     for( var cell in seenCells ) {
 //       if( cell == 'byDistance') continue;
@@ -343,7 +343,7 @@ Game.UIMode.gamePlay = {
     //Game.Message.ageMessages();
 //    } else if (inputType == 'keydown') {
     if( tookTurn ) {
-      this.getAvatar().raiseEntityEvent('actionDone');
+      this.getAvatar().raiseSymbolActiveEvent('actionDone');
       Game.Message.ageMessages();
       return true;
     }
@@ -410,9 +410,12 @@ Game.UIMode.gamePlay = {
       this.getAvatar().setPos(randomWalkableLocation['x'], randomWalkableLocation['y']);
       this.getMap().updateEntityLocation(this.getAvatar());
       // add entities to map
+
+      var test = Game.ItemGenerator.create('folder');
       for( var ecount=0; ecount<2; ecount++ ) {
         this.getMap().addEntity(Game.EntityGenerator.create('fungus'),this.getMap().getRandomWalkableLocation());
         this.getMap().addEntity(Game.EntityGenerator.create('jerry'), this.getMap().getRandomWalkableLocation());
+        this.getMap().addItem(Game.ItemGenerator.create('folder'), this.getMap().getRandomWalkableLocation());
       }
     }
 
