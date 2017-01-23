@@ -391,7 +391,10 @@ Game.UIMode.gamePlay = {
 
   setupNewGame: function(restorationData) {
     // this.setMap(new Game.Map('caves1'));
-    this.setMap(new Game.Map('desert1'));
+    this.setMap(new Game.Map('office'));
+    console.log( this.getMap());
+    console.log( "set map");
+
     this.setAvatar(Game.EntityGenerator.create('avatar'));
     this.getMap().addEntity(this.getAvatar(), this.getMap().getRandomWalkableLocation());
     console.log( "avatar: ");
@@ -399,7 +402,7 @@ Game.UIMode.gamePlay = {
     this.setCameraToAvatar();
 
 
-    // restore anything else if the data is available
+    //restore anything else if the data is available
     if (restorationData !== undefined && restorationData.hasOwnProperty(Game.UIMode.gamePlay.JSON_KEY)) {
       // console.log(restorationData);
       this.fromJSON(restorationData[Game.UIMode.gamePlay.JSON_KEY]);

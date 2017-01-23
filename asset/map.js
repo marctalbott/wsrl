@@ -3,6 +3,8 @@ Game.DATASTORE.MAP = {};
 Game.Map = function (mapTileSetName) {
 
   this._tiles = Game.MapTileSets[mapTileSetName].getMapTiles();
+  console.log( "tiles:");
+  console.dir( this._tiles );
 
   this.attr = {
     _id: Game.util.randomString(32),
@@ -241,7 +243,7 @@ Game.Map.prototype.getRandomLocation = function(filter_func) {
     tY = Game.util.randomInt(0,this.attr._height - 1);
     t = this.getTile(tX,tY);
     console.log("getting location");
-  } while (! filter_func(t));
+  } while ( filter_func(t));
   return {x:tX,y:tY};
 };
 
