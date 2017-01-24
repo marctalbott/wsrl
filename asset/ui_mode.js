@@ -37,8 +37,38 @@ Game.UIMode.gameStart = {
   },
   handleInput: function (inputType, inputData) {
     console.log("input for gameStart");
-    console.dir(inputType);
-    console.dir(inputData);
+    // console.dir(inputType);
+    // console.dir(inputData);
+    if (inputData.charCode !== 0) {
+      Game.switchUIMode(Game.UIMode.flavor);
+    }
+  }
+};
+
+Game.UIMode.flavor = {
+  enter: function() {
+    console.log("entered flavor");
+    Game.Message.clear();
+    Game.Message.send("press any key to continue");
+    Game.renderAll();
+  },
+
+  exit: function() {
+    console.log("exited flavor");
+    Game.renderAll();
+  },
+
+  render: function(display) {
+    console.log("rendered flavor");
+    display.draw(30, 3, "You are an employee at the mid-market insurance agency known");
+    display.draw(30, 4, "as 'Affordable Insurance Agency Inc.' One night you are working");
+    display.draw(30, 5, "late at the office when you discover a fake panel at the back of");
+    display.draw(30, 6, "the break room fridge which leads to a secret room. In this room");
+    display.draw(30, 7, "you find an unmarked manila folder.");
+  },
+
+  handleInput: function(inputType, inputData) {
+    console.log("input for flavor");
     if (inputData.charCode !== 0) {
       Game.switchUIMode(Game.UIMode.gamePersistence);
     }

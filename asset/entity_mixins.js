@@ -428,6 +428,11 @@ Game.EntityMixin.EnemyWanderActor = {
       Game.Scheduler.add( this, true, this.getBaseActionDuration() );
       this.attr._EnemyWanderActor_attr.baseActionDuration = template.EnemyWanderActionDuration || 1000;
       this.attr._EnemyWanderActor_attr.currentActionDuration = this.attr._EnemyWanderActor_attr.baseActionDuration;
+    },
+    listeners: {
+      'entityDestroyed': function(evt) {
+        Game.Scheduler.remove(this);
+      }
     }
     // },
     // listeners: {
