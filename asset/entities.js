@@ -7,13 +7,14 @@ Game.EntityGenerator.learn({
 	chr: '🐵',
 	fg: '#dda',
 	maxHp: 10,
-	mixins: [Game.EntityMixin.PlayerActor,
-			 Game.EntityMixin.WalkerCorporeal,
-			 Game.EntityMixin.Chronicle,
-			 Game.EntityMixin.HitPoints,
-			 Game.EntityMixin.MeleeAttacker,
-			 Game.EntityMixin.Sight,
-			 Game.EntityMixin.MapMemory]
+	mixins: ["PlayerActor", "WalkerCorporeal", "Chronicle", "HitPoints", "MeleeAttacker", "Sight", "MapMemory"]
+	// mixins: [Game.EntityMixin.PlayerActor,
+	// 		 Game.EntityMixin.WalkerCorporeal,
+	// 		 Game.EntityMixin.Chronicle,
+	// 		 Game.EntityMixin.HitPoints,
+	// 		 Game.EntityMixin.MeleeAttacker,
+	// 		 Game.EntityMixin.Sight,
+	// 		 Game.EntityMixin.MapMemory]
 
 });
 
@@ -21,9 +22,10 @@ Game.EntityGenerator.learn({
 	name: 'puppy',
 	chr: 'p',
 	fg: '#964b00',
-	mixins: [Game.EntityMixin.WalkerCorporeal,
-		     Game.EntityMixin.Chronicle,
-		     Game.EntityMixin.AvatarFollower]
+	mixins: ["WalkerCorporeal", "Chronicle", "AvatarFollower"]
+	// mixins: [Game.EntityMixin.WalkerCorporeal,
+	// 	     Game.EntityMixin.Chronicle,
+	// 	     Game.EntityMixin.AvatarFollower]
 });
 
 Game.EntityGenerator.learn({
@@ -31,18 +33,21 @@ Game.EntityGenerator.learn({
 	chr: '🌱',
 	fg: '#228b22',
 	maxHp: 2,
-	mixins: [Game.EntityMixin.HitPoints]
+	mixins: ["HitPoints"]
+	// mixins: [Game.EntityMixin.HitPoints]
 });
 
 Game.EntityGenerator.learn({
-	name: 'jerry',
-	chr: 'j',
+	name: 'demon',
+	chr: 'd',
 	fg: '#00ffff',
 	maxHp: 1,
-	mixins: [Game.EntityMixin.HitPoints,
-			 Game.EntityMixin.PeacefulWanderActor,
-			 Game.EntityMixin.WalkerCorporeal]
-})
+	mixins: ["HitPoints", "PeacefulWanderActor", "WalkerCorporeal"]
+	// mixins: [Game.EntityMixin.HitPoints,
+	// 		 Game.EntityMixin.PeacefulWanderActor,
+	// 		 Game.EntityMixin.WalkerCorporeal]
+});
+
 
 Game.EntityGenerator.learn({
 	name: 'binger',
@@ -50,9 +55,11 @@ Game.EntityGenerator.learn({
 	fg: '#00ff00',
 	maxHp: 3,
 //	sightRadius: 3,
-	mixins: [Game.EntityMixin.HitPoints,
-			 Game.EntityMixin.WalkerCorporeal,
-			 //Game.EntityMixin.MeleeAttacker,
-			 Game.EntityMixin.EnemyWanderActor,
-			 Game.EntityMixin.Sight]
+	mixins: ["HitPoints", "WalkerCorporeal", "EnemyWanderActor", "Sight"]
+	// [Game.EntityMixin.HitPoints,
+	// 		 Game.EntityMixin.WalkerCorporeal,
+	// 		 //Game.EntityMixin.MeleeAttacker,
+	// 		 Game.EntityMixin.EnemyWanderActor,
+	// 		 Game.EntityMixin.Sight]
 })
+// >>>>>>> d48c9679f07f67ff92943b09bcc2cf019b5aa60c

@@ -20,8 +20,6 @@ Game.UIMode.gameStart = {
   },
   handleInput: function (inputType, inputData) {
     console.log("input for gameStart");
-    console.dir(inputType);
-    console.dir(inputData);
     if (inputData.charCode !== 0) {
       Game.switchUIMode(Game.UIMode.gamePersistence);
     }
@@ -135,6 +133,14 @@ Game.UIMode.gamePersistence = {
         }
       }
 
+      for (var itemId in state_data.ITEM) {
+        if (state_data.ITEM.hasOwnProperty(itemId)) {
+          var itemAttr = JSON.parse(state_data.ITEM[itemId]);
+          var newI = Game.ItemGenerator.create(itemAttr._generator_template_key,itemAttr._id);
+          Game.DATASTORE.ITEM[itemId] = newI;
+          Game.DATASTORE.ITEM[itemId].fromJSON(state_data.ITEM[itemId]);
+        }
+      }
       console.log( "state data 3: ");
       console.dir( Game.DATASTORE.ENTITY );
       // game play
@@ -153,17 +159,8 @@ Game.UIMode.gamePersistence = {
 
       Game.switchUIMode(Game.UIMode.gamePlay);
     }
-  },/*
-  loadGame: function() {
-    if (this.localStorageAvailable()) {
-      var json_state_data = window.localStorage.getItem(Game._PERSISTENCE_NAMESPACE);
-      var state_data = JSON.parse(json_state_data);
-    }
 
-    Game.setRandomSeed(state_data._randomSeed);
-    Game.UIMode.gamePlay.setupPlay(state_data);
-    Game.switchUIMode(Game.UIMode.gamePlay);
-  },*/
+  },
 
   newGame: function() {
     Game.clearDataStore();
@@ -262,6 +259,7 @@ Game.UIMode.gamePlay = {
     // console.dir(this.getAvatar());
 
 
+
     // var seenCells = this.getAvatar().getVisibleCells();
     // this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY, {
     //   visibleCells: seenCells,
@@ -269,11 +267,22 @@ Game.UIMode.gamePlay = {
     // });
     // this.getAvatar().rememberCoords(seenCells);
     if( Game.DATASTORE.MAP[this.attr._mapId].attr._mapTileSetName == 'office' ) {
-      this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY, false, true, true, false );
+      this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY, {
+        isUnmasked: true
+      });
     } else {       
-      this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY, false, true, true );
-    }
+      var seenCells = this.getAvatar().getVisibleCells();
+      this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY, {
+      visibleCells: seenCells,
+      maskedCells: this.getAvatar().getRememberedCoordsForMap()
+    });
+    this.getAvatar().rememberCoords(seenCells);
     this.getMap().rememberCoords(this.getMap().renderFovOn(display, this.attr._cameraX, this.attr._cameraY, this.getAvatar().getSightRadius()));
+    }
+   
+
+    // this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY, false, true, true);
+
 
 //     for( var cell in seenCells ) {
 //       if( cell == 'byDistance') continue;
@@ -341,12 +350,14 @@ Game.UIMode.gamePlay = {
       Game.switchUIMode(Game.UIMode.gameLose);
     } else if (actionBinding.actionKey == 'MOVE_WAIT') {
       tookTurn = true;
+    } else if (actionBinding.actionKey == 'ENTER_DOOR') {
+      console.log( "enter door");
     }
 
     //Game.Message.ageMessages();
 //    } else if (inputType == 'keydown') {
     if( tookTurn ) {
-      this.getAvatar().raiseEntityEvent('actionDone');
+      this.getAvatar().raiseSymbolActiveEvent('actionDone');
       Game.Message.ageMessages();
       return true;
     }
@@ -415,11 +426,14 @@ Game.UIMode.gamePlay = {
       var randomWalkableLocation = this.getMap().getRandomWalkableLocation();
       this.getAvatar().setPos(randomWalkableLocation['x'], randomWalkableLocation['y']);
       this.getMap().updateEntityLocation(this.getAvatar());
-      // add entities to map
+
+      // add entities and items
       for( var ecount=0; ecount<1; ecount++ ) {
-        this.getMap().addEntity(Game.EntityGenerator.create('fungus'), this.getMap().getRandomWalkableLocation());
-        this.getMap().addEntity(Game.EntityGenerator.create('jerry') , this.getMap().getRandomWalkableLocation());
+        this.getMap().addEntity(Game.EntityGenerator.create('fungus'),this.getMap().getRandomWalkableLocation());
+        this.getMap().addEntity(Game.EntityGenerator.create('demon'), this.getMap().getRandomWalkableLocation());
         this.getMap().addEntity(Game.EntityGenerator.create('binger'), this.getMap().getRandomWalkableLocation());
+        this.getMap().addItem(Game.ItemGenerator.create('folder'), this.getMap().getRandomWalkableLocation());
+        this.getMap().addItem(Game.ItemGenerator.create('door'), {x: Math.round(this.getMap().getWidth()/2), y: 0})
       }
     }
 

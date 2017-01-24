@@ -9,7 +9,7 @@ Game.util = {
 
     return res;
   },
-  
+
   init2DArray: function(xdim, ydim, initVal) {
     var a = [];
     for (var x = 0; x < xdim; x++) {
@@ -25,6 +25,13 @@ Game.util = {
     var range = max - min;
     var offset = Math.floor(ROT.RNG.getUniform()*(range+1));
     return offset+min;
+  },
+
+  ID_SEQUENCE: 0,
+
+  uniqueId: function () {
+    Game.util.ID_SEQUENCE++;
+    return Date.now() + '-' + Game.util.ID_SEQUENCE + '-' + Game.util.randomString(24);
   },
 
   positionsAdjacentTo: function (pos) {
@@ -47,4 +54,3 @@ Game.util = {
     return ret;
   }
 };
-

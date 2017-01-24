@@ -119,12 +119,13 @@ Game.KeyBinding = {
     MOVE_UL   : {action_group:'movement' ,ordering:3 ,short:'move' ,long :'move diagonally up and to the left'}    ,
     MOVE_U    : {action_group:'movement' ,ordering:3 ,short:'move' ,long :'move straight up'}                      ,
     MOVE_UR   : {action_group:'movement' ,ordering:3 ,short:'move' ,long :'move diagonally up and to the right'}   ,
-    MOVE_L    : {action_group:'movement'  ,ordering:3 ,short:'move' ,long :'move straight left'}                    ,
+    MOVE_L    : {action_group:'movement' ,ordering:3 ,short:'move' ,long :'move straight left'}                    ,
     MOVE_WAIT : {action_group:'movement' ,ordering:3 ,short:'move' ,long :'move nowhere - wait one turn'}          ,
     MOVE_R    : {action_group:'movement' ,ordering:3 ,short:'move' ,long :'move straight right'}                   ,
     MOVE_DL   : {action_group:'movement' ,ordering:3 ,short:'move' ,long :'move diagonally down and to the left'}  ,
-    MOVE_D    : {action_group:'movement' , ordering:3 ,short:'move' ,long :'move straight down'}                    ,
-    MOVE_DR   : {action_group:'movement'  ,ordering:3 ,short:'move' ,long :'move diagonally down and to the right'} ,
+    MOVE_D    : {action_group:'movement' ,ordering:3 ,short:'move' ,long :'move straight down'}                    ,
+    MOVE_DR   : {action_group:'movement' ,ordering:3 ,short:'move' ,long :'move diagonally down and to the right'} ,
+    ENTER_DOOR: {action_group:'enter'    ,ordering:3 ,short:'ent'  ,long :'enter new map'} , 
   }
 };
 
@@ -167,12 +168,13 @@ Game.KeyBinding.BindingSet.laptop.PERSISTENCE_SAVE = {label:'shift-s' ,inputMatc
 Game.KeyBinding.BindingSet.laptop.PERSISTENCE_LOAD = {label:'shift-l' ,inputMatch:ROT.VK_L ,inputType:'keydown'  ,inputMetaShift:true  ,inputMetaCtrl:false};
 Game.KeyBinding.BindingSet.laptop.PERSISTENCE_NEW  = {label:'shift-n' ,inputMatch:ROT.VK_N ,inputType:'keydown'  ,inputMetaShift:true  ,inputMetaCtrl:false};
 
-Game.KeyBinding.BindingSet.laptop.MOVE_UL   = {label:'y' ,inputMatch:ROT.VK_Y ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
-Game.KeyBinding.BindingSet.laptop.MOVE_U    = {label:'k' ,inputMatch:ROT.VK_K ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
-Game.KeyBinding.BindingSet.laptop.MOVE_UR   = {label:'u' ,inputMatch:ROT.VK_U ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
-Game.KeyBinding.BindingSet.laptop.MOVE_L    = {label:'h' ,inputMatch:ROT.VK_H ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
-Game.KeyBinding.BindingSet.laptop.MOVE_WAIT = {label:'.' ,inputMatch:ROT.VK_PERIOD ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
-Game.KeyBinding.BindingSet.laptop.MOVE_R    = {label:'l' ,inputMatch:ROT.VK_L ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
-Game.KeyBinding.BindingSet.laptop.MOVE_DL   = {label:'b' ,inputMatch:ROT.VK_B ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
-Game.KeyBinding.BindingSet.laptop.MOVE_D    = {label:'j' ,inputMatch:ROT.VK_J ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
-Game.KeyBinding.BindingSet.laptop.MOVE_DR   = {label:'n' ,inputMatch:ROT.VK_N ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
+Game.KeyBinding.BindingSet.laptop.MOVE_UL    = {label:'y' ,inputMatch:ROT.VK_Y ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
+Game.KeyBinding.BindingSet.laptop.MOVE_U     = {label:'k' ,inputMatch:ROT.VK_K ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
+Game.KeyBinding.BindingSet.laptop.MOVE_UR    = {label:'u' ,inputMatch:ROT.VK_U ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
+Game.KeyBinding.BindingSet.laptop.MOVE_L     = {label:'h' ,inputMatch:ROT.VK_H ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
+Game.KeyBinding.BindingSet.laptop.MOVE_WAIT  = {label:'.' ,inputMatch:ROT.VK_PERIOD ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
+Game.KeyBinding.BindingSet.laptop.MOVE_R     = {label:'l' ,inputMatch:ROT.VK_L ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
+Game.KeyBinding.BindingSet.laptop.MOVE_DL    = {label:'b' ,inputMatch:ROT.VK_B ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
+Game.KeyBinding.BindingSet.laptop.MOVE_D     = {label:'j' ,inputMatch:ROT.VK_J ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
+Game.KeyBinding.BindingSet.laptop.MOVE_DR    = {label:'n' ,inputMatch:ROT.VK_N ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
+Game.KeyBinding.BindingSet.laptop.ENTER_DOOR = {label:'/', inputMath: ROT.VK_SLASH, inputType: 'keydown', inputMetaShift: false, inputMetaCtrl: false};

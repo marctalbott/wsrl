@@ -10,6 +10,7 @@ Game.Tile = function(properties) {
   this.attr._transparent = properties.transparent||false;
   this.attr._opaque = (properties.opaque !== undefined) ? properties.opaque : (! this.attr._transparent);
   this.attr._transparent = !this.attr._opaque;
+//  this.attr._tileId = x
   // this.attr = {
   //   _name: name,
   //   _sym: symbol

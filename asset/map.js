@@ -13,7 +13,8 @@ Game.Map = function (mapTileSetName) {
     _height: this._tiles[0].length,
     _entityIdsByLocation: {},
     _locationsByEntityId: {},
-    _rememberCoords: {}
+    _rememberCoords: {},
+    _itemsByLocation: {}
   };
 
   this._fov = null;
@@ -118,23 +119,51 @@ Game.Map.prototype.getEntitiesNearby = function (radius, x_or_pos, y) {
 //   return foundEnts;
 // };
 
-Game.Map.prototype.renderOn = function (display, camX, camY, showEntities, showTiles, maskRendered, isBase, memoryOnly, renderOptions) {
-  var renderOps = renderOptions || {};
-  if( renderOps ) var visCells = renderOps.visibleCells;
+// <<<<<<< HEAD
+// Game.Map.prototype.renderOn = function (display, camX, camY, showEntities, showTiles, maskRendered, isBase, memoryOnly, renderOptions) {
+//   var renderOps = renderOptions || {};
+//   if( renderOps ) var visCells = renderOps.visibleCells;
   
-  var isOffice = (isBase !== undefined ) ? isBase : false;
-  var entitiesVisible = (showEntities !== undefined) ? showEntities : true;
-  var tilesVisible = (showTiles !== undefined) ? showTiles : true;
-  var isMasked = (maskRendered !== undefined) ? maskRendered : true;
-  var filterForRemembered = (memoryOnly !== undefined) ? memoryOnly : true;
+//   var isOffice = (isBase !== undefined ) ? isBase : false;
+//   var entitiesVisible = (showEntities !== undefined) ? showEntities : true;
+//   var tilesVisible = (showTiles !== undefined) ? showTiles : true;
+//   var isMasked = (maskRendered !== undefined) ? maskRendered : true;
+//   var filterForRemembered = (memoryOnly !== undefined) ? memoryOnly : true;
 
-  console.log( "CHECK MASKED ");
-  console.log( isMasked );
-  if (!entitiesVisible && !tilesVisible) { return; }
-  if( !isOffice ) {
-    console.log( "not masked" ); 
-    return this.renderUnmasked( display, camX, camY );
-  }
+//   console.log( "CHECK MASKED ");
+//   console.log( isMasked );
+//   if (!entitiesVisible && !tilesVisible) { return; }
+//   if( !isOffice ) {
+//     console.log( "not masked" ); 
+//     return this.renderUnmasked( display, camX, camY );
+//   }
+// =======
+Game.Map.prototype.renderOn = function (display, camX, camY, renderOptions) {
+  // var renderOps = renderOptions || {};
+  // if( renderOps ) var visCells = renderOps.visibleCells;
+  // var entitiesVisible = (showEntities !== undefined) ? showEntities : true;
+  // var tilesVisible = (showTiles !== undefined) ? showTiles : true;
+  // var isMasked = (maskRendered !== undefined) ? maskRendered : true;
+  // var filterForRemembered = (memoryOnly !== undefined) ? memoryOnly : true;
+  //
+  // if (!entitiesVisible && !tilesVisible) { return; }
+
+  var opt = renderOptions || {};
+  // console.log(opt);
+  var checkCellsVisible = opt.visibleCells !== undefined;
+  var visibleCells = opt.visibleCells || {};
+  var showVisibleEntities = (opt.showVisibleEntities !== undefined) ? opt.showVisibleEntities : true;
+  var showVisibleItems = (opt.showVisibleItems !== undefined) ? opt.showVisibleItems : true;
+  var showVisibleTiles = (opt.showVisibleTiles !== undefined) ? opt.showVisibleTiles : true;
+  var isUnmasked = (opt.isUnmasked !== undefined) ? opt.isUnmasked : false;
+  var checkCellsMasked = opt.maskedCells !== undefined;
+  var maskedCells = opt.maskedCells || {};
+  var showMaskedEntities = (opt.showMaskedEntities !== undefined) ? opt.showMaskedEntities : false;
+  var showMaskedItems = (opt.showMaskedItems !== undefined) ? opt.showMaskedItems : false;
+  var showMaskedTiles = (opt.showMaskedTiles !== undefined) ? opt.showMaskedTiles : true;
+
+  if (!(showVisibleEntities || showVisibleTiles || showMaskedEntities || showMaskedTiles)) { return; }
+  if( isUnmasked ) return this.renderUnmasked( display, camX, camY );
 
 //  console.dir( visCells );
   var dispW = display._options.width;
@@ -144,29 +173,67 @@ Game.Map.prototype.renderOn = function (display, camX, camY, showEntities, showT
   for (var x = 0; x < dispW; x++) {
     for (var y = 0; y < dispH; y++) {
       var mapPos = {x:x+xStart, y:y+yStart};
-      if (filterForRemembered) {
-        if (!this.attr._rememberCoords[mapPos.x + ',' + mapPos.y]) {
-          continue; 
+      var mapCoord = mapPos.x + ',' + mapPos.y;
+
+      // if (filterForRemembered) {
+      //   if (!this.attr._rememberCoords[mapPos.x + ',' + mapPos.y]) {
+      //     continue;
+      //   }
+      // }
+      // console.log("rendering map");
+
+      if (!((checkCellsVisible && visibleCells[mapCoord]) || (checkCellsMasked && maskedCells[mapCoord]))) {
+        continue;
+      }
+      // if (tilesVisible) {
+      var tile = this.getTile(mapPos);
+      if (tile.getName() == 'nullTile') {
+        tile = Game.MapTileSets[this.attr._mapTileSetName]._wallTile;
+      }
+      if (showVisibleTiles && visibleCells[mapCoord]) {
+        tile.draw(display, x, y);
+      } else if (showMaskedTiles && maskedCells[mapCoord]) {
+        tile.draw(display, x, y, true);
+      }
+      // tile.draw(display, x, y, isMasked);
+
+      // if( visCells.hasOwnProperty(mapPos.x+','+mapPos.y) ) {
+      //   tile.draw(display,x,y,'#ff0000', '#00ff00');
+      // } else {
+      //   tile.draw(display, x, y);
+      // }
+      // }
+
+      var items = this.getItems(mapPos);
+      if (items.length == 1) {
+        if (showVisibleItems && visibleCells[mapCoord]) {
+          items[0].draw(display, x, y);
+        } else if (showMaskedItems && maskedCells[mapCoord]) {
+          items[0].draw(display, x, y, true);
+        }
+      } else if (items.length > 1) {
+        if (showVisibleItems && visibleCells[mapCoord]) {
+          Game.Symbol.ITEM_PILE.draw(display,x,y);
+        } else if (showMaskedItems && maskedCells[mapCoord]) {
+          Game.Symbol.ITEM_PILE.draw(display,x,y,true);
         }
       }
-      if (tilesVisible) {
-        var tile = this.getTile(mapPos);
-        if (tile.getName() == 'nullTile') {
-          tile = Game.MapTileSets[this.attr._mapTileSetName]._wallTile;
-        }
-        tile.draw(display, x, y, isMasked);
-        // if( visCells.hasOwnProperty(mapPos.x+','+mapPos.y) ) {
-        //   tile.draw(display,x,y,'#ff0000', '#00ff00');
-        // } else {
-        //   tile.draw(display, x, y);
-        // }
-      }
-      if (entitiesVisible) {
-        var ent = this.getEntity(mapPos);
-        if(ent) {
-          ent.draw(display,x,y, isMasked);
+
+      var ent = this.getEntity(mapPos);
+      if (ent) {
+        if (showVisibleEntities && visibleCells[mapCoord]) {
+          ent.draw(display,x,y);
+        } else if (showMaskedEntities && maskedCells[mapCoord]) {
+          ent.draw(display,x,y,true);
         }
       }
+
+      // if (entitiesVisible) {
+      //   var ent = this.getEntity(mapPos);
+      //   if(ent) {
+      //     ent.draw(display,x,y, isMasked);
+      //   }
+      // }
     }
   }
 };
@@ -188,9 +255,16 @@ Game.Map.prototype.renderUnmasked = function( display, camX, camY ) {
       if( ent ) {
         ent.draw(display, x, y, false);
       }
+
+      var items = this.getItems(mapPos);
+      if (items.length == 1) {
+          items[0].draw(display, x, y);
+      } else if (items.length > 1) {
+          Game.Symbol.ITEM_PILE.draw(display,x,y);
+      }
+      
     }
   }
-  console.log( "about to return");
   return;
 };
 
@@ -229,6 +303,7 @@ Game.Map.prototype.addEntity = function (ent,pos) {
   this.attr._entityIdsByLocation[pos.x+","+pos.y] = ent;
   // console.log(ent.getId());
   this.attr._locationsByEntityId[ent.getId()] = pos.x+","+pos.y;
+  console.log(ent);
   ent.setMap(this);
   ent.setPos(pos.x, pos.y);
 };
@@ -266,6 +341,52 @@ Game.Map.prototype.extractEntityAt = function (x_or_pos,y) {
   return ent;
 };
 
+Game.Map.prototype.addItem = function (itm, pos) {
+  var loc = pos.x + "," + pos.y;
+  if (!this.attr._itemsByLocation[loc]) {
+    this.attr._itemsByLocation[loc] = [];
+  }
+  this.attr._itemsByLocation[loc].push(itm.getId());
+
+};
+
+Game.Map.prototype.getItems = function (x_or_pos, y) {
+  var useX = x_or_pos, useY = y;
+  if (typeof x_or_pos == 'object') {
+    useX = x_or_pos.x;
+    useY = x_or_pos.y;
+  }
+  var itemIds = this.attr._itemsByLocation[useX + ',' + useY];
+  if (itemIds) { return itemIds.map(function (iid) { return Game.DATASTORE.ITEM[iid]; }); }
+  return [];
+};
+
+Game.Map.prototype.extractItemAt = function (itm_or_idx,x_or_pos,y) {
+  var useX = x_or_pos,useY=y;
+  if (typeof x_or_pos == 'object') {
+    useX = x_or_pos.x;
+    useY = x_or_pos.y;
+  }
+  var itemIds = this.attr._itemsByLocation[useX+','+useY];
+  if (! itemIds) { return false; }
+
+  var item = false, extractedId = '';
+  if (Number.isInteger(itm_or_idx)) {
+    extractedId = itemIds.splice(itm_or_idx,1);
+    item = Game.DATASTORE.ITEM[extractedId];
+  } else {
+    var idToFind = itm_or_idx.getId();
+    for (var i = 0; i < itemIds.length; i++) {
+      if (idToFind === itemIds[i]) {
+        extractedId = itemIds.splice(i,1);
+        item = Game.DATASTORE.ITEM[extractedId];
+        break;
+      }
+    }
+  }
+  return item;
+};
+
 Game.Map.prototype.getRandomLocation = function(filter_func) {
   if (filter_func === undefined) {
     filter_func = function(tile) { return true; };
@@ -275,8 +396,8 @@ Game.Map.prototype.getRandomLocation = function(filter_func) {
     tX = Game.util.randomInt(0,this.attr._width - 1);
     tY = Game.util.randomInt(0,this.attr._height - 1);
     t = this.getTile(tX,tY);
-    console.log( tX + "," + tY );
-    console.log("getting location");
+    // console.log( t.attr._name );
+    // console.log("getting location");
   } while ( !filter_func(t));
   return {x:tX,y:tY};
 };
@@ -286,8 +407,9 @@ Game.Map.prototype.getRandomWalkableLocation = function() {
 };
 
 Game.Map.prototype.getRandomWallLocation = function() {
-  return this.getRandomLocation(function(t){ return !t.isWalkable(); });
-}
+  return this.getRandomLocation(function(t){ 
+    return t.attr._name = 'wall'; });
+};
 
 Game.Map.prototype.rememberCoords = function( toRemember ) {
   for ( var coord in toRemember ) {

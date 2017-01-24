@@ -164,6 +164,7 @@ var Game = {
     this.DATASTORE.ENTITY = {};
     this.DATASTORE.MAP = {};
     this.DATASTORE.GAME_PLAY = {};
+    this.DATASTORE.ITEM = {};
 
   }
 

@@ -107,13 +107,19 @@ Game.MapTileSets = {
       //   mapTiles[this._width-1][i] = Game.Tile.wallTile;
       // }
 
+  
       for( var i=1; i<this._width; i++ ) {
         for( var j=1; j<this._height; j++ ) {
            mapTiles[i][j] = Game.Tile.floorTile;
         }
       }
+      // for (var i = 0; i < this._width; i++) {
+      //   mapTiles[i][1] = wallTile;
+      // }
+      // for (var i = 0; i < this._height; i++) {
+      //   mapTiles[0][i] = wallTile;
+      // }
 
-      mapTiles[Math.round(this._width/2)][0] = Game.Tile.doorTile;
       // for( var x=1; x<this._height-1; x++ ) {
       //   for( var y=1; y<this._width-1; y++ ) {
       //      console.log( mapTiles[x][y]);
