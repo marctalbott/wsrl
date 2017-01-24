@@ -6,7 +6,8 @@ Game.UIMode.DEFAULT_COLOR_STR = '%c{'+Game.UIMode.DEFAULT_COLOR_FG+'}%b{'+Game.U
 Game.UIMode.gameStart = {
   enter: function() {
     console.log("entered gameStart");
-    Game.Message.send("welcome to WSRL");
+    Game.Message.send("welcome to DCSS");
+    Game.Message.send("press any key to start");
     Game.renderAll();
   },
   exit: function() {
@@ -15,8 +16,24 @@ Game.UIMode.gameStart = {
   },
   render: function (display) {
     console.log("rendered gameStart");
-    display.drawText(5,5,"game start mode");
-    display.drawText(5,7,"press any key to start");
+    display.drawText(7,3 , "    ____           ______          _____           _____");
+    display.drawText(6,4 , "   / __ \\         / ____/         / ___/          / ___/");
+    display.drawText(5,5 , "  / / / /        / /              \\__ \\           \\__ \\ ");
+    display.drawText(4,6 , " / /_/ /        / /___           ___/ /          ___/ / ");
+    display.drawText(3,7 , "/_____/ EMON    \\____/ OPY      /____/ TAPLE    /____/ PAWN");
+    // display.drawText(3,8 , "  D:::::D     D:::::D          C:::::C                        S:::::S                      S:::::S            ");
+    // display.drawText(3,9 , "  D:::::D     D:::::D          C:::::C                         S::::SSSS                    S::::SSSS         ");
+    // display.drawText(3,10, "  D:::::D     D:::::D          C:::::C                          SS::::::SSSSS                SS::::::SSSSS    ");
+    // display.drawText(3,11, "  D:::::D     D:::::D          C:::::C                            SSS::::::::SS                SSS::::::::SS  ");
+    // display.drawText(3,12, "  D:::::D     D:::::D          C:::::C                               SSSSSS::::S                  SSSSSS::::S ");
+    // display.drawText(3,13, "  D:::::D     D:::::D          C:::::C                                    S:::::S                      S:::::S");
+    // display.drawText(3,14, "  D:::::D    D:::::D            C:::::C       CCCCCC                      S:::::S                      S:::::S");
+    // display.drawText(3,15, "DDD:::::DDDDD:::::D              C:::::CCCCCCCC::::C          SSSSSSS     S:::::S          SSSSSSS     S:::::S");
+    // display.drawText(3,16, "D:::::::::::::::DD                CC:::::::::::::::C          S::::::SSSSSS:::::S          S::::::SSSSSS:::::S");
+    // display.drawText(3,17, "D::::::::::::DDD                    CCC::::::::::::C          S:::::::::::::::SS           S:::::::::::::::SS ");
+    // display.drawText(3,18, "DDDDDDDDDDDDD        EMON              CCCCCCCCCCCCC OPY       SSSSSSSSSSSSSSS    TAPLE     SSSSSSSSSSSSSSS    PAWN");
+
+    // display.drawText(3,20,"press any key to start");
   },
   handleInput: function (inputType, inputData) {
     console.log("input for gameStart");
