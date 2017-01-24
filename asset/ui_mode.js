@@ -414,7 +414,7 @@ Game.UIMode.gamePlay = {
       var test = Game.ItemGenerator.create('folder');
       for( var ecount=0; ecount<2; ecount++ ) {
         this.getMap().addEntity(Game.EntityGenerator.create('fungus'),this.getMap().getRandomWalkableLocation());
-        this.getMap().addEntity(Game.EntityGenerator.create('jerry'), this.getMap().getRandomWalkableLocation());
+        this.getMap().addEntity(Game.EntityGenerator.create('demon'), this.getMap().getRandomWalkableLocation());
         this.getMap().addItem(Game.ItemGenerator.create('folder'), this.getMap().getRandomWalkableLocation());
       }
     }

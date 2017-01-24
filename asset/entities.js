@@ -38,12 +38,12 @@ Game.EntityGenerator.learn({
 });
 
 Game.EntityGenerator.learn({
-	name: 'jerry',
-	chr: 'j',
+	name: 'demon',
+	chr: 'd',
 	fg: '#00ffff',
 	maxHp: 1,
 	mixins: ["HitPoints", "PeacefulWanderActor", "WalkerCorporeal"]
 	// mixins: [Game.EntityMixin.HitPoints,
 	// 		 Game.EntityMixin.PeacefulWanderActor,
 	// 		 Game.EntityMixin.WalkerCorporeal]
-})
+});

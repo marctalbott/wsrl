@@ -36,7 +36,7 @@ Game.Symbol.prototype.draw = function(display, dispX, dispY, isMasked) {
   // var foreg = foreground || this.attr._fg;
   // var backg = background || this.attr._bg;
   // display.draw(dispX, dispY, this.attr._char, foreg, backg );
-  console.log("drawing");
+  // console.log("drawing");
   if (isMasked) {
     display.draw(dispX, dispY, this.attr._char, this.attr._maskedFg, this.attr._maskedBg);
   } else {
