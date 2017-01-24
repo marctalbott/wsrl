@@ -126,7 +126,7 @@ Game.Map.prototype.renderOn = function (display, camX, camY, renderOptions) {
   // if (!entitiesVisible && !tilesVisible) { return; }
 
   var opt = renderOptions || {};
-  console.log(opt);
+  // console.log(opt);
   var checkCellsVisible = opt.visibleCells !== undefined;
   var visibleCells = opt.visibleCells || {};
   var showVisibleEntities = (opt.showVisibleEntities !== undefined) ? opt.showVisibleEntities : true;
@@ -249,6 +249,7 @@ Game.Map.prototype.addEntity = function (ent,pos) {
   this.attr._entityIdsByLocation[pos.x+","+pos.y] = ent;
   // console.log(ent.getId());
   this.attr._locationsByEntityId[ent.getId()] = pos.x+","+pos.y;
+  console.log(ent);
   ent.setMap(this);
   ent.setPos(pos.x, pos.y);
 };

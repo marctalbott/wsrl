@@ -5,7 +5,7 @@ Game.Entity = function( template ) {
 	template = template || {};
 
 	this._mixinSet = Game.EntityMixin;
-	
+
 	Game.SymbolActive.call (this, template);
 	this.attr._x = template.x || 0;
 	this.attr._y = template.y || 0;
@@ -14,6 +14,7 @@ Game.Entity = function( template ) {
 
 	Game.DATASTORE.ENTITY[this.attr._id] = this;
 };
+
 
 Game.Entity.extend( Game.SymbolActive );
 
