@@ -4,6 +4,7 @@ Game.MapTileSets = {
     _height: 20,
     _wallTile: Game.Tile.wallTile,
     _floorTile: Game.Tile.floorTile,
+    _masked: true,
 
     getMapTiles: function () {
       var wallTile = this._wallTile;
@@ -42,6 +43,7 @@ Game.MapTileSets = {
     _height: 20,
     _wallTile: Game.Tile.desertWallTile,
     _floorTile: Game.Tile.desertTile,
+    _masked: true,
     getMapTiles: function () {
       var wallTile = this._wallTile;
       var floorTile = this._floorTile;
@@ -79,8 +81,9 @@ Game.MapTileSets = {
   office: {
     _width: 40,
     _height: 30,
-    _wallTile: Game.Tile.officeWallTile,
-    _floorTile: Game.Tile.officeTile,
+    _wallTile: Game.Tile.wallTile,
+    _floorTile: Game.Tile.floorTile,
+    _masked: false,
     getMapTiles: function() {
       var wallTile = this._wallTile;
       var floorTile = this._floorTile;
@@ -109,8 +112,8 @@ Game.MapTileSets = {
            mapTiles[i][j] = Game.Tile.floorTile;
         }
       }
-      console.log("map:");
-      console.dir(mapTiles);
+
+      mapTiles[Math.round(this._width/2)][0] = Game.Tile.doorTile;
       // for( var x=1; x<this._height-1; x++ ) {
       //   for( var y=1; y<this._width-1; y++ ) {
       //      console.log( mapTiles[x][y]);
@@ -118,6 +121,9 @@ Game.MapTileSets = {
       // }
       return mapTiles;
 
+    },
+    isMasked: function(){
+      return this._masked;
     }
   }
 };

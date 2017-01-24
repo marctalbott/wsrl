@@ -268,8 +268,11 @@ Game.UIMode.gamePlay = {
     //   maskedCells: this.getAvatar().getRememberedCoordsForMap()
     // });
     // this.getAvatar().rememberCoords(seenCells);
-
-    this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY, false, true, true);
+    if( Game.DATASTORE.MAP[this.attr._mapId].attr._mapTileSetName == 'office' ) {
+      this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY, false, true, true, false );
+    } else {       
+      this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY, false, true, true );
+    }
     this.getMap().rememberCoords(this.getMap().renderFovOn(display, this.attr._cameraX, this.attr._cameraY, this.getAvatar().getSightRadius()));
 
 //     for( var cell in seenCells ) {

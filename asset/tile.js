@@ -42,3 +42,5 @@ Game.Tile.floorTile = new Game.Tile({name:'floor', chr: '.', walkable:true, tran
 Game.Tile.wallTile = new Game.Tile({name:'wall', chr: '#'});
 Game.Tile.desertTile = new Game.Tile({name:'desert', chr: '.', walkable:true, transparent:true, fg: '#f4a460', maskedFg: '#7a5230'});
 Game.Tile.desertWallTile = new Game.Tile({name:'desertWall', chr: '#', fg:'#db9356', maskedFg: '#614126'});
+Game.Tile.doorTile = new Game.Tile({name:'door', chr: '/', walkable: true});
+
