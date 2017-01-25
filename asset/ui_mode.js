@@ -272,7 +272,7 @@ Game.UIMode.gamePlay = {
     //   maskedCells: this.getAvatar().getRememberedCoordsForMap()
     // });
     // this.getAvatar().rememberCoords(seenCells);
-    if( Game.DATASTORE.MAP[this.attr._mapId].attr._mapTileSetName == 'office' ) {
+    if( Game.DATASTORE.MAP[this.attr._mapId].attr._mapTileSetName == 'desert1' ) {
       this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY, {
         isUnmasked: true
       });
@@ -281,9 +281,9 @@ Game.UIMode.gamePlay = {
       this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY, {
       visibleCells: seenCells,
       maskedCells: this.getAvatar().getRememberedCoordsForMap()
-    });
-    this.getAvatar().rememberCoords(seenCells);
-    this.getMap().rememberCoords(this.getMap().renderFovOn(display, this.attr._cameraX, this.attr._cameraY, this.getAvatar().getSightRadius()));
+      });
+      this.getAvatar().rememberCoords(seenCells);
+      this.getMap().rememberCoords(this.getMap().renderFovOn(display, this.attr._cameraX, this.attr._cameraY, this.getAvatar().getSightRadius()));
     }
    
 
@@ -421,7 +421,7 @@ Game.UIMode.gamePlay = {
     // this.setMap(new Game.Map('caves1'));
 //    this.setMap(new Game.Map('office'));
 //    console.dir(this.attr);
-    this.setMapName('office')
+    this.setMapName('desert1');
     this.setMap(new Game.Map(this.attr._mapName));
     // console.log( this.getMap());
     // console.log( "set map");
@@ -448,7 +448,7 @@ Game.UIMode.gamePlay = {
         this.getMap().addEntity(Game.EntityGenerator.create('demon'), this.getMap().getRandomWalkableLocation());
         this.getMap().addEntity(Game.EntityGenerator.create('binger'), this.getMap().getRandomWalkableLocation());
         this.getMap().addItem(Game.ItemGenerator.create('folder'), this.getMap().getRandomWalkableLocation());
-        this.getMap().addItem(Game.ItemGenerator.create('desertDoor'), {x: Math.round(this.getMap().getWidth()/2), y: 1})
+        this.getMap().addItem(Game.ItemGenerator.create('desertDoor'), this.getMap().getRandomWallLocation());//{x: Math.round(this.getMap().getWidth()/2), y: 1})
       }
     }
 

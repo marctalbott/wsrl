@@ -407,7 +407,8 @@ Game.Map.prototype.getRandomWalkableLocation = function() {
 
 Game.Map.prototype.getRandomWallLocation = function() {
   return this.getRandomLocation(function(t){ 
-    return t.attr._name = 'wall'; });
+    return !t.isWalkable(); });
+    //return t.attr._name = 'wall'; });
 };
 
 Game.Map.prototype.rememberCoords = function( toRemember ) {
@@ -416,6 +417,10 @@ Game.Map.prototype.rememberCoords = function( toRemember ) {
       this.attr._rememberCoords[coord] = true;
     }
   }
+};
+
+Game.Map.prototype.populateMap = function() {
+
 };
 /*
 
