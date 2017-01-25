@@ -64,15 +64,19 @@ Game.UIMode.flavor = {
 
 Game.UIMode.gamePersistence = {
   RANDOM_SEED_KEY: 'gameRandomSeed',
+  _storedKeyBinding: '',
 
   enter: function() {
     console.log("entered gamePersistence");
+    this._storedKeyBinding = Game.KeyBinding.getKeyBinding();
+    Game.KeyBinding.setKeyBinding('persist');
     Game.Message.ageMessages();
     Game.Message.send("save, restore, or new game");
     Game.renderAll();
   },
   exit: function() {
     console.log("exited gamePersistence");
+    Game.KeyBinding.setKeyBinding(this._storedKeyBinding);
     Game.renderAll();
     // Game.Message.clear();
   },
@@ -83,12 +87,12 @@ Game.UIMode.gamePersistence = {
   handleInput: function (inputType, inputData) {
     console.log("input for gamePersistence");
     var actionBinding = Game.KeyBinding.getInputBinding(inputType, inputData);
-    console.log(actionBinding);
 
     if (!actionBinding) {
       return false;
     }
 
+    console.log(actionBinding);
     if (actionBinding.actionKey == 'PERSISTENCE_SAVE') {
       this.saveGame();
       // L
@@ -99,7 +103,14 @@ Game.UIMode.gamePersistence = {
       console.log( "NEW GAME");
       this.newGame();
     } else if (actionBinding.actionKey == 'CANCEL') {
-      Game.switchUIMode('gamePlay');
+      if (Object.keys(Game.DATASTORE.MAP).length < 1) {
+        this.newGame();
+      } else {
+        Game.switchUIMode('gamePlay');
+      }
+    } else if (actionBinding.actionKey == 'HELP') {
+      console.log('TODO: set up help stuff for gamepersistence');
+      Game.addUIMode('LAYER_textReading');
     }
   },
 
@@ -269,6 +280,7 @@ Game.UIMode.gamePlay = {
 
     // Game.Message.clear();
     Game.renderAll();
+    Game.KeyBinding.informPlayer();
     Game.TimeEngine.unlock();
   },
   exit: function() {
@@ -380,6 +392,9 @@ Game.UIMode.gamePlay = {
       console.log('drop');
       var dropRes = this.getAvatar().dropItems(this.getAvatar().getItemIds());
       tookTurn = dropRes.numItemsDropped > 0;
+    } else if (actionBinding.actionKey == 'HELP') {
+      console.log('TODO: setup help for gameplay');
+      Game.addUIMode('LAYER_textReading');
     }
 
     //Game.Message.ageMessages();
@@ -472,6 +487,39 @@ Game.UIMode.gamePlay = {
   }
 };
 
+Game.UIMode.LAYER_textReading = {
+    _storedKeyBinding: '',
+    _text: 'default',
+    enter: function () {
+      this._storedKeyBinding = Game.KeyBinding.getKeyBinding();
+      Game.KeyBinding.setKeyBinding('LAYER_textReading');
+      Game.renderAll();
+    },
+    exit: function () {
+      Game.KeyBinding.setKeyBinding(_storedKeyBinding);
+      Game.renderAll();
+    },
+    render: function (display) {
+      display.drawText(1, 3, "text is " + _text);
+    },
+    handleInput: function (inputType, inputData) {
+      var actionBinding = Game.KeyBinding.getInputBinding(inputType, inputData);
+      if (!actionBinding) {
+        return false;
+      }
+
+      if (actionBinding == "CANCEL") {
+        Game.removeUIMode();
+      }
+      return false;
+    },
+    getText: function () {
+      return this._text;
+    },
+    setText: function (t) {
+      this._text = t;
+    }
+};
 
 Game.UIMode.gameWin = {
   enter: function() {

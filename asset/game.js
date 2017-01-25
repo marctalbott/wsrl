@@ -15,17 +15,20 @@ window.onload = function() {
     document.getElementById('wsrl-main-display').appendChild(Game.getDisplay('main').getContainer());
     document.getElementById('wsrl-message-display').appendChild(Game.getDisplay('message').getContainer());
 
-    var bindEventToScreen = function(eventType) {
+
+    Game.switchUIMode('gameStart');
+    // console.log(this);
+    var bindEventToUIMode = function(eventType) {
       window.addEventListener(eventType, function(evt){
-        Game.eventHandler(eventType, evt);
+        if (Game.getCurUIMode() !== null) {
+          Game.getCurUIMode().handleInput(event, evt);
+        }
       });
     };
 
     //Bind Keyboard events
-    bindEventToScreen('keypress');
-    bindEventToScreen('keydown');
-
-    Game.switchUIMode('gameStart');
+    bindEventToUIMode('keypress');
+    bindEventToUIMode('keydown');
   }
 };
 
@@ -85,7 +88,8 @@ var Game = {
 
     this.renderAll();
 
-    Game.KeyBinding.useKeyBinding();
+
+    Game.KeyBinding.setKeyBinding();
   },
 
   initializeTimingEngine: function() {
