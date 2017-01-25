@@ -301,7 +301,6 @@ Game.Map.prototype.addEntity = function (ent,pos) {
   this.attr._entityIdsByLocation[pos.x+","+pos.y] = ent;
   // console.log(ent.getId());
   this.attr._locationsByEntityId[ent.getId()] = pos.x+","+pos.y;
-  console.log(ent);
   ent.setMap(this);
   ent.setPos(pos.x, pos.y);
 };

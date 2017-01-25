@@ -154,12 +154,12 @@ var Game = {
     this._curUIMode = newMode;
     // handle enter for new mode
     console.dir( this._curUIMode );
-    if( this._curUIMode.JSON_KEY == 'UIMode_gamePlay' ) {
-//      console.
-       this._curUIMode.enter(this._curUIMode.attr._mapName);
-    } else {
+//     if( this._curUIMode.JSON_KEY == 'UIMode_gamePlay' ) {
+// //      console.
+//        this._curUIMode.enter(this._curUIMode.attr._mapName);
+//     } else {
       this._curUIMode.enter();
-    }
+    //}
     // render new mode
     this.renderAll();
   },

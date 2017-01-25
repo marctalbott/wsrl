@@ -480,6 +480,9 @@ Game.UIMode.enterDoor = {
   setDoor: function( door ) {
     this.attr._doorId = door.getId();
   },
+  getDoor: function() {
+    return Game.DATASTORE.ITEM[this.attr._doorId];
+  },
   handleInput: function(inputType, inputData) {
     var actionBinding = Game.KeyBinding.getInputBinding(inputType, inputData);
 
@@ -495,6 +498,7 @@ Game.UIMode.enterDoor = {
 //      Game.UIMode.gamePlay.setMapName('desert1');
       Game.switchUIMode(Game.UIMode.gamePlay);
     } else if( actionBinding.actionKey == 'NEGATIVE' ) {
+      Game.UIMode.gamePlay.setMap( this.getDoor().getMap() );
       Game.switchUIMode(Game.UIMode.gamePlay);
     }
   }
