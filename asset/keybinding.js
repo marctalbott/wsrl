@@ -97,6 +97,10 @@ Game.KeyBinding = {
     if (inputType === 'keypress') {
       bindingKey = String.fromCharCode(inputData.charCode);
     }
+    console.log("meta " +metaKey);
+    console.log("bindingkey " +bindingKey);
+    console.log("inputtype " +inputType);
+    console.log("inputtypetype " +inputType.type);
 
     //console.log("bindingLookup");
 //    console.log(this._currentBindingLookup[inputType][metaKey]);
@@ -105,6 +109,7 @@ Game.KeyBinding = {
     // console.log(inputType);
     // console.log(this._currentBindingLookup);
     // console.log (this._currentBindingLookup);
+    console.dir(this._currentBindingLookup);
     return this._currentBindingLookup[inputType.type][metaKey][bindingKey] || false;
   },
 
@@ -211,7 +216,7 @@ Game.KeyBinding = {
 
    //HELP action definition goes here
    HELP : {action_group:'meta' ,guid :Game.util.uniqueId() ,ordering:1 ,short:'help' ,long:'show which keys do which commands',
-     all: {label:'?'     ,inputMatch:'?'      ,inputType:'keypress' ,inputMetaShift:true ,inputMetaCtrl:false}
+     all: {label:'?'     ,inputMatch:ROT.VK_SLASH      ,inputType:'keydown' ,inputMetaShift:true ,inputMetaCtrl:false}
    },
    CHANGE_BINDINGS : {action_group:'meta' ,guid :Game.util.uniqueId() ,ordering:1 ,short:'controls' ,long:'change which keys do which commands',
      all: {label:'\\'  ,inputMatch:ROT.VK_BACK_SLASH ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false}

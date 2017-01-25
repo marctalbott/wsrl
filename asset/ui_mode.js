@@ -349,7 +349,7 @@ Game.UIMode.gamePlay = {
   },
   handleInput: function (inputType, inputData) {
     var actionBinding = Game.KeyBinding.getInputBinding(inputType, inputData);
-
+    console.log(inputData);
     //var pressedKey = String.fromCharCode(inputData.charCode);
     var tookTurn = false;
     if (!actionBinding) {
@@ -496,19 +496,20 @@ Game.UIMode.LAYER_textReading = {
       Game.renderAll();
     },
     exit: function () {
-      Game.KeyBinding.setKeyBinding(_storedKeyBinding);
+      Game.KeyBinding.setKeyBinding(this._storedKeyBinding);
       Game.renderAll();
     },
     render: function (display) {
-      display.drawText(1, 3, "text is " + _text);
+      display.drawText(1, 3, "text is " + this._text);
     },
     handleInput: function (inputType, inputData) {
+      console.log("handle");
       var actionBinding = Game.KeyBinding.getInputBinding(inputType, inputData);
       if (!actionBinding) {
         return false;
       }
-
-      if (actionBinding == "CANCEL") {
+      if (actionBinding.actionKey == "CANCEL") {
+        console.log("remove");
         Game.removeUIMode();
       }
       return false;
