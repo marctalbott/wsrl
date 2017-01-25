@@ -18,12 +18,13 @@ Game.ItemMixin.doorMixin = {
 				if( !this.attr._doorMixin_attr.hasBeenEntered ) {
 					this.attr._doorMixin_attr.hasBeenEntered = true;
 					var newMap = new Game.Map(evtData.mapName);
-					Game.UI_Mode.gamePlay.setMap(newMap);
+					Game.UIMode.gamePlay.setMap(newMap);
 					this.setConnectTo(newMap.attr._id);
 				} else {
-					Game.UI_Mode.gamePlay.setMap( this.attr._doorMixin.connectTo );
+					Game.UIMode.gamePlay.setMap( this.attr._doorMixin.connectTo );
 				}
-				Game.UIMode.enterDoor.setDoor(map.getItems(targetX, targetY)[0]);
+				console.dir( this.getMap() );
+				Game.UIMode.enterDoor.setDoor(this.getMap().getItems(evtData.targetX, evtData.targetY)[0]);
      			Game.switchUIMode(Game.UIMode.enterDoor);
 			}
 		}

@@ -3,8 +3,6 @@ Game.DATASTORE.MAP = {};
 Game.Map = function (mapTileSetName) {
 
   this._tiles = Game.MapTileSets[mapTileSetName].getMapTiles();
-  console.log( "tiles:");
-  console.dir( this._tiles );
 
   this.attr = {
     _id: Game.util.randomString(32),
@@ -346,6 +344,8 @@ Game.Map.prototype.addItem = function (itm, pos) {
   if (!this.attr._itemsByLocation[loc]) {
     this.attr._itemsByLocation[loc] = [];
   }
+  itm.setMap(this);
+  itm.setPos(pos.x, pos.y);
   this.attr._itemsByLocation[loc].push(itm.getId());
 
 };
