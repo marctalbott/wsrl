@@ -41,7 +41,8 @@ Game.EntityMixin.WalkerCorporeal = {
       this.raiseSymbolActiveEvent('tookTurn');
       return true;
     }
-    if (map.getTile(targetX, targetY).isWalkable()) {
+    targetTile = map.getTile(targetX, targetY);
+    if (targetTile.isWalkable()) {
       this.setPos(targetX, targetY);
       var myMap = this.getMap();
       if( myMap ) {
@@ -53,6 +54,8 @@ Game.EntityMixin.WalkerCorporeal = {
 
       this.raiseSymbolActiveEvent('tookTurn');
       return true;
+    } else {
+      this.raiseSymbolActiveEvent('walkForbidden', {target:targetTile});
     }
     return false;
   }
@@ -141,7 +144,7 @@ Game.EntityMixin.HitPoints = {
       },
       'killed': function(evtData) {
         //console.log('HitPoints killed');
-        Game.Message.send(this.getName() + " killed!");
+        // Game.Message.send(this.getName() + " killed!");
         this.destroy();
         this.raiseSymbolActiveEvent('entityDestroyed');
         console.log("entity destroyed");
@@ -196,8 +199,8 @@ Game.EntityMixin.MeleeAttacker = {
     listeners: {
       'bumpEntity': function(evtData) {
         console.log('MeleeAttacker bumpEntity');
-        Game.Message.send(evtData.recipient.getName() + " hit for " + this.getAttackPower() + " damage!");
-        Game.Message.ageMessages();
+        // Game.Message.send(evtData.recipient.getName() + " hit for " + this.getAttackPower() + " damage!");
+        // Game.Message.ageMessages();
         evtData.recipient.raiseSymbolActiveEvent('attacked',{attacker:evtData.actor,attackPower:this.getAttackPower()});
       }
     }
@@ -502,7 +505,173 @@ Game.EntityMixin.EnemyWanderActor = {
   //   }
   // }
 
-}
+};
+
+Game.EntityMixin.PlayerMessager = {
+  META: {
+    mixinName: 'PlayerMessager',
+    mixinGroup: 'PlayerMessager',
+    listeners: {
+      'walkForbidden': function (evtData) {
+        Game.Message.send('you can\'t walk into the ' + evtData.target.getName());
+        Game.renderMessage();
+        Game.Message.ageMessages();
+      },
+
+      'dealtDamage': function (evtData) {
+        Game.Message.send('you hit the ' + evtData.damagee.getName() + ' for ' + evtData.damageAmount);
+        Game.renderMessage();
+        // Game.Message.ageMessages();
+      },
+
+      'madeKill': function (evtData) {
+        Game.Message.ageMessages();
+        Game.Message.send('you killed the ' + evtData.entKilled.getName());
+        Game.renderMessage();
+      },
+
+      'noItemsToPickup': function (evtData) {
+        Game.Message.send('there is nothing to pickup');
+        Game.renderMessage();
+      },
+
+      'inventoryFull': function (evtData) {
+        Game.Message.send('your inventory is full');
+        Game.renderMessage();
+      },
+
+      'inventoryEmpty': function (evtData) {
+        Game.Message.send('your inventory is empty');
+        Game.renderMessage();
+      },
+
+      'noItemsPickedUp': function (evtData) {
+        Game.Message.send('you could not pick up any items');
+        Game.renderMessage();
+      },
+
+      'someItemsPickedUp': function (evtData) {
+        Game.Message.send('you picked up ' + evtData.numItemsPickedUp + ' of the items, leaving ' + evtData.numItemsNotPickedUp + ' items behind');
+        Game.renderMessage();
+      },
+
+      'allItemsPickedUp': function (evtData) {
+        if (evtData.numItemsPickedUp > 1) {
+          Game.Message.send('you picked up all ' + evtData.numItemsPickedUp + ' of the items');
+        } else {
+          Game.Message.send('you picked up the item');
+        }
+        Game.renderMessage();
+      },
+
+      'itemsDropped': function (evtData) {
+        Game.Message.send('you dropped ' + evtData.numDropped + ' item' + (evtData.numDropped > 1 ? 's' : ''));
+        Game.renderMessage();
+      }
+    }
+  }
+};
+
+Game.EntityMixin.InventoryHolder = {
+  META: {
+    mixinName: 'InventoryHolder',
+    mixinGroup: 'InventoryHolder',
+    stateNamespace: '_InventoryHolder_attr',
+    stateModel:  {
+      containerId: '',
+      inventoryCapacity: 5
+    },
+    init: function (template) {
+      this.attr._InventoryHolder_attr.inventoryCapacity = template.inventoryCapacity || 5;
+      if (template.containerId) {
+        this.attr._InventoryHolder_attr.containerId = template.containerId;
+      } else {
+        var container = Game.ItemGenerator.create('_inventoryContainer');
+        container.setCapacity(this.attr._InventoryHolder_attr.inventoryCapacity);
+        this.attr._InventoryHolder_attr.containerId = container.getId();
+      }
+    },
+    listeners: {
+      'pickupItems': function(evtData) {
+        return {addedAnyItems: this.pickupItems(evtData.itemSet)};
+      },
+      'dropItems': function(evtData) {
+        return {droppedItems: this.dropItems(evtData.itemSet)};
+      }
+    }
+  },
+  _getContainer: function () {
+    return Game.DATASTORE.ITEM[this.attr._InventoryHolder_attr.containerId];
+  },
+  hasSpace: function () {
+    return this._getContainer().hasSpace();
+  },
+  addItems: function (items_or_ids) {
+    return this._getContainer().addItems(items_or_ids);
+  },
+  getItemIds: function () {
+    return this._getContainer().getItemIds();
+  },
+  extractItems: function (ids_or_idxs) {
+    return this._getContainer().extractItems(ids_or_idxs);
+  },
+  pickupItems: function (ids_or_idxs) {
+    var itemsToAdd = [];
+    var fromPile = this.getMap().getItems(this.getPos());
+    var pickupResult = {
+      numItemsPickedUp:0,
+      numItemsNotPickedUp:ids_or_idxs.length
+    };
+
+    if (fromPile.length < 1) {
+      this.raiseSymbolActiveEvent('noItemsToPickup');
+      return pickupResult;
+    }
+    if (! this._getContainer().hasSpace()) {
+      this.raiseSymbolActiveEvent('inventoryFull');
+      this.raiseSymbolActiveEvent('noItemsPickedUp');
+      return pickupResult;
+    }
+
+    for (var i = 0; i < fromPile.length; i++) {
+      if ((ids_or_idxs.indexOf(i) > -1) || (ids_or_idxs.indexOf(fromPile[i].getId()) > -1)) {
+          itemsToAdd.push(fromPile[i]);
+      }
+    }
+    var addResult = this._getContainer().addItems(itemsToAdd);
+    pickupResult.numItemsPickedUp = addResult.numItemsAdded;
+    pickupResult.numItemsNotPickedUp = addResult.numItemsNotAdded;
+    for (var j = 0; j < pickupResult.numItemsPickedUp; j++) {
+      this.getMap().extractItemAt(itemsToAdd[j],this.getPos());
+    }
+
+    if (pickupResult.numItemsNotPickedUp > 0) {
+      this.raiseSymbolActiveEvent('someItemsPickedUp',pickupResult);
+    } else {
+      this.raiseSymbolActiveEvent('allItemsPickedUp',pickupResult);
+    }
+
+    return pickupResult;
+  },
+  dropItems: function (ids_or_idxs) {
+    var itemsToDrop = this._getContainer().extractItems(ids_or_idxs);
+    var dropResult = {numDropped:0};
+    if (itemsToDrop.length < 1) {
+      this.raiseSymbolActiveEvent('inventoryEmpty');
+      return dropResult;
+    }
+    for (var i = 0; i < itemsToDrop.length; i++) {
+      if (itemsToDrop[i]) {
+        this.getMap().addItem(itemsToDrop[i],this.getPos());
+        dropResult.numDropped++;
+      }
+    }
+    console.log("drop items!");
+    console.log(dropResult);
+    this.raiseSymbolActiveEvent('itemsDropped',dropResult);
+    return dropResult;
+  }
+};
 
 Game.EntityMixin.AvatarFollower = {
   META: {

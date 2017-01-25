@@ -7,7 +7,8 @@ Game.EntityGenerator.learn({
 	chr: '🐵',
 	fg: '#dda',
 	maxHp: 10,
-	mixins: ["PlayerActor", "WalkerCorporeal", "Chronicle", "HitPoints", "MeleeAttacker", "Sight", "MapMemory"]
+	inventoryCapacity: 4,
+	mixins: ["PlayerActor", "WalkerCorporeal", "Chronicle", "HitPoints", "MeleeAttacker", "Sight", "MapMemory", "InventoryHolder", "PlayerMessager"]
 	// mixins: [Game.EntityMixin.PlayerActor,
 	// 		 Game.EntityMixin.WalkerCorporeal,
 	// 		 Game.EntityMixin.Chronicle,

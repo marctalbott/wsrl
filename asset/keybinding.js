@@ -125,6 +125,9 @@ Game.KeyBinding = {
     MOVE_DL   : {action_group:'movement' ,ordering:3 ,short:'move' ,long :'move diagonally down and to the left'}  ,
     MOVE_D    : {action_group:'movement' , ordering:3 ,short:'move' ,long :'move straight down'}                    ,
     MOVE_DR   : {action_group:'movement'  ,ordering:3 ,short:'move' ,long :'move diagonally down and to the right'} ,
+
+    PICKUP    : {action_group:'inventory',ordering:4, short:'get', long:'get one or more items on ground'},
+    DROP      : {action_gropu:'inventory',ordering:4, short:'drop',long:'drop one or more items to ground'}
   }
 };
 
@@ -176,3 +179,6 @@ Game.KeyBinding.BindingSet.laptop.MOVE_R    = {label:'l' ,inputMatch:ROT.VK_L ,i
 Game.KeyBinding.BindingSet.laptop.MOVE_DL   = {label:'b' ,inputMatch:ROT.VK_B ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
 Game.KeyBinding.BindingSet.laptop.MOVE_D    = {label:'j' ,inputMatch:ROT.VK_J ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
 Game.KeyBinding.BindingSet.laptop.MOVE_DR   = {label:'n' ,inputMatch:ROT.VK_N ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
+
+Game.KeyBinding.BindingSet.laptop.PICKUP   = {label:'g' ,inputMatch:ROT.VK_G ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
+Game.KeyBinding.BindingSet.laptop.DROP   = {label:'D' ,inputMatch:ROT.VK_D ,inputType:'keydown' ,inputMetaShift:true ,inputMetaCtrl:false};
