@@ -500,7 +500,7 @@ Game.EntityMixin.EnemyWanderActor = {
     var moveDeltas = this.getMoveDeltas();
     this.raiseSymbolActiveEvent('adjacentMove', {dx: moveDeltas.x, dy: moveDeltas.y});
     Game.Scheduler.setDuration(this.getCurrentActionDuration());
-    this.setCurrentActionDuration(this.setCurrentActionDuration(this.getBaseActionDuration()+Game.util.randomInt(-10,10)));
+    this.setCurrentActionDuration(this.getBaseActionDuration()+Game.util.randomInt(-10,10));
     Game.TimeEngine.unlock();
   }
   // listeners: {

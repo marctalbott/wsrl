@@ -54,7 +54,7 @@ Game.EntityGenerator.learn({
 	chr: 'b',
 	fg: '#00ff00',
 	maxHp: 3,
-//	sightRadius: 3,
+	sightRadius: 2,
 	mixins: ["HitPoints", "WalkerCorporeal", "EnemyWanderActor", "Sight"]
 	// [Game.EntityMixin.HitPoints,
 	// 		 Game.EntityMixin.WalkerCorporeal,
