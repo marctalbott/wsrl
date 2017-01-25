@@ -168,6 +168,9 @@ Game.KeyBinding.BindingSet.laptop.PERSISTENCE_SAVE = {label:'shift-s' ,inputMatc
 Game.KeyBinding.BindingSet.laptop.PERSISTENCE_LOAD = {label:'shift-l' ,inputMatch:ROT.VK_L ,inputType:'keydown'  ,inputMetaShift:true  ,inputMetaCtrl:false};
 Game.KeyBinding.BindingSet.laptop.PERSISTENCE_NEW  = {label:'shift-n' ,inputMatch:ROT.VK_N ,inputType:'keydown'  ,inputMetaShift:true  ,inputMetaCtrl:false};
 
+Game.KeyBinding.BindingSet.laptop.AFFIRMATIVE = {label:'shift-y' ,inputMatch:ROT.VK_Y ,inputType:'keydown' ,inputMetaShift:true ,inputMetaCtrl: false};
+Game.KeyBinding.BindingSet.laptop.NEGATIVE    = {label:'shift-r' ,inputMatch:ROT.VK_R ,inputType:'keydown' ,inputMetaShift:true ,inputMetaCtrl: false};
+
 Game.KeyBinding.BindingSet.laptop.MOVE_UL    = {label:'y' ,inputMatch:ROT.VK_Y ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
 Game.KeyBinding.BindingSet.laptop.MOVE_U     = {label:'k' ,inputMatch:ROT.VK_K ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
 Game.KeyBinding.BindingSet.laptop.MOVE_UR    = {label:'u' ,inputMatch:ROT.VK_U ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
@@ -177,4 +180,4 @@ Game.KeyBinding.BindingSet.laptop.MOVE_R     = {label:'l' ,inputMatch:ROT.VK_L ,
 Game.KeyBinding.BindingSet.laptop.MOVE_DL    = {label:'b' ,inputMatch:ROT.VK_B ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
 Game.KeyBinding.BindingSet.laptop.MOVE_D     = {label:'j' ,inputMatch:ROT.VK_J ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
 Game.KeyBinding.BindingSet.laptop.MOVE_DR    = {label:'n' ,inputMatch:ROT.VK_N ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
-Game.KeyBinding.BindingSet.laptop.ENTER_DOOR = {label:'/', inputMath: ROT.VK_SLASH, inputType: 'keydown', inputMetaShift: false, inputMetaCtrl: false};
+Game.KeyBinding.BindingSet.laptop.ENTER_DOOR = {label:'/', inputMatch: ROT.VK_SLASH, inputType: 'keydown', inputMetaShift: false, inputMetaCtrl: false};

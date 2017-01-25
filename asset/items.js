@@ -8,8 +8,8 @@ Game.ItemGenerator.learn ({
 });
 
 Game.ItemGenerator.learn ({
-	name: 'door',
-	chr: '&',
+	name: 'desertDoor',
+	chr: '/',
 	fg: '#f4a460'
 //	itemMixins: []
 })

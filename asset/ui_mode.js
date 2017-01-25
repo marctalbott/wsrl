@@ -168,6 +168,7 @@ Game.UIMode.gamePersistence = {
     Game.setRandomSeed(5 + Math.floor(ROT.RNG.getUniform()*100000));
     Game.UIMode.gamePlay.setupNewGame();
     // Game.TimeEngine.lock();
+    Game.UIMode.gamePlay.setMapName('office');
     Game.switchUIMode(Game.UIMode.gamePlay);
   },
 
@@ -225,10 +226,13 @@ Game.UIMode.gamePlay = {
     _mapId: '',
     _cameraX: 100,
     _cameraY: 100,
-    _avatarId: ''
+    _avatarId: '',
+    _mapName: ''
   },
   JSON_KEY: 'UIMode_gamePlay',
-  enter: function() {
+  enter: function( mapName ) {
+    console.log( 'entered' );
+    console.log( mapName );
     console.log("entered gamePlay");
 
     // Game.Message.clear();
@@ -252,8 +256,10 @@ Game.UIMode.gamePlay = {
   setAvatar: function(a) {
     this.attr._avatarId = a.getId();
   },
+  setMapName: function( mapName ) {
+    this.attr._mapName = mapName;
+  },
   render: function (display) {
-    console.log("rendered gamePlay");
 
     // console.log(this.attr._cameraX);
     // console.dir(this.getAvatar());
@@ -322,7 +328,7 @@ Game.UIMode.gamePlay = {
       return false;
     }
 
-    console.log("input for gamePlay");
+
     // if (inputType == 'keypress') {
     // Game.Message.send("you pressed the '" + String.fromCharCode(inputData.charCode) + "' key");
     if (actionBinding.actionKey == 'WIN') {
@@ -351,7 +357,15 @@ Game.UIMode.gamePlay = {
     } else if (actionBinding.actionKey == 'MOVE_WAIT') {
       tookTurn = true;
     } else if (actionBinding.actionKey == 'ENTER_DOOR') {
-      console.log( "enter door");
+      console.log('enter door');
+//      console.dir( this.getMap().extractItemAt( this.getAvatar().getX(), this.getAvatar().getY()));
+//      console.dir(this.getMap().getTile( this.getAvatar().getX(), this.getAvatar().getY() ));
+       if( this.getMap().getItems( this.getAvatar().getX(), this.getAvatar().getY() ) ) {
+        console.log('changing map');
+  //      this.getAvatar().raiseSymbolActiveEvent('useDoor');
+        Game.switchUIMode( 'enterDoor' );
+
+      }
     }
 
     //Game.Message.ageMessages();
@@ -405,7 +419,10 @@ Game.UIMode.gamePlay = {
 
   setupNewGame: function(restorationData) {
     // this.setMap(new Game.Map('caves1'));
-    this.setMap(new Game.Map('office'));
+//    this.setMap(new Game.Map('office'));
+//    console.dir(this.attr);
+    this.setMapName('office')
+    this.setMap(new Game.Map(this.attr._mapName));
     console.log( this.getMap());
     console.log( "set map");
 
@@ -433,7 +450,7 @@ Game.UIMode.gamePlay = {
         this.getMap().addEntity(Game.EntityGenerator.create('demon'), this.getMap().getRandomWalkableLocation());
         this.getMap().addEntity(Game.EntityGenerator.create('binger'), this.getMap().getRandomWalkableLocation());
         this.getMap().addItem(Game.ItemGenerator.create('folder'), this.getMap().getRandomWalkableLocation());
-        this.getMap().addItem(Game.ItemGenerator.create('door'), {x: Math.round(this.getMap().getWidth()/2), y: 0})
+        this.getMap().addItem(Game.ItemGenerator.create('desertDoor'), {x: Math.round(this.getMap().getWidth()/2), y: 1})
       }
     }
 
@@ -448,6 +465,35 @@ Game.UIMode.gamePlay = {
   }
 };
 
+Game.UIMode.enterDoor = {
+  enter: function() {
+    console.log( "entered door");
+  },
+  exit: function() {
+    console.log( "exited door");
+  },
+  render: function( display ) {
+    display.drawText(5, 5, "Are you sure you want to enter this door?");
+    display.drawText(5, 6, "press Y for yes, R for remain");
+  },
+  handleInput: function(inputType, inputData) {
+    var actionBinding = Game.KeyBinding.getInputBinding(inputType, inputData);
+
+    //var pressedKey = String.fromCharCode(inputData.charCode);
+    if (!actionBinding) {
+      return false;
+    }
+
+    // if (inputType == 'keypress') {
+    // Game.Message.send("you pressed the '" + String.fromCharCode(inputData.charCode) + "' key");
+    if (actionBinding.actionKey == 'AFFIRMATIVE') {
+      Game.UIMode.gamePlay.setMapName('desert1');
+      Game.switchUIMode(Game.UIMode.gamePlay);
+    } else if( actionBinding.actionKey == 'NEGATIVE' ) {
+      Game.switchUIMode(Game.UIMode.gamePlay);
+    }
+  }
+}
 
 Game.UIMode.gameWin = {
   enter: function() {

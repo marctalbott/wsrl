@@ -41,6 +41,10 @@ Game.EntityMixin.WalkerCorporeal = {
       this.raiseSymbolActiveEvent('tookTurn');
       return true;
     }
+    if( map.getItems( targetX, targetY ).length > 0 ) {// includes(Game.Item) ) {
+      console.dir(map.getItems(targetX,targetY));
+      Game.switchUIMode(Game.UIMode.enterDoor);
+    }
     if (map.getTile(targetX, targetY).isWalkable()) {
       this.setPos(targetX, targetY);
       var myMap = this.getMap();
@@ -234,6 +238,10 @@ Game.EntityMixin.PlayerActor = {
         this.setCurrentActionDuration(this.getBaseActionDuration());
         // Game.TimeEngine.lock();
         Game.TimeEngine.unlock();
+      },
+      'useDoor': function( evtData ) {
+        console.log('still changing maps');
+        this.raiseSymbolActiveEvent('changeMaps');
       }
     }
   },
@@ -506,13 +514,13 @@ Game.EntityMixin.EnemyWanderActor = {
 
 
 
-Game.EntityMixin.AvatarFollower = {
-  META: {
-    mixinName: 'AvatarFollower',
-    mixinGroup: 'Follower',
-  },
-  followAvatar: function() {
+// Game.EntityMixin.AvatarFollower = {
+//   META: {
+//     mixinName: 'AvatarFollower',
+//     mixinGroup: 'Follower',
+//   },
+//   followAvatar: function() {
 
-  }
+//   }
 
-}
+// }
