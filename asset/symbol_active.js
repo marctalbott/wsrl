@@ -10,8 +10,6 @@ Game.SymbolActive = function (template) {
   for (var i = 0; i < this._mixinNames.length; i++) {
     this._mixins.push(this._mixinSet[this._mixinNames[i]]);
   }
-
-
 	this._mixinTracker = {};
 
 	for (var i = 0; i < this._mixins.length; i++) {

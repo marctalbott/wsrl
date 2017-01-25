@@ -10,20 +10,25 @@ Game.ItemMixin.doorMixin = {
 			hasBeenEntered: false
 		},
 		init: function( template ) {
-		this.attr._doorMixin_attr.connectTo = template.connectTo || null;
+			this.attr._doorMixin_attr.connectTo = template.connectTo || null;
 //		this.attr._doorMixin_attr.connectFrom = template.connectFrom || null;
 		},
 		listeners: {
-			'changeMaps': function(evtData) {
-				if( !hasBeenEntered ) {
-					hasBeenEntered = true;
-					var newMap = new Game.Map('desert1');
+			'walkedOn': function(evtData) {
+				if( !this.attr._doorMixin_attr.hasBeenEntered ) {
+					this.attr._doorMixin_attr.hasBeenEntered = true;
+					var newMap = new Game.Map(evtData.mapName);
 					Game.UI_Mode.gamePlay.setMap(newMap);
-					connectTo = Game.DATASTORE.MAP[newMap.attr._id];
+					this.setConnectTo(newMap.attr._id);
 				} else {
-					Game.UI_Mode.gamePlay.setMap( connectTo );
+					Game.UI_Mode.gamePlay.setMap( this.attr._doorMixin.connectTo );
 				}
+				Game.UIMode.enterDoor.setDoor(map.getItems(targetX, targetY)[0]);
+     			Game.switchUIMode(Game.UIMode.enterDoor);
 			}
 		}
+	},
+	setConnectTo: function(mapId) {
+		this.attr._doorMixin_attr.connectTo = mapId;
 	}
 }

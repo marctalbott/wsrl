@@ -423,13 +423,11 @@ Game.UIMode.gamePlay = {
 //    console.dir(this.attr);
     this.setMapName('office')
     this.setMap(new Game.Map(this.attr._mapName));
-    console.log( this.getMap());
-    console.log( "set map");
+    // console.log( this.getMap());
+    // console.log( "set map");
 
     this.setAvatar(Game.EntityGenerator.create('avatar'));
     this.getMap().addEntity(this.getAvatar(), this.getMap().getRandomWalkableLocation());
-    console.log( "avatar: ");
-    console.dir( this.getAvatar().getMixins() );
     this.setCameraToAvatar();
 
 
@@ -466,6 +464,9 @@ Game.UIMode.gamePlay = {
 };
 
 Game.UIMode.enterDoor = {
+  attr: {
+    _doorId: undefined
+  },
   enter: function() {
     console.log( "entered door");
   },
@@ -475,6 +476,9 @@ Game.UIMode.enterDoor = {
   render: function( display ) {
     display.drawText(5, 5, "Are you sure you want to enter this door?");
     display.drawText(5, 6, "press Y for yes, R for remain");
+  },
+  setDoor: function( door ) {
+    this.attr._doorId = door.getId();
   },
   handleInput: function(inputType, inputData) {
     var actionBinding = Game.KeyBinding.getInputBinding(inputType, inputData);
@@ -487,7 +491,8 @@ Game.UIMode.enterDoor = {
     // if (inputType == 'keypress') {
     // Game.Message.send("you pressed the '" + String.fromCharCode(inputData.charCode) + "' key");
     if (actionBinding.actionKey == 'AFFIRMATIVE') {
-      Game.UIMode.gamePlay.setMapName('desert1');
+      Game.DATASTORE.ITEM[this.attr._doorId].raiseSymbolActiveEvent('changeMaps');
+//      Game.UIMode.gamePlay.setMapName('desert1');
       Game.switchUIMode(Game.UIMode.gamePlay);
     } else if( actionBinding.actionKey == 'NEGATIVE' ) {
       Game.switchUIMode(Game.UIMode.gamePlay);
