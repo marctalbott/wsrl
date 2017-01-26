@@ -52,5 +52,13 @@ Game.util = {
       ret = ret || ar[i];
     }
     return ret;
+  },
+  objectArrayToIdArray: function (ar) {
+    return ar.map(function (elt) {
+      return elt.getId();
+    });
+  },
+  getDisplayDim: function (display) {
+    return {w:display._options.width, h:display._options.height};
   }
 };

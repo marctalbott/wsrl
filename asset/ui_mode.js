@@ -6,7 +6,8 @@ Game.UIMode.DEFAULT_COLOR_STR = '%c{'+Game.UIMode.DEFAULT_COLOR_FG+'}%b{'+Game.U
 Game.UIMode.gameStart = {
   enter: function() {
     console.log("entered gameStart");
-    Game.Message.send("welcome to WSRL");
+    Game.Message.send("welcome to DCSS");
+    Game.Message.send("press any key to start");
     Game.renderAll();
   },
   exit: function() {
@@ -15,28 +16,66 @@ Game.UIMode.gameStart = {
   },
   render: function (display) {
     console.log("rendered gameStart");
-    display.drawText(5,5,"game start mode");
-    display.drawText(5,7,"press any key to start");
+    display.drawText(7,3 , "    ____           ______          _____           _____");
+    display.drawText(6,4 , "   / __ \\         / ____/         / ___/          / ___/");
+    display.drawText(5,5 , "  / / / /        / /              \\__ \\           \\__ \\ ");
+    display.drawText(4,6 , " / /_/ /        / /___           ___/ /          ___/ / ");
+    display.drawText(3,7 , "/_____/ EMON    \\____/ OPY      /____/ TAPLE    /____/ PAWN");
   },
   handleInput: function (inputType, inputData) {
     console.log("input for gameStart");
+
     if (inputData.charCode !== 0) {
-      Game.switchUIMode(Game.UIMode.gamePersistence);
+      Game.switchUIMode('flavor');
+    }
+  }
+};
+
+Game.UIMode.flavor = {
+  enter: function() {
+    console.log("entered flavor");
+    Game.Message.clear();
+    Game.Message.send("press any key to continue");
+    Game.renderAll();
+  },
+
+  exit: function() {
+    console.log("exited flavor");
+    Game.renderAll();
+  },
+
+  render: function(display) {
+    console.log("rendered flavor");
+    display.draw(30, 3, "You are an employee at the mid-market insurance agency known");
+    display.draw(30, 4, "as 'Affordable Insurance Agency Inc.' One night you are working");
+    display.draw(30, 5, "late at the office when you discover a fake panel at the back of");
+    display.draw(30, 6, "the break room fridge which leads to a secret room. In this room");
+    display.draw(30, 7, "you find an unmarked manila folder.");
+  },
+
+  handleInput: function(inputType, inputData) {
+    console.log("input for flavor");
+    if (inputData.charCode !== 0) {
+      Game.switchUIMode('gamePersistence');
     }
   }
 };
 
 Game.UIMode.gamePersistence = {
   RANDOM_SEED_KEY: 'gameRandomSeed',
+  _storedKeyBinding: '',
 
   enter: function() {
     console.log("entered gamePersistence");
+    this._storedKeyBinding = Game.KeyBinding.getKeyBinding();
+    Game.KeyBinding.setKeyBinding('persist');
     Game.Message.ageMessages();
     Game.Message.send("save, restore, or new game");
     Game.renderAll();
   },
   exit: function() {
     console.log("exited gamePersistence");
+    Game.KeyBinding.setKeyBinding(this._storedKeyBinding);
     Game.renderAll();
     // Game.Message.clear();
   },
@@ -47,12 +86,12 @@ Game.UIMode.gamePersistence = {
   handleInput: function (inputType, inputData) {
     console.log("input for gamePersistence");
     var actionBinding = Game.KeyBinding.getInputBinding(inputType, inputData);
-    console.log(actionBinding);
 
     if (!actionBinding) {
       return false;
     }
 
+    console.log(actionBinding);
     if (actionBinding.actionKey == 'PERSISTENCE_SAVE') {
       this.saveGame();
       // L
@@ -63,7 +102,14 @@ Game.UIMode.gamePersistence = {
       console.log( "NEW GAME");
       this.newGame();
     } else if (actionBinding.actionKey == 'CANCEL') {
-      Game.switchUIMode(Game.UIMode.gamePlay);
+      if (Object.keys(Game.DATASTORE.MAP).length < 1) {
+        this.newGame();
+      } else {
+        Game.switchUIMode('gamePlay');
+      }
+    } else if (actionBinding.actionKey == 'HELP') {
+      console.log('TODO: set up help stuff for gamepersistence');
+      Game.addUIMode('LAYER_textReading');
     }
   },
 
@@ -84,7 +130,7 @@ Game.UIMode.gamePersistence = {
       Game.DATASTORE.MESSAGES = Game.Message.attr;
 
       window.localStorage.setItem(Game._PERSISTENCE_NAMESPACE, JSON.stringify(Game.DATASTORE));
-      Game.switchUIMode(Game.UIMode.gamePlay);
+      Game.switchUIMode('gamePlay');
     }
 
   },
@@ -157,7 +203,7 @@ Game.UIMode.gamePersistence = {
       }
       Game.Scheduler._queue._time = state_data.SCHEDULE_TIME;
 
-      Game.switchUIMode(Game.UIMode.gamePlay);
+      Game.switchUIMode('gamePlay');
     }
 
   },
@@ -168,8 +214,10 @@ Game.UIMode.gamePersistence = {
     Game.setRandomSeed(5 + Math.floor(ROT.RNG.getUniform()*100000));
     Game.UIMode.gamePlay.setupNewGame();
     // Game.TimeEngine.lock();
+
     Game.UIMode.gamePlay.setMapName('office');
-    Game.switchUIMode(Game.UIMode.gamePlay);
+    Game.switchUIMode('gamePlay');
+
   },
 
   localStorageAvailable: function() {
@@ -237,6 +285,7 @@ Game.UIMode.gamePlay = {
 
     // Game.Message.clear();
     Game.renderAll();
+    Game.KeyBinding.informPlayer();
     Game.TimeEngine.unlock();
   },
   exit: function() {
@@ -321,7 +370,7 @@ Game.UIMode.gamePlay = {
   },
   handleInput: function (inputType, inputData) {
     var actionBinding = Game.KeyBinding.getInputBinding(inputType, inputData);
-
+    console.log(inputData);
     //var pressedKey = String.fromCharCode(inputData.charCode);
     var tookTurn = false;
     if (!actionBinding) {
@@ -332,10 +381,10 @@ Game.UIMode.gamePlay = {
     // if (inputType == 'keypress') {
     // Game.Message.send("you pressed the '" + String.fromCharCode(inputData.charCode) + "' key");
     if (actionBinding.actionKey == 'WIN') {
-      Game.switchUIMode(Game.UIMode.gameWin);
+      Game.switchUIMode('gameWin');
       return;
     } else if (actionBinding.actionKey == 'PERSISTENCE') {
-      Game.switchUIMode(Game.UIMode.gamePersistence);
+      Game.switchUIMode('gamePersistence');
     } else if (actionBinding.actionKey == 'MOVE_DL') {
       tookTurn = this.moveAvatar(-1,1);
     } else if (actionBinding.actionKey == 'MOVE_D') {
@@ -353,9 +402,22 @@ Game.UIMode.gamePlay = {
     } else if (actionBinding.actionKey == 'MOVE_UR') {
       tookTurn = this.moveAvatar(1,-1);
     } else if (actionBinding.actionKey == 'CANCEL') {
-      Game.switchUIMode(Game.UIMode.gameLose);
+      Game.switchUIMode('gameLose');
     } else if (actionBinding.actionKey == 'MOVE_WAIT') {
       tookTurn = true;
+
+    } else if (actionBinding.actionKey == 'PICKUP') {
+      console.log('pickup');
+      var pickupRes = this.getAvatar().pickupItems(Game.util.objectArrayToIdArray(this.getAvatar().getMap().getItems(this.getAvatar().getPos())));
+      tookTurn = pickupRes.numItemsPickedUp > 0;
+    } else if (actionBinding.actionKey == 'DROP') {
+      console.log('drop');
+      var dropRes = this.getAvatar().dropItems(this.getAvatar().getItemIds());
+      tookTurn = dropRes.numItemsDropped > 0;
+    } else if (actionBinding.actionKey == 'HELP') {
+      console.log('TODO: setup help for gameplay');
+      Game.addUIMode('LAYER_textReading');
+
     } else if (actionBinding.actionKey == 'ENTER_DOOR') {
       console.log('enter door');
 //      console.dir( this.getMap().extractItemAt( this.getAvatar().getX(), this.getAvatar().getY()));
@@ -366,6 +428,7 @@ Game.UIMode.gamePlay = {
         Game.switchUIMode( 'enterDoor' );
 
       }
+
     }
 
     //Game.Message.ageMessages();
@@ -463,6 +526,42 @@ Game.UIMode.gamePlay = {
   }
 };
 
+
+Game.UIMode.LAYER_textReading = {
+    _storedKeyBinding: '',
+    _text: 'default',
+    enter: function () {
+      this._storedKeyBinding = Game.KeyBinding.getKeyBinding();
+      Game.KeyBinding.setKeyBinding('LAYER_textReading');
+      Game.renderAll();
+    },
+    exit: function () {
+      Game.KeyBinding.setKeyBinding(this._storedKeyBinding);
+      Game.renderAll();
+    },
+    render: function (display) {
+      display.drawText(1, 3, "text is " + this._text);
+    },
+    handleInput: function (inputType, inputData) {
+      console.log("handle");
+      var actionBinding = Game.KeyBinding.getInputBinding(inputType, inputData);
+      if (!actionBinding) {
+        return false;
+      }
+      if (actionBinding.actionKey == "CANCEL") {
+        console.log("remove");
+        Game.removeUIMode();
+      }
+      return false;
+    },
+    getText: function () {
+      return this._text;
+    },
+    setText: function (t) {
+      this._text = t;
+    }
+};
+
 Game.UIMode.enterDoor = {
   attr: {
     _doorId: undefined
@@ -502,7 +601,8 @@ Game.UIMode.enterDoor = {
       Game.switchUIMode(Game.UIMode.gamePlay);
     }
   }
-}
+};
+
 
 Game.UIMode.gameWin = {
   enter: function() {
@@ -518,7 +618,7 @@ Game.UIMode.gameWin = {
   handleInput: function (inputType, inputData) {
     console.log("input for gameWin");
     if (inputData.key == "r") {
-      Game.switchUIMode(Game.UIMode.gameStart);
+      Game.switchUIMode('gameStart');
     }
   }
 };
@@ -537,7 +637,7 @@ Game.UIMode.gameLose = {
   handleInput: function (inputType, inputData) {
     console.log("input for gameLose");
     if (inputData.key == "r") {
-      Game.switchUIMode(Game.UIMode.gameStart);
+      Game.switchUIMode('gameStart');
     }
   }
 };

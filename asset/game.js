@@ -15,17 +15,20 @@ window.onload = function() {
     document.getElementById('wsrl-main-display').appendChild(Game.getDisplay('main').getContainer());
     document.getElementById('wsrl-message-display').appendChild(Game.getDisplay('message').getContainer());
 
-    var bindEventToScreen = function(eventType) {
+
+    Game.switchUIMode('gameStart');
+    // console.log(this);
+    var bindEventToUIMode = function(eventType) {
       window.addEventListener(eventType, function(evt){
-        Game.eventHandler(eventType, evt);
+        if (Game.getCurUIMode() !== null) {
+          Game.getCurUIMode().handleInput(event, evt);
+        }
       });
     };
 
     //Bind Keyboard events
-    bindEventToScreen('keypress');
-    bindEventToScreen('keydown');
-
-    Game.switchUIMode(Game.UIMode.gameStart);
+    bindEventToUIMode('keypress');
+    bindEventToUIMode('keydown');
   }
 };
 
@@ -55,6 +58,7 @@ var Game = {
   _game: null,
   _curUIMode: null,
   _randomSeed: 0,
+  _uiModeNameStack: [],
 
   DATASTORE: {},
 
@@ -84,7 +88,8 @@ var Game = {
 
     this.renderAll();
 
-    Game.KeyBinding.useKeyBinding();
+
+    Game.KeyBinding.setKeyBinding();
   },
 
   initializeTimingEngine: function() {
@@ -118,18 +123,18 @@ var Game = {
 
   renderMain: function() {
     this.getDisplay("main").clear();
-    if(this._curUIMode) {
-      this._curUIMode.render(this.getDisplay("main"));
+    if(this.getCurUIMode()) {
+      this.getCurUIMode().render(this.getDisplay("main"));
     }
   },
 
   renderAvatar: function() {
     this.getDisplay("avatar").clear();
-    if (this._curUIMode === null) {
+    if (this.getCurUIMode() === null) {
       return;
     }
-    if (this._curUIMode.hasOwnProperty('renderAvatarInfo')) {
-      this._curUIMode.renderAvatarInfo(this.getDisplay("avatar"));
+    if (this.getCurUIMode().hasOwnProperty('renderAvatarInfo')) {
+      this.getCurUIMode().renderAvatarInfo(this.getDisplay("avatar"));
     }
 
   },
@@ -139,29 +144,60 @@ var Game = {
   },
 
   eventHandler: function(eventType, evt) {
-    if(this._curUIMode) {
-      this._curUIMode.handleInput(eventType, evt);
+    if(this.getCurUIMode()) {
+      this.getCurUIMode().handleInput(eventType, evt);
       // this.renderAll();
     }
   },
+  //
+  // switchUIMode: function(newMode) {
+  //   // handle exit for old mode
+  //   if(this._curUIMode) {
+  //     this._curUIMode.exit();
+  //   }
+  //   // set new mode
+  //   this._curUIMode = newMode;
+  //   // handle enter for new mode
+  //   this._curUIMode.enter();
+  //   // render new mode
+  //   this.renderAll();
+  // },
 
-  switchUIMode: function(newMode) {
-    // handle exit for old mode
-    if(this._curUIMode) {
-      this._curUIMode.exit();
+  switchUIMode: function (newUIModeName) {
+    var curMode = this.getCurUIMode();
+    if (curMode !== null) {
+      curMode.exit();
     }
-    // set new mode
-    this._curUIMode = newMode;
-    // handle enter for new mode
-    console.dir( this._curUIMode );
-//     if( this._curUIMode.JSON_KEY == 'UIMode_gamePlay' ) {
-// //      console.
-//        this._curUIMode.enter(this._curUIMode.attr._mapName);
-//     } else {
-      this._curUIMode.enter();
-    //}
-    // render new mode
+    this._uiModeNameStack[0] = newUIModeName;
+    var newMode = Game.UIMode[newUIModeName];
+    if (newMode) {
+      newMode.enter();
+    }
     this.renderAll();
+  },
+  addUIMode: function (newUIModeName) {
+    this._uiModeNameStack.unshift(newUIModeName);
+    var newMode = Game.UIMode[newUIModeName];
+    if (newMode) {
+      newMode.enter();
+    }
+
+    this.renderAll();
+  },
+  removeUIMode: function () {
+    var curMode = this.getCurUIMode();
+    if (curMode !== null) {
+      curMode.exit();
+    }
+    this._uiModeNameStack.shift();
+    this.renderAll();
+  },
+  getCurUIMode: function () {
+    var uiModeName = this._uiModeNameStack[0];
+    if (uiModeName) {
+      return Game.UIMode[uiModeName];
+    }
+    return null;
   },
 
   clearDataStore: function() {
@@ -171,8 +207,8 @@ var Game = {
     this.DATASTORE.MAP = {};
     this.DATASTORE.GAME_PLAY = {};
     this.DATASTORE.ITEM = {};
-
   }
+
 
   /*toJSON: function() {
     // console.log("game toJSON");
