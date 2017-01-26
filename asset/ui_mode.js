@@ -51,8 +51,8 @@ Game.UIMode.flavor = {
     display.draw(30, 5, "late at the office when you discover a fake panel at the back of");
     display.draw(30, 6, "the break room fridge which leads to a secret room. You enter the room");
     display.draw(30, 7, "only to be startled when goblins jump out of the shadows and steal some");
-    display.draw(30, 8, "items from your office. You need to retrieve them before your boss");
-    display.draw(30, 9, "finds out!");
+    display.draw(30, 8, "items from your office. You need to retrieve the items from the fantastical");
+    display.draw(30, 9, "desert realm that the goblins came from before your boss finds out!");
   },
 
   handleInput: function(inputType, inputData) {
