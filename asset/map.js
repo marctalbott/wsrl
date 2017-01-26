@@ -414,9 +414,9 @@ Game.Map.prototype.populateMapDesert = function(door) {
         this.addEntity(Game.EntityGenerator.create('fungus'),this.getRandomWalkableLocation());
         this.addEntity(Game.EntityGenerator.create('demon'), this.getRandomWalkableLocation());
         this.addEntity(Game.EntityGenerator.create('goblin'), this.getRandomWalkableLocation());
-       this.addItem(Game.ItemGenerator.create('folder'), this.getRandomWalkableLocation());
+        this.addItem(Game.ItemGenerator.create('folder'), this.getRandomWalkableLocation());
         var doorObj = Game.ItemGenerator.create('desertDoor');
-         console.dir( Game.DATASTORE.MAP[door] );
+        console.dir( Game.DATASTORE.MAP[door] );
         doorObj.setConnectTo( Game.DATASTORE.MAP[door].getId() );
         doorObj.hasBeenEntered();
         this.addItem(doorObj, this.getRandomWalkableLocation());//{x: Math.round(this.getMap().getWidth()/2), y: 1})

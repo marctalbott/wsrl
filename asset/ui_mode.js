@@ -259,15 +259,7 @@ Game.UIMode.gamePersistence = {
     if (state_hash_name) {
       using_state_hash = state_hash_name;
     }
-    /*for (var at in this[using_state_hash]) {
-      if (this[using_state_hash].hasOwnProperty(at)) {
-        if (this[using_state_hash][at] instanceof Object && 'fromJSON' in this[using_state_hash][at]) {
-          this[using_state_hash][at].fromJSON(json[at]);
-        } else {
-          this[using_state_hash][at] = json[at];
-        }
-      }
-    }*/
+
     this[using_state_hash] = JSON.parse(json);
   }
 };
@@ -476,28 +468,8 @@ Game.UIMode.gamePlay = {
       this.getAvatar().setPos(randomWalkableLocation['x'], randomWalkableLocation['y']);
       this.getMap().updateEntityLocation(this.getAvatar());
 
-      // add entities and items
-// <<<<<<< HEAD
-//       for( var ecount=0; ecount<1; ecount++ ) {
-//         this.getMap().addEntity(Game.EntityGenerator.create('fungus'),this.getMap().getRandomWalkableLocation());
-//         this.getMap().addEntity(Game.EntityGenerator.create('demon'), this.getMap().getRandomWalkableLocation());
-//         this.getMap().addEntity(Game.EntityGenerator.create('goblin'), this.getMap().getRandomWalkableLocation());
-//         this.getMap().addItem(Game.ItemGenerator.create('folder'), this.getMap().getRandomWalkableLocation());
-//         this.getMap().addItem(Game.ItemGenerator.create('printer'), this.getMap().getRandomWalkableLocation());
-//         this.getMap().addItem(Game.ItemGenerator.create('keyboard'), this.getMap().getRandomWalkableLocation());
-//         this.getMap().addItem(Game.ItemGenerator.create('pen'), this.getMap().getRandomWalkableLocation());
-//         this.getMap().addItem(Game.ItemGenerator.create('desertDoor'), this.getMap().getRandomWallLocation());//{x: Math.round(this.getMap().getWidth()/2), y: 1})
-//       }
-// =======
-      // for( var ecount=0; ecount<1; ecount++ ) {
-      //   this.getMap().addEntity(Game.EntityGenerator.create('fungus'),this.getMap().getRandomWalkableLocation());
-      //   this.getMap().addEntity(Game.EntityGenerator.create('demon'), this.getMap().getRandomWalkableLocation());
-      //   this.getMap().addEntity(Game.EntityGenerator.create('binger'), this.getMap().getRandomWalkableLocation());
-      //   this.getMap().addItem(Game.ItemGenerator.create('folder'), this.getMap().getRandomWalkableLocation());
-      //   this.getMap().addItem(Game.ItemGenerator.create('desertDoor'), this.getMap().getRandomWallLocation());//{x: Math.round(this.getMap().getWidth()/2), y: 1})
-      // }
       this.getMap().populateMap(this.getMapName());
-// >>>>>>> a907f060bdec8cf784dbfeca7af0b6deb2abcbbe
+
     }
 
     this.setCameraToAvatar();
