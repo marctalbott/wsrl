@@ -283,9 +283,9 @@ Game.UIMode.gamePlay = {
     _mapName: ''
   },
   JSON_KEY: 'UIMode_gamePlay',
-  enter: function( mapName ) {
-    console.log( 'entered' );
-    console.log( mapName );
+  enter: function( ) {
+   // console.log( 'entered' );
+//    console.log( mapName );
     console.log("entered gamePlay");
 
     // Game.Message.clear();
@@ -315,6 +315,9 @@ Game.UIMode.gamePlay = {
   setMapName: function( mapName ) {
     this.attr._mapName = mapName;
   },
+  getMapName: function() {
+    return this.attr._mapName;
+  },
   render: function (display) {
 
     // console.log(this.attr._cameraX);
@@ -328,7 +331,7 @@ Game.UIMode.gamePlay = {
     //   maskedCells: this.getAvatar().getRememberedCoordsForMap()
     // });
     // this.getAvatar().rememberCoords(seenCells);
-    if( Game.DATASTORE.MAP[this.attr._mapId].attr._mapTileSetName == 'desert1' ) {
+    if( Game.DATASTORE.MAP[this.attr._mapId].attr._mapTileSetName == 'office' ) {
       this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY, {
         isUnmasked: true
       });
@@ -336,48 +339,19 @@ Game.UIMode.gamePlay = {
       var seenCells = this.getAvatar().getVisibleCells();
       this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY, {
         visibleCells: seenCells,
-        maskedCells: this.getAvatar().getRememberedCoordsForMap()
+
+        maskedCells: this.getAvatar().getRememberedCoordsForMap(),
+        isUnmasked: true
+
       });
       this.getAvatar().rememberCoords(seenCells);
       this.getMap().rememberCoords(this.getMap().renderFovOn(display, this.attr._cameraX, this.attr._cameraY, this.getAvatar().getSightRadius()));
     }
 
-
-    // this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY, false, true, true);
-
-
-//     for( var cell in seenCells ) {
-//       if( cell == 'byDistance') continue;
-// //      console.dir( cell );
-//       var mapCellTile = cell.split(',');
-// //      console.log(mapCellTile);
-
-//       // var screenTileX = parseInt(mapCellTile[0]) + this.attr._cameraX - Math.round(display._options.width/2);;
-//       // var screenTileY = parseInt(mapCellTile[1]) + this.attr._cameraY - Math.round(display._options.height/2);;
-
-//       var screenTileX = this.attr._cameraX - parseInt(mapCellTile[0]) + Math.round(display._options.width/2);
-//       var screenTileY = this.attr._cameraY - parseInt(mapCellTile[1]) + Math.round(display._options.height/2);
-
-//       //var fullTile = screenTileX+','+screenTileY;
-//       var fullTile = this.getMap().getTile(mapCellTile[0], mapCellTile[1]);
-//       fullTile.draw(display, screenTileX, screenTileY, '#ff0000', '#00ff00');
-//      console.log( this.getMap().getWidth());
-/*      console.dir( fullTile );
-      console.log( "display cell");
-      console.dir( display._data[fullTile] );*/
-      //display._data[fullTile][3] = "ff0000";
-
-
-
-//    this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY);
-    /*this.renderAvatar(display);*/
-    // display.drawText(5,5,"[enter] to win, [esc] to lose.");
-    // display.drawText(5,7,"[=] to save, load, or start over");
-
   },
   handleInput: function (inputType, inputData) {
     var actionBinding = Game.KeyBinding.getInputBinding(inputType, inputData);
-    // console.log(inputData);
+//    console.log(inputData);
     //var pressedKey = String.fromCharCode(inputData.charCode);
     var tookTurn = false;
     if (!actionBinding) {
@@ -433,21 +407,7 @@ Game.UIMode.gamePlay = {
       console.log('TODO: setup help for gameplay');
       Game.addUIMode('LAYER_textReading');
 
-    } else if (actionBinding.actionKey == 'ENTER_DOOR') {
-      console.log('enter door');
-//      console.dir( this.getMap().extractItemAt( this.getAvatar().getX(), this.getAvatar().getY()));
-//      console.dir(this.getMap().getTile( this.getAvatar().getX(), this.getAvatar().getY() ));
-       if( this.getMap().getItems( this.getAvatar().getX(), this.getAvatar().getY() ) ) {
-        console.log('changing map');
-  //      this.getAvatar().raiseSymbolActiveEvent('useDoor');
-        Game.switchUIMode( 'enterDoor' );
-
-      }
-
     }
-
-    //Game.Message.ageMessages();
-//    } else if (inputType == 'keydown') {
     if( tookTurn ) {
       this.getAvatar().raiseSymbolActiveEvent('actionDone');
       Game.Message.ageMessages();
@@ -456,11 +416,6 @@ Game.UIMode.gamePlay = {
 
 
   },
-
-  /*renderAvatar: function(display) {
-    Game.Symbol.AVATAR.draw(display, this.getAvatar().getX() - this.attr._cameraX + display._options.width/2,
-                                      this.getAvatar()Ytar.getY() - this.attr._cameraY + display._options.height/2);
-  },*/
 
   renderAvatarInfo: function(display) {
     var fg = Game.UIMode.DEFAULT_COLOR_FG;
@@ -499,14 +454,15 @@ Game.UIMode.gamePlay = {
     // this.setMap(new Game.Map('caves1'));
 //    this.setMap(new Game.Map('office'));
 //    console.dir(this.attr);
-    this.setMapName('desert1');
+    this.setMapName('office');
     this.setMap(new Game.Map(this.attr._mapName));
+    console.dir( this.getMap()._tiles );
     // console.log( this.getMap());
     // console.log( "set map");
 
     this.setAvatar(Game.EntityGenerator.create('avatar'));
     this.getMap().addEntity(this.getAvatar(), this.getMap().getRandomWalkableLocation());
-    this.setCameraToAvatar();
+    //this.setCameraToAvatar();
 
 
     //restore anything else if the data is available
@@ -521,16 +477,27 @@ Game.UIMode.gamePlay = {
       this.getMap().updateEntityLocation(this.getAvatar());
 
       // add entities and items
-      for( var ecount=0; ecount<1; ecount++ ) {
-        this.getMap().addEntity(Game.EntityGenerator.create('fungus'),this.getMap().getRandomWalkableLocation());
-        this.getMap().addEntity(Game.EntityGenerator.create('demon'), this.getMap().getRandomWalkableLocation());
-        this.getMap().addEntity(Game.EntityGenerator.create('goblin'), this.getMap().getRandomWalkableLocation());
-        this.getMap().addItem(Game.ItemGenerator.create('folder'), this.getMap().getRandomWalkableLocation());
-        this.getMap().addItem(Game.ItemGenerator.create('printer'), this.getMap().getRandomWalkableLocation());
-        this.getMap().addItem(Game.ItemGenerator.create('keyboard'), this.getMap().getRandomWalkableLocation());
-        this.getMap().addItem(Game.ItemGenerator.create('pen'), this.getMap().getRandomWalkableLocation());
-        this.getMap().addItem(Game.ItemGenerator.create('desertDoor'), this.getMap().getRandomWallLocation());//{x: Math.round(this.getMap().getWidth()/2), y: 1})
-      }
+// <<<<<<< HEAD
+//       for( var ecount=0; ecount<1; ecount++ ) {
+//         this.getMap().addEntity(Game.EntityGenerator.create('fungus'),this.getMap().getRandomWalkableLocation());
+//         this.getMap().addEntity(Game.EntityGenerator.create('demon'), this.getMap().getRandomWalkableLocation());
+//         this.getMap().addEntity(Game.EntityGenerator.create('goblin'), this.getMap().getRandomWalkableLocation());
+//         this.getMap().addItem(Game.ItemGenerator.create('folder'), this.getMap().getRandomWalkableLocation());
+//         this.getMap().addItem(Game.ItemGenerator.create('printer'), this.getMap().getRandomWalkableLocation());
+//         this.getMap().addItem(Game.ItemGenerator.create('keyboard'), this.getMap().getRandomWalkableLocation());
+//         this.getMap().addItem(Game.ItemGenerator.create('pen'), this.getMap().getRandomWalkableLocation());
+//         this.getMap().addItem(Game.ItemGenerator.create('desertDoor'), this.getMap().getRandomWallLocation());//{x: Math.round(this.getMap().getWidth()/2), y: 1})
+//       }
+// =======
+      // for( var ecount=0; ecount<1; ecount++ ) {
+      //   this.getMap().addEntity(Game.EntityGenerator.create('fungus'),this.getMap().getRandomWalkableLocation());
+      //   this.getMap().addEntity(Game.EntityGenerator.create('demon'), this.getMap().getRandomWalkableLocation());
+      //   this.getMap().addEntity(Game.EntityGenerator.create('binger'), this.getMap().getRandomWalkableLocation());
+      //   this.getMap().addItem(Game.ItemGenerator.create('folder'), this.getMap().getRandomWalkableLocation());
+      //   this.getMap().addItem(Game.ItemGenerator.create('desertDoor'), this.getMap().getRandomWallLocation());//{x: Math.round(this.getMap().getWidth()/2), y: 1})
+      // }
+      this.getMap().populateMap(this.getMapName());
+// >>>>>>> a907f060bdec8cf784dbfeca7af0b6deb2abcbbe
     }
 
     this.setCameraToAvatar();
@@ -612,8 +579,14 @@ Game.UIMode.enterDoor = {
     // if (inputType == 'keypress') {
     // Game.Message.send("you pressed the '" + String.fromCharCode(inputData.charCode) + "' key");
     if (actionBinding.actionKey == 'AFFIRMATIVE') {
-      Game.DATASTORE.ITEM[this.attr._doorId].raiseSymbolActiveEvent('changeMaps');
+//      Game.DATASTORE.ITEM[this.attr._doorId].raiseSymbolActiveEvent('changeMaps');
 //      Game.UIMode.gamePlay.setMapName('desert1');
+
+//      this.getDoor().setConnectTo(Game.UIMode.gamePlay.getMap().attr._id);
+//      console.dir( this.getDoor() );
+//      Game.UIMode.gameplay.setAvatar( Game.DATASTORE.ENTITY[Game.UIMode.gamePlay.attr._avatarId] );
+      Game.UIMode.gamePlay.setCameraToAvatar();
+
       Game.switchUIMode('gamePlay');
     } else if( actionBinding.actionKey == 'NEGATIVE' ) {
       Game.UIMode.gamePlay.setMap( this.getDoor().getMap() );

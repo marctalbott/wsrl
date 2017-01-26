@@ -105,20 +105,27 @@ Game.ItemMixin.doorMixin = {
 		listeners: {
 			'walkedOn': function(evtData) {
 				if( !this.attr._doorMixin_attr.hasBeenEntered ) {
-					this.attr._doorMixin_attr.hasBeenEntered = true;
+					this.hasBeenEntered();
 					var newMap = new Game.Map(evtData.mapName);
-					Game.UIMode.gamePlay.setMap(newMap);
+					newMap.populateMap(evtData.mapName, evtData.oldMap);
 					this.setConnectTo(newMap.attr._id);
+					Game.UIMode.gamePlay.setMap(newMap);
 				} else {
 					Game.UIMode.gamePlay.setMap( Game.DATASTORE.MAP[this.attr._doorMixin_attr.connectTo] );
 				}
 //				console.dir( this.getMap() );
+
 				Game.UIMode.enterDoor.setDoor(this.getMap().getItems(evtData.targetX, evtData.targetY)[0]);
-     		Game.switchUIMode(Game.UIMode.enterDoor);
+
+     			Game.switchUIMode('enterDoor');
+
 			}
 		}
 	},
 	setConnectTo: function(mapId) {
 		this.attr._doorMixin_attr.connectTo = mapId;
+	},
+	hasBeenEntered: function() {
+		this.attr._doorMixin_attr.hasBeenEntered = true;
 	}
 };

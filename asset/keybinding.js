@@ -101,15 +101,7 @@ Game.KeyBinding = {
     // console.log("bindingkey " +bindingKey);
     // console.log("inputtype " +inputType);
     // console.log("inputtypetype " +inputType.type);
-    // console.dir(this._currentBindingLookup);
 
-    //console.log("bindingLookup");
-//    console.log(this._currentBindingLookup[inputType][metaKey]);
-  //  console.log(inputData);
-    // console.log(_currentBindingLookup);
-    // console.log(inputType);
-    // console.log(this._currentBindingLookup);
-    // console.log (this._currentBindingLookup);
     return this._currentBindingLookup[inputType.type][metaKey][bindingKey] || false;
   },
 
