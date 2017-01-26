@@ -114,6 +114,7 @@ Game.ItemMixin.doorMixin = {
 					Game.UIMode.gamePlay.setMap( Game.DATASTORE.MAP[this.attr._doorMixin_attr.connectTo] );
 				}
 //				console.dir( this.getMap() );
+
 				Game.UIMode.enterDoor.setDoor(this.getMap().getItems(evtData.targetX, evtData.targetY)[0]);
      			Game.switchUIMode('enterDoor');
 			}

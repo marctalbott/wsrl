@@ -444,7 +444,7 @@ Game.UIMode.gamePlay = {
 
     this.setAvatar(Game.EntityGenerator.create('avatar'));
     this.getMap().addEntity(this.getAvatar(), this.getMap().getRandomWalkableLocation());
-    this.setCameraToAvatar();
+    //this.setCameraToAvatar();
 
 
     //restore anything else if the data is available
@@ -550,7 +550,9 @@ Game.UIMode.enterDoor = {
 //      Game.DATASTORE.ITEM[this.attr._doorId].raiseSymbolActiveEvent('changeMaps');
 //      Game.UIMode.gamePlay.setMapName('desert1');
 //      this.getDoor().setConnectTo(Game.UIMode.gamePlay.getMap().attr._id);
-      console.dir( this.getDoor() );
+//      console.dir( this.getDoor() );
+//      Game.UIMode.gameplay.setAvatar( Game.DATASTORE.ENTITY[Game.UIMode.gamePlay.attr._avatarId] );
+      Game.UIMode.gamePlay.setCameraToAvatar();
       Game.switchUIMode('gamePlay');
     } else if( actionBinding.actionKey == 'NEGATIVE' ) {
       Game.UIMode.gamePlay.setMap( this.getDoor().getMap() );

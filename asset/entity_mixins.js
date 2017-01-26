@@ -36,6 +36,7 @@ Game.EntityMixin.WalkerCorporeal = {
   tryWalk: function (map, dx, dy) {
     var targetX = Math.min(Math.max(0,this.getX() + dx),map.getWidth());
     var targetY = Math.min(Math.max(0,this.getY() + dy),map.getHeight());
+    console.dir( this );
     if(map.getEntity(targetX,targetY)){
 //      console.dir( map.getEntity(targetX, targetY));
       this.raiseSymbolActiveEvent('bumpEntity', {actor:this, recipient:map.getEntity(targetX, targetY)});

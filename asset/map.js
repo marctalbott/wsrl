@@ -395,7 +395,7 @@ Game.Map.prototype.populateMapGeneric = function() {
         this.addEntity(Game.EntityGenerator.create('demon'), this.getRandomWalkableLocation());
         this.addEntity(Game.EntityGenerator.create('binger'), this.getRandomWalkableLocation());
         this.addItem(Game.ItemGenerator.create('folder'), this.getRandomWalkableLocation());
-        this.addItem(Game.ItemGenerator.create('desertDoor'), this.getRandomWallLocation());//{x: Math.round(this.getMap().getWidth()/2), y: 1})
+        this.addItem(Game.ItemGenerator.create('desertDoor'), this.getRandomWallLocation());
       }
 };
 
@@ -423,26 +423,6 @@ Game.Map.prototype.populateMapDesert = function(door) {
         this.addItem(doorObj, this.getRandomWalkableLocation());//{x: Math.round(this.getMap().getWidth()/2), y: 1})
       }
 };
-/*
-
-Game.Map.prototype.getRandomFloorPosition = function() {
-  // Randomly generate a tile which is a floor
-  var x, y;
-  do {
-    x = Math.floor( Math.random() * this.getWidth() );
-    y = Math.floor( Math.random() * this.getHeight() );
-  } while( !this.getTile( x, y ).isWalkable() );
-
-  return {x: x, y: y};
-};
-
-Game.Map.prototype.addEntityAtRandomPosition = function( entity ) {
-  var position = this.getRandomFloorPosition();
-  entity.setX(position.x);
-  entity.setY(position.y);
-//  console.log( "FIRST: "+entity.getX());
-  this.addEntity(entity);
-};*/
 
 Game.Map.prototype.toJSON = function(json) {
   return Game.UIMode.gamePersistence.BASE_toJSON.call(this);
