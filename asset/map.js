@@ -421,7 +421,6 @@ Game.Map.prototype.populateMap = function(tileSetName) {
   } else if( setName == 'office' ) {
     this.populateMapOffice();
   }
-
 };
 
 Game.Map.prototype.populateMapGeneric = function() {
@@ -446,6 +445,9 @@ Game.Map.prototype.populateMapOffice = function() {
 
 Game.Map.prototype.populateMapDesert = function() {
   for( var ecount=0; ecount<1; ecount++ ) {
+    console.dir( Game.UIMode.gamePlay.attr );
+    console.dir( Game.DATASTORE.ENTITY[Game.UIMode.gamePlay.attr._avatarId] );
+        this.addEntity(Game.DATASTORE.ENTITY[Game.UIMode.gamePlay.attr._avatarId], this.getRandomWalkableLocation());
         this.addEntity(Game.EntityGenerator.create('fungus'),this.getRandomWalkableLocation());
         this.addEntity(Game.EntityGenerator.create('demon'), this.getRandomWalkableLocation());
         this.addEntity(Game.EntityGenerator.create('binger'), this.getRandomWalkableLocation());
