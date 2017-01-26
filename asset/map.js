@@ -127,14 +127,15 @@ Game.Map.prototype.renderOn = function (display, camX, camY, renderOptions) {
         continue;
       }
       // if (tilesVisible) {
-      var tile = this.getTile(mapPos);
-      if (tile.getName() == 'nullTile') {
-        tile = Game.MapTileSets[this.attr._mapTileSetName]._wallTile;
-      }
-      if (showVisibleTiles && visibleCells[mapCoord]) {
-        tile.draw(display, x, y);
-      } else if (showMaskedTiles && maskedCells[mapCoord]) {
-        tile.draw(display, x, y, true);
+     
+
+      var ent = this.getEntity(mapPos);
+      if (ent) {
+        if (showVisibleEntities && visibleCells[mapCoord]) {
+          ent.draw(display,x,y);
+        } else if (showMaskedEntities && maskedCells[mapCoord]) {
+          ent.draw(display,x,y,true);
+        }
       }
 
       var items = this.getItems(mapPos);
@@ -151,15 +152,17 @@ Game.Map.prototype.renderOn = function (display, camX, camY, renderOptions) {
           Game.Symbol.ITEM_PILE.draw(display,x,y,true);
         }
       }
-
-      var ent = this.getEntity(mapPos);
-      if (ent) {
-        if (showVisibleEntities && visibleCells[mapCoord]) {
-          ent.draw(display,x,y);
-        } else if (showMaskedEntities && maskedCells[mapCoord]) {
-          ent.draw(display,x,y,true);
-        }
+       var tile = this.getTile(mapPos);
+      if (tile.getName() == 'nullTile') {
+        tile = Game.MapTileSets[this.attr._mapTileSetName]._wallTile;
       }
+      if (showVisibleTiles && visibleCells[mapCoord]) {
+        tile.draw(display, x, y);
+      } else if (showMaskedTiles && maskedCells[mapCoord]) {
+        tile.draw(display, x, y, true);
+      }
+
+     
     }
   }
 };
@@ -213,10 +216,17 @@ Game.Map.prototype.renderFovOn = function (display, camX, camY, radius) {
           tile = Game.MapTileSets[this.attr._mapTileSetName]._wallTile;
         }
         tile.draw(display, x, y);
+        var items = this.getItems(mapPos);
+        if (items.length == 1) {
+            items[0].draw(display, x, y);
+        } else if (items.length > 1) {
+            Game.Symbol.ITEM_PILE.draw(display,x,y);
+        }
         var ent = this.getEntity(mapPos);
         if (ent) {
           ent.draw(display, x, y);
         }
+        
       }
     }
   }
@@ -411,16 +421,26 @@ Game.Map.prototype.populateMapOffice = function() {
 Game.Map.prototype.populateMapDesert = function(door) {
   for( var ecount=0; ecount<1; ecount++ ) {
         this.addEntity(Game.DATASTORE.ENTITY[Game.UIMode.gamePlay.attr._avatarId], this.getRandomWalkableLocation());
-        this.addEntity(Game.EntityGenerator.create('fungus'),this.getRandomWalkableLocation());
-        this.addEntity(Game.EntityGenerator.create('demon'), this.getRandomWalkableLocation());
-        this.addEntity(Game.EntityGenerator.create('goblin'), this.getRandomWalkableLocation());
+
         this.addItem(Game.ItemGenerator.create('folder'), this.getRandomWalkableLocation());
+        this.addItem(Game.ItemGenerator.create('printer'), this.getRandomWalkableLocation());
+        this.addItem(Game.ItemGenerator.create('pen'), this.getRandomWalkableLocation());
+        this.addItem(Game.ItemGenerator.create('keyboard'), this.getRandomWalkableLocation());
+
         var doorObj = Game.ItemGenerator.create('desertDoor');
         console.dir( Game.DATASTORE.MAP[door] );
         doorObj.setConnectTo( Game.DATASTORE.MAP[door].getId() );
         doorObj.hasBeenEntered();
         this.addItem(doorObj, this.getRandomWalkableLocation());//{x: Math.round(this.getMap().getWidth()/2), y: 1})
       }
+    for( var ecount=0; ecount<4; ecount++ ) {
+    this.addEntity(Game.EntityGenerator.create('demon'), this.getRandomWalkableLocation());
+    this.addEntity(Game.EntityGenerator.create('goblin'), this.getRandomWalkableLocation());
+
+          }
+          for( var ecount=0; ecount<11; ecount++ ) {
+                      this.addEntity(Game.EntityGenerator.create('fungus'),this.getRandomWalkableLocation());
+                    }
 };
 
 Game.Map.prototype.toJSON = function(json) {

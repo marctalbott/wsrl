@@ -333,7 +333,7 @@ Game.UIMode.gamePlay = {
         visibleCells: seenCells,
 
         maskedCells: this.getAvatar().getRememberedCoordsForMap(),
-        isUnmasked: true
+        // isUnmasked: true
 
       });
       this.getAvatar().rememberCoords(seenCells);
@@ -414,10 +414,11 @@ Game.UIMode.gamePlay = {
     var bg = Game.UIMode.DEFAULT_COLOR_BG;
 /*    console.log( "avatar:");
     console.dir( this.getAvatar() );*/
-    display.drawText(1,2,"avatar x: "+this.getAvatar().getX(),fg,bg); // DEV
-    display.drawText(1,3,"avatar y: "+this.getAvatar().getY(),fg,bg); // DEV
+    // display.drawText(1,2,"avatar x: "+this.getAvatar().getX(),fg,bg); // DEV
+    // display.drawText(1,3,"avatar y: "+this.getAvatar().getY(),fg,bg); // DEV
     display.drawText(1,4,"turns taken: "+this.getAvatar().getTurns(),fg,bg);
     display.drawText(1,5,"hp: "+this.getAvatar().getCurHp(),fg,bg);
+    display.drawText(1,6,"collected "+this.getAvatar().getInventoryItemIds().length + "/4 items", fg, bg);
   },
 
   moveAvatar: function(dx, dy) {
@@ -453,7 +454,7 @@ Game.UIMode.gamePlay = {
     // console.log( "set map");
 
     this.setAvatar(Game.EntityGenerator.create('avatar'));
-    this.getMap().addEntity(this.getAvatar(), this.getMap().getRandomWalkableLocation());
+    this.getMap().addEntity(this.getAvatar(), {x: Math.round(this.getMap().getWidth()), y: Math.round(this.getMap().getHeight()/2)});//this.getMap().getRandomWalkableLocation());
     //this.setCameraToAvatar();
 
 
@@ -465,7 +466,8 @@ Game.UIMode.gamePlay = {
       this.getMap().updateEntityLocation(this.getAvatar());
     } else {
       var randomWalkableLocation = this.getMap().getRandomWalkableLocation();
-      this.getAvatar().setPos(randomWalkableLocation['x'], randomWalkableLocation['y']);
+      this.getAvatar().setPos(Math.round(this.getMap().getWidth()/2), Math.round(this.getMap().getHeight()/2));
+//      this.getAvatar().setPos(randomWalkableLocation['x'], randomWalkableLocation['y']);
       this.getMap().updateEntityLocation(this.getAvatar());
 
       this.getMap().populateMap(this.getMapName());
