@@ -37,7 +37,7 @@ Game.EntityMixin.WalkerCorporeal = {
     var targetX = Math.min(Math.max(0,this.getX() + dx),map.getWidth());
     var targetY = Math.min(Math.max(0,this.getY() + dy),map.getHeight());
     if(map.getEntity(targetX,targetY)){
-      console.dir( map.getEntity(targetX, targetY));
+//      console.dir( map.getEntity(targetX, targetY));
       this.raiseSymbolActiveEvent('bumpEntity', {actor:this, recipient:map.getEntity(targetX, targetY)});
       this.raiseSymbolActiveEvent('tookTurn');
       return true;
@@ -45,8 +45,8 @@ Game.EntityMixin.WalkerCorporeal = {
 
     var items = map.getItems( targetX, targetY );
     for( var i=0; i<items.length; i++ ) {
-      console.log( "raising event");
-      console.dir( items );
+//      console.log( "raising event");
+  //    console.dir( items );
       items[i].raiseSymbolActiveEvent('walkedOn', {mapName: 'desert1', targetX: targetX, targetY: targetY});
 
     }

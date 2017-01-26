@@ -10,6 +10,7 @@ Game.Tile = function(properties) {
   this.attr._transparent = properties.transparent||false;
   this.attr._opaque = (properties.opaque !== undefined) ? properties.opaque : (! this.attr._transparent);
   this.attr._transparent = !this.attr._opaque;
+
 //  this.attr._tileId = x
   // this.attr = {
   //   _name: name,
@@ -17,6 +18,10 @@ Game.Tile = function(properties) {
   // };
 };
 Game.Tile.extend(Game.Symbol);
+
+// Game.Tile.prototype.getPosition() {
+//   return {x: this.attr._x, y: this.attr._y};
+// }
 
 Game.Tile.prototype.isWalkable = function() {
   return this.attr._walkable;
