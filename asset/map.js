@@ -189,7 +189,6 @@ Game.Map.prototype.renderUnmasked = function( display, camX, camY ) {
       } else if (items.length > 1) {
           Game.Symbol.ITEM_PILE.draw(display,x,y);
       }
-      
     }
   }
   return;
@@ -379,12 +378,12 @@ Game.Map.prototype.rememberCoords = function( toRemember ) {
   }
 };
 
-Game.Map.prototype.populateMap = function(tileSetName) {
+Game.Map.prototype.populateMap = function(tileSetName, door) {
   var setName = tileSetName;
   if( !setName ) {
     this.populateMapGeneric();
   } else if( setName == 'desert1' ) {
-    this.populateMapDesert();
+    this.populateMapDesert(door);
   } else if( setName == 'office' ) {
     this.populateMapOffice();
   }
@@ -410,14 +409,18 @@ Game.Map.prototype.populateMapOffice = function() {
       }
 };
 
-Game.Map.prototype.populateMapDesert = function() {
+Game.Map.prototype.populateMapDesert = function(door) {
   for( var ecount=0; ecount<1; ecount++ ) {
         this.addEntity(Game.DATASTORE.ENTITY[Game.UIMode.gamePlay.attr._avatarId], this.getRandomWalkableLocation());
         this.addEntity(Game.EntityGenerator.create('fungus'),this.getRandomWalkableLocation());
         this.addEntity(Game.EntityGenerator.create('demon'), this.getRandomWalkableLocation());
         this.addEntity(Game.EntityGenerator.create('binger'), this.getRandomWalkableLocation());
-        this.addItem(Game.ItemGenerator.create('folder'), this.getRandomWalkableLocation());
-        this.addItem(Game.ItemGenerator.create('desertDoor'), this.getRandomWalkableLocation());//{x: Math.round(this.getMap().getWidth()/2), y: 1})
+//        this.addItem(Game.ItemGenerator.create('folder'), this.getRandomWalkableLocation());
+        var doorObj = Game.ItemGenerator.create('desertDoor');
+         console.dir( Game.DATASTORE.MAP[door] );
+        doorObj.setConnectTo( Game.DATASTORE.MAP[door].getId() );
+        doorObj.hasBeenEntered();
+        this.addItem(doorObj, this.getRandomWalkableLocation());//{x: Math.round(this.getMap().getWidth()/2), y: 1})
       }
 };
 /*

@@ -333,6 +333,7 @@ Game.UIMode.gamePlay = {
       this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY, {
         visibleCells: seenCells,
         maskedCells: this.getAvatar().getRememberedCoordsForMap(),
+        isUnmasked: true
       });
       this.getAvatar().rememberCoords(seenCells);
       this.getMap().rememberCoords(this.getMap().renderFovOn(display, this.attr._cameraX, this.attr._cameraY, this.getAvatar().getSightRadius()));
@@ -548,7 +549,8 @@ Game.UIMode.enterDoor = {
     if (actionBinding.actionKey == 'AFFIRMATIVE') {
 //      Game.DATASTORE.ITEM[this.attr._doorId].raiseSymbolActiveEvent('changeMaps');
 //      Game.UIMode.gamePlay.setMapName('desert1');
-      
+//      this.getDoor().setConnectTo(Game.UIMode.gamePlay.getMap().attr._id);
+      console.dir( this.getDoor() );
       Game.switchUIMode('gamePlay');
     } else if( actionBinding.actionKey == 'NEGATIVE' ) {
       Game.UIMode.gamePlay.setMap( this.getDoor().getMap() );

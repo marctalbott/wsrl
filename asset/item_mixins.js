@@ -105,11 +105,11 @@ Game.ItemMixin.doorMixin = {
 		listeners: {
 			'walkedOn': function(evtData) {
 				if( !this.attr._doorMixin_attr.hasBeenEntered ) {
-					this.attr._doorMixin_attr.hasBeenEntered = true;
+					this.hasBeenEntered();
 					var newMap = new Game.Map(evtData.mapName);
-					newMap.populateMap(evtData.mapName);
-					Game.UIMode.gamePlay.setMap(newMap);
+					newMap.populateMap(evtData.mapName, evtData.oldMap);
 					this.setConnectTo(newMap.attr._id);
+					Game.UIMode.gamePlay.setMap(newMap);
 				} else {
 					Game.UIMode.gamePlay.setMap( Game.DATASTORE.MAP[this.attr._doorMixin_attr.connectTo] );
 				}
@@ -121,5 +121,8 @@ Game.ItemMixin.doorMixin = {
 	},
 	setConnectTo: function(mapId) {
 		this.attr._doorMixin_attr.connectTo = mapId;
+	},
+	hasBeenEntered: function() {
+		this.attr._doorMixin_attr.hasBeenEntered = true;
 	}
 };

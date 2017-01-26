@@ -47,7 +47,7 @@ Game.EntityMixin.WalkerCorporeal = {
     for( var i=0; i<items.length; i++ ) {
 //      console.log( "raising event");
   //    console.dir( items );
-      items[i].raiseSymbolActiveEvent('walkedOn', {mapName: 'desert1', targetX: targetX, targetY: targetY});
+      items[i].raiseSymbolActiveEvent('walkedOn', {mapName: 'desert1', oldMap: this.getMap().getId(), targetX: targetX, targetY: targetY});
 
     }
     targetTile = map.getTile(targetX, targetY);
