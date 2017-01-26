@@ -6,10 +6,31 @@ Game.ItemGenerator.learn ({
 });
 
 Game.ItemGenerator.learn ({
-    name: 'folder',
-    chr: '📁',
-    fg: '#aaa',
-    mixins: []
+  name: 'folder',
+  chr: '📁',
+  fg: '#aaa',
+  mixins: []
+});
+
+Game.ItemGenerator.learn ({
+  name: 'printer',
+  chr: '🖨',
+  fg: '#fff',
+  mixins: []
+});
+
+Game.ItemGenerator.learn ({
+  name: 'keyboard',
+  chr: '⌨',
+  fg: '#fff',
+  mixins: []
+});
+
+Game.ItemGenerator.learn ({
+  name: 'pen',
+  chr: '🖊',
+  fg: '#fff',
+  mixins:[]
 });
 
 Game.ItemGenerator.learn ({

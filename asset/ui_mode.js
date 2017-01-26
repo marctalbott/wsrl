@@ -49,8 +49,10 @@ Game.UIMode.flavor = {
     display.draw(30, 3, "You are an employee at the mid-market insurance agency known");
     display.draw(30, 4, "as 'Affordable Insurance Agency Inc.' One night you are working");
     display.draw(30, 5, "late at the office when you discover a fake panel at the back of");
-    display.draw(30, 6, "the break room fridge which leads to a secret room. In this room");
-    display.draw(30, 7, "you find an unmarked manila folder.");
+    display.draw(30, 6, "the break room fridge which leads to a secret room. You enter the room");
+    display.draw(30, 7, "only to be startled when goblins jump out of the shadows and steal some");
+    display.draw(30, 8, "items from your office. You need to retrieve them before your boss");
+    display.draw(30, 9, "finds out!");
   },
 
   handleInput: function(inputType, inputData) {
@@ -289,6 +291,8 @@ Game.UIMode.gamePlay = {
     // Game.Message.clear();
     Game.renderAll();
     Game.KeyBinding.informPlayer();
+    Game.Message.ageMessages();
+    Game.Message.send("Find all 4 of the items that have been lost!");
     Game.TimeEngine.unlock();
   },
   exit: function() {
@@ -520,9 +524,11 @@ Game.UIMode.gamePlay = {
       for( var ecount=0; ecount<1; ecount++ ) {
         this.getMap().addEntity(Game.EntityGenerator.create('fungus'),this.getMap().getRandomWalkableLocation());
         this.getMap().addEntity(Game.EntityGenerator.create('demon'), this.getMap().getRandomWalkableLocation());
-        this.getMap().addEntity(Game.EntityGenerator.create('binger'), this.getMap().getRandomWalkableLocation());
+        this.getMap().addEntity(Game.EntityGenerator.create('goblin'), this.getMap().getRandomWalkableLocation());
         this.getMap().addItem(Game.ItemGenerator.create('folder'), this.getMap().getRandomWalkableLocation());
-        this.getMap().addItem(Game.ItemGenerator.create('folder'), this.getMap().getRandomWalkableLocation());
+        this.getMap().addItem(Game.ItemGenerator.create('printer'), this.getMap().getRandomWalkableLocation());
+        this.getMap().addItem(Game.ItemGenerator.create('keyboard'), this.getMap().getRandomWalkableLocation());
+        this.getMap().addItem(Game.ItemGenerator.create('pen'), this.getMap().getRandomWalkableLocation());
         this.getMap().addItem(Game.ItemGenerator.create('desertDoor'), this.getMap().getRandomWallLocation());//{x: Math.round(this.getMap().getWidth()/2), y: 1})
       }
     }
@@ -621,13 +627,15 @@ Game.UIMode.enterDoor = {
 Game.UIMode.gameWin = {
   enter: function() {
     console.log("entered gameWin");
+    Game.Message.ageMessages();
+    Game.Message.send("You found all your items!");
   },
   exit: function() {
     console.log("exited gameWin");
   },
   render: function (display) {
     console.log("rendered gameWin");
-    display.drawText(5,5,"congratulations, hope you're proud of yourself.");
+    display.drawText(5,5,"congratulations, you win, hope you're proud of yourself.");
   },
   handleInput: function (inputType, inputData) {
     console.log("input for gameWin");

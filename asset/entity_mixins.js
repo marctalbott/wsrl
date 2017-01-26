@@ -251,6 +251,14 @@ Game.EntityMixin.PlayerActor = {
       'useDoor': function( evtData ) {
         console.log('still changing maps');
         this.raiseSymbolActiveEvent('changeMaps');
+      },
+      'killed': function (evtData) {
+        Game.TimeEngine.lock();
+        Game.switchUIMode('gameLose');
+      },
+      'inventoryFull': function (evtData) {
+        Game.TimeEngine.lock();
+        Game.switchUIMode('gameWin');
       }
     }
   },
@@ -543,6 +551,18 @@ Game.EntityMixin.PlayerMessager = {
         Game.Message.send('you killed the ' + evtData.entKilled.getName());
         Game.renderMessage();
       },
+
+      'damagedBy': function(evtData) {
+       Game.Message.send('the '+evtData.damager.getName()+' hit you for '+evtData.damageAmount);
+       Game.renderMessage();
+      //  Game.Message.ageMessages();  // NOTE: maybe not do this? If surrounded by multiple attackers messages could be aged out before being seen...
+     },
+
+     'killed': function(evtData) {
+       Game.Message.ageMessages();
+       Game.Message.send('you were killed by the '+evtData.killedBy.getName());
+       Game.renderMessage();
+     },
 
       'noItemsToPickup': function (evtData) {
         Game.Message.send('there is nothing to pickup');

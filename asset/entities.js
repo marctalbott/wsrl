@@ -4,10 +4,10 @@ Game.EntityGenerator = new Game.Generator('entities',Game.Entity);
 
 Game.EntityGenerator.learn({
 	name: 'avatar',
-	chr: '🐵',
+	chr: '👨',
 	fg: '#dda',
 	maxHp: 10,
-	inventoryCapacity: 4,
+	inventoryCapacity: 3,
 	mixins: ["PlayerActor", "WalkerCorporeal", "Chronicle", "HitPoints", "MeleeAttacker", "Sight", "MapMemory", "InventoryHolder", "PlayerMessager"]
 	// mixins: [Game.EntityMixin.PlayerActor,
 	// 		 Game.EntityMixin.WalkerCorporeal,
@@ -51,12 +51,12 @@ Game.EntityGenerator.learn({
 
 
 Game.EntityGenerator.learn({
-	name: 'binger',
-	chr: 'b',
+	name: 'goblin',
+	chr: 'g',
 	fg: '#00ff00',
 	maxHp: 3,
 	sightRadius: 2,
-	mixins: ["HitPoints", "WalkerCorporeal", "EnemyWanderActor", "Sight"]
+	mixins: ["HitPoints", "WalkerCorporeal", "EnemyWanderActor", "Sight", "MeleeAttacker"]
 	// [Game.EntityMixin.HitPoints,
 	// 		 Game.EntityMixin.WalkerCorporeal,
 	// 		 //Game.EntityMixin.MeleeAttacker,
