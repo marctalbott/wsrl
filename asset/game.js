@@ -181,6 +181,7 @@ var Game = {
     if (newMode) {
       newMode.enter();
     }
+
     this.renderAll();
   },
   removeUIMode: function () {

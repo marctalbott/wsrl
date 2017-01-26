@@ -213,6 +213,12 @@ Game.KeyBinding = {
       vim: {label:'D' ,inputMatch:ROT.VK_D ,inputType:'keydown' ,inputMetaShift:true  ,inputMetaCtrl:false} ,
       waxd  : {label:'D' ,inputMatch:ROT.VK_D ,inputType:'keydown' ,inputMetaShift:true  ,inputMetaCtrl:false}
     },
+    
+    ENTER_DOOR  : {action_group: 'movement' , guid: Game.util.uniqueId() , ordering:3, short:'enter' , long: 'enter door',
+      numpad: {label: '/' , inputMatch:ROT.VK_SLASH, inputType: 'keydown', inputMetaShift: false , inputMetaCtrl: false } ,
+      vim: {label: '/' , inputMatch:ROT.VK_SLASH, inputType: 'keydown', inputMetaShift: false , inputMetaCtrl: false } ,
+      waxd: {label: '/' , inputMatch:ROT.VK_SLASH, inputType: 'keydown', inputMetaShift: false , inputMetaCtrl: false }
+    },
 
    //HELP action definition goes here
    HELP : {action_group:'meta' ,guid :Game.util.uniqueId() ,ordering:1 ,short:'help' ,long:'show which keys do which commands',
@@ -223,8 +229,15 @@ Game.KeyBinding = {
    },
    CANCEL          : {action_group:'meta' ,guid :Game.util.uniqueId() ,ordering:1 ,short:'cancel'   ,long:'cancel/close the current action/screen',
      all: {label:'Esc' ,inputMatch:ROT.VK_ESCAPE     ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false}
+   },
+    AFFIRMATIVE          : {action_group:'meta' ,guid :Game.util.uniqueId() ,ordering:1 ,short:'confirm'   ,long:'agree to enter',
+     all: {label:'Y' ,inputMatch:ROT.VK_Y    ,inputType:'keydown' ,inputMetaShift:true ,inputMetaCtrl:false}
+   },
+    NEGATIVE          : {action_group:'meta' ,guid :Game.util.uniqueId() ,ordering:1 ,short:'negative'   ,long:'answer no',
+     all: {label:'R' ,inputMatch:ROT.VK_R    ,inputType:'keydown' ,inputMetaShift:true ,inputMetaCtrl:false}
    }
  }
+
 };
 // Game.KeyBinding.BindingSet = {};
 // //
@@ -275,5 +288,17 @@ Game.KeyBinding = {
 // Game.KeyBinding.BindingSet.laptop.MOVE_D    = {label:'j' ,inputMatch:ROT.VK_J ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
 // Game.KeyBinding.BindingSet.laptop.MOVE_DR   = {label:'n' ,inputMatch:ROT.VK_N ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
 //
+
 // Game.KeyBinding.BindingSet.laptop.PICKUP   = {label:'g' ,inputMatch:ROT.VK_G ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
 // Game.KeyBinding.BindingSet.laptop.DROP   = {label:'D' ,inputMatch:ROT.VK_D ,inputType:'keydown' ,inputMetaShift:true ,inputMetaCtrl:false};
+
+// Game.KeyBinding.BindingSet.numpad.MOVE_UL   = {label:'7' ,inputMatch:ROT.VK_NUMPAD7 ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
+// Game.KeyBinding.BindingSet.numpad.MOVE_U    = {label:'8' ,inputMatch:ROT.VK_NUMPAD8 ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
+// Game.KeyBinding.BindingSet.numpad.MOVE_UR   = {label:'9' ,inputMatch:ROT.VK_NUMPAD9 ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
+// Game.KeyBinding.BindingSet.numpad.MOVE_L    = {label:'4' ,inputMatch:ROT.VK_NUMPAD4 ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
+// Game.KeyBinding.BindingSet.numpad.MOVE_WAIT = {label:'5' ,inputMatch:ROT.VK_NUMPAD5 ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
+// Game.KeyBinding.BindingSet.numpad.MOVE_R    = {label:'6' ,inputMatch:ROT.VK_NUMPAD6 ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
+// Game.KeyBinding.BindingSet.numpad.MOVE_DL   = {label:'1' ,inputMatch:ROT.VK_NUMPAD1 ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
+// Game.KeyBinding.BindingSet.numpad.MOVE_D    = {label:'2' ,inputMatch:ROT.VK_NUMPAD2 ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
+// Game.KeyBinding.BindingSet.numpad.MOVE_DR   = {label:'3' ,inputMatch:ROT.VK_NUMPAD3 ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
+

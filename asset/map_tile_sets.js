@@ -4,6 +4,7 @@ Game.MapTileSets = {
     _height: 20,
     _wallTile: Game.Tile.wallTile,
     _floorTile: Game.Tile.floorTile,
+    _masked: true,
 
     getMapTiles: function () {
       var wallTile = this._wallTile;
@@ -42,6 +43,7 @@ Game.MapTileSets = {
     _height: 20,
     _wallTile: Game.Tile.desertWallTile,
     _floorTile: Game.Tile.desertTile,
+    _masked: true,
     getMapTiles: function () {
       var wallTile = this._wallTile;
       var floorTile = this._floorTile;
@@ -72,6 +74,62 @@ Game.MapTileSets = {
       }, 1);
       console.log("finish generating map");
       return mapTiles;
+    }
+  },
+
+
+  office: {
+    _width: 40,
+    _height: 30,
+    _wallTile: Game.Tile.wallTile,
+    _floorTile: Game.Tile.floorTile,
+    _masked: false,
+    getMapTiles: function() {
+      var wallTile = this._wallTile;
+      var floorTile = this._floorTile;
+      //var mapTiles = [];
+      var mapTiles = Game.util.init2DArray(this._width+1, this._height+1, Game.Tile.wallTile);
+//      console.log(mapTiles);
+
+      // for( var i=0; i<this._width; i++) {
+      //   mapTiles[i][0] = Game.Tile.wallTile;
+      // }
+
+      // for( var i=0; i<this._width+1; i++) {
+      //   mapTiles[i][this._height-1] = Game.Tile.wallTile;
+      // }
+
+      // for( var i=0; i<this._height; i++ ) {
+      //   mapTiles[0][i] = Game.Tile.wallTile;
+      // }
+
+      // for( var i=0; i<this._height; i++ ) {
+      //   mapTiles[this._width-1][i] = Game.Tile.wallTile;
+      // }
+
+  
+      for( var i=1; i<this._width; i++ ) {
+        for( var j=1; j<this._height; j++ ) {
+           mapTiles[i][j] = Game.Tile.floorTile;
+        }
+      }
+      // for (var i = 0; i < this._width; i++) {
+      //   mapTiles[i][1] = wallTile;
+      // }
+      // for (var i = 0; i < this._height; i++) {
+      //   mapTiles[0][i] = wallTile;
+      // }
+
+      // for( var x=1; x<this._height-1; x++ ) {
+      //   for( var y=1; y<this._width-1; y++ ) {
+      //      console.log( mapTiles[x][y]);
+      //   }
+      // }
+      return mapTiles;
+
+    },
+    isMasked: function(){
+      return this._masked;
     }
   }
 };

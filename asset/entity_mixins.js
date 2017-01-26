@@ -37,12 +37,22 @@ Game.EntityMixin.WalkerCorporeal = {
     var targetX = Math.min(Math.max(0,this.getX() + dx),map.getWidth());
     var targetY = Math.min(Math.max(0,this.getY() + dy),map.getHeight());
     if(map.getEntity(targetX,targetY)){
+      console.dir( map.getEntity(targetX, targetY));
       this.raiseSymbolActiveEvent('bumpEntity', {actor:this, recipient:map.getEntity(targetX, targetY)});
       this.raiseSymbolActiveEvent('tookTurn');
       return true;
     }
+
+    var items = map.getItems( targetX, targetY );
+    for( var i=0; i<items.length; i++ ) {
+      console.log( "raising event");
+      console.dir( items );
+      items[i].raiseSymbolActiveEvent('walkedOn', {mapName: 'desert1', targetX: targetX, targetY: targetY});
+
+    }
     targetTile = map.getTile(targetX, targetY);
     if (targetTile.isWalkable()) {
+
       this.setPos(targetX, targetY);
       var myMap = this.getMap();
       if( myMap ) {
@@ -237,6 +247,10 @@ Game.EntityMixin.PlayerActor = {
         this.setCurrentActionDuration(this.getBaseActionDuration());
         // Game.TimeEngine.lock();
         Game.TimeEngine.unlock();
+      },
+      'useDoor': function( evtData ) {
+        console.log('still changing maps');
+        this.raiseSymbolActiveEvent('changeMaps');
       }
     }
   },
@@ -406,10 +420,10 @@ Game.EntityMixin.PeacefulWanderActor = {
     return Game.util.positionsAdjacentTo({x:0,y:0}).random();
   },
   act: function () {
-    console.log('wander for '+this.getName());
+//    console.log('wander for '+this.getName());
     var moveDeltas = this.getMoveDeltas();
     if( this.hasMixin('Walker')) {
-      console.log (this.getMap());
+      //console.log (this.getMap());
       this.tryWalk(this.getMap(), moveDeltas.x, moveDeltas.y);
     }
     Game.Scheduler.setDuration(this.getCurrentActionDuration());
@@ -491,7 +505,7 @@ Game.EntityMixin.EnemyWanderActor = {
     var moveDeltas = this.getMoveDeltas();
     this.raiseSymbolActiveEvent('adjacentMove', {dx: moveDeltas.x, dy: moveDeltas.y});
     Game.Scheduler.setDuration(this.getCurrentActionDuration());
-    this.setCurrentActionDuration(this.setCurrentActionDuration(this.getBaseActionDuration()+Game.util.randomInt(-10,10)));
+    this.setCurrentActionDuration(this.getBaseActionDuration()+Game.util.randomInt(-10,10));
     Game.TimeEngine.unlock();
   }
   // listeners: {
@@ -673,13 +687,15 @@ Game.EntityMixin.InventoryHolder = {
   }
 };
 
-Game.EntityMixin.AvatarFollower = {
-  META: {
-    mixinName: 'AvatarFollower',
-    mixinGroup: 'Follower',
-  },
-  followAvatar: function() {
 
-  }
 
-}
+// Game.EntityMixin.AvatarFollower = {
+//   META: {
+//     mixinName: 'AvatarFollower',
+//     mixinGroup: 'Follower',
+//   },
+//   followAvatar: function() {
+
+//   }
+
+// }

@@ -69,5 +69,5 @@ Game.Entity.prototype.setMap = function( map ) {
 };
 
 Game.Entity.prototype.getMixins = function() {
-	return this._mixins;
+	return this.attr._mixins;
 };

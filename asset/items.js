@@ -8,5 +8,13 @@ Game.ItemGenerator.learn ({
 Game.ItemGenerator.learn ({
     name: 'folder',
     chr: '📁',
-    fg: '#aaa'
+    fg: '#aaa',
+    mixins: []
 });
+
+Game.ItemGenerator.learn ({
+	name: 'desertDoor',
+	chr: '/',
+	fg: '#f4a460',
+	mixins: ["doorMixin"]
+})
