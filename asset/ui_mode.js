@@ -422,10 +422,11 @@ Game.UIMode.gamePlay = {
     var bg = Game.UIMode.DEFAULT_COLOR_BG;
 /*    console.log( "avatar:");
     console.dir( this.getAvatar() );*/
-    display.drawText(1,2,"avatar x: "+this.getAvatar().getX(),fg,bg); // DEV
-    display.drawText(1,3,"avatar y: "+this.getAvatar().getY(),fg,bg); // DEV
+    // display.drawText(1,2,"avatar x: "+this.getAvatar().getX(),fg,bg); // DEV
+    // display.drawText(1,3,"avatar y: "+this.getAvatar().getY(),fg,bg); // DEV
     display.drawText(1,4,"turns taken: "+this.getAvatar().getTurns(),fg,bg);
     display.drawText(1,5,"hp: "+this.getAvatar().getCurHp(),fg,bg);
+    display.drawText(1,6,"collected "+this.getAvatar().getInventoryItemIds().length + "/4 items", fg, bg);
   },
 
   moveAvatar: function(dx, dy) {
