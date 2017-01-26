@@ -225,13 +225,6 @@ Game.Map.prototype.renderOn = function (display, camX, camY, renderOptions) {
           ent.draw(display,x,y,true);
         }
       }
-
-      // if (entitiesVisible) {
-      //   var ent = this.getEntity(mapPos);
-      //   if(ent) {
-      //     ent.draw(display,x,y, isMasked);
-      //   }
-      // }
     }
   }
 };
@@ -419,8 +412,46 @@ Game.Map.prototype.rememberCoords = function( toRemember ) {
   }
 };
 
-Game.Map.prototype.populateMap = function() {
+Game.Map.prototype.populateMap = function(tileSetName) {
+  var setName = tileSetName;
+  if( !setName ) {
+    this.populateMapGeneric();
+  } else if( setName == 'desert1' ) {
+    this.populateMapDesert();
+  } else if( setName == 'office' ) {
+    this.populateMapOffice();
+  }
 
+};
+
+Game.Map.prototype.populateMapGeneric = function() {
+  for( var ecount=0; ecount<1; ecount++ ) {
+        this.addEntity(Game.EntityGenerator.create('fungus'),this.getRandomWalkableLocation());
+        this.addEntity(Game.EntityGenerator.create('demon'), this.getRandomWalkableLocation());
+        this.addEntity(Game.EntityGenerator.create('binger'), this.getRandomWalkableLocation());
+        this.addItem(Game.ItemGenerator.create('folder'), this.getRandomWalkableLocation());
+        this.addItem(Game.ItemGenerator.create('desertDoor'), this.getRandomWallLocation());//{x: Math.round(this.getMap().getWidth()/2), y: 1})
+      }
+};
+
+Game.Map.prototype.populateMapOffice = function() {
+  for( var ecount=0; ecount<1; ecount++ ) {
+        this.addEntity(Game.EntityGenerator.create('fungus'),this.getRandomWalkableLocation());
+        this.addEntity(Game.EntityGenerator.create('demon'), this.getRandomWalkableLocation());
+        this.addEntity(Game.EntityGenerator.create('binger'), this.getRandomWalkableLocation());
+        this.addItem(Game.ItemGenerator.create('folder'), this.getRandomWalkableLocation());
+        this.addItem(Game.ItemGenerator.create('desertDoor'), {x: Math.round(this.getWidth()/2), y: 0});
+      }
+};
+
+Game.Map.prototype.populateMapDesert = function() {
+  for( var ecount=0; ecount<1; ecount++ ) {
+        this.addEntity(Game.EntityGenerator.create('fungus'),this.getRandomWalkableLocation());
+        this.addEntity(Game.EntityGenerator.create('demon'), this.getRandomWalkableLocation());
+        this.addEntity(Game.EntityGenerator.create('binger'), this.getRandomWalkableLocation());
+        this.addItem(Game.ItemGenerator.create('folder'), this.getRandomWalkableLocation());
+        this.addItem(Game.ItemGenerator.create('desertDoor'), this.getRandomWallLocation());//{x: Math.round(this.getMap().getWidth()/2), y: 1})
+      }
 };
 /*
 

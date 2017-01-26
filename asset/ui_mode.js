@@ -308,6 +308,9 @@ Game.UIMode.gamePlay = {
   setMapName: function( mapName ) {
     this.attr._mapName = mapName;
   },
+  getMapName: function() {
+    return this.attr._mapName;
+  },
   render: function (display) {
 
     // console.log(this.attr._cameraX);
@@ -508,13 +511,14 @@ Game.UIMode.gamePlay = {
       this.getMap().updateEntityLocation(this.getAvatar());
 
       // add entities and items
-      for( var ecount=0; ecount<1; ecount++ ) {
-        this.getMap().addEntity(Game.EntityGenerator.create('fungus'),this.getMap().getRandomWalkableLocation());
-        this.getMap().addEntity(Game.EntityGenerator.create('demon'), this.getMap().getRandomWalkableLocation());
-        this.getMap().addEntity(Game.EntityGenerator.create('binger'), this.getMap().getRandomWalkableLocation());
-        this.getMap().addItem(Game.ItemGenerator.create('folder'), this.getMap().getRandomWalkableLocation());
-        this.getMap().addItem(Game.ItemGenerator.create('desertDoor'), this.getMap().getRandomWallLocation());//{x: Math.round(this.getMap().getWidth()/2), y: 1})
-      }
+      // for( var ecount=0; ecount<1; ecount++ ) {
+      //   this.getMap().addEntity(Game.EntityGenerator.create('fungus'),this.getMap().getRandomWalkableLocation());
+      //   this.getMap().addEntity(Game.EntityGenerator.create('demon'), this.getMap().getRandomWalkableLocation());
+      //   this.getMap().addEntity(Game.EntityGenerator.create('binger'), this.getMap().getRandomWalkableLocation());
+      //   this.getMap().addItem(Game.ItemGenerator.create('folder'), this.getMap().getRandomWalkableLocation());
+      //   this.getMap().addItem(Game.ItemGenerator.create('desertDoor'), this.getMap().getRandomWallLocation());//{x: Math.round(this.getMap().getWidth()/2), y: 1})
+      // }
+      this.getMap().populateMap(this.getMapName());
     }
 
     this.setCameraToAvatar();

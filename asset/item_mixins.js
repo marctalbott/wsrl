@@ -107,6 +107,7 @@ Game.ItemMixin.doorMixin = {
 				if( !this.attr._doorMixin_attr.hasBeenEntered ) {
 					this.attr._doorMixin_attr.hasBeenEntered = true;
 					var newMap = new Game.Map(evtData.mapName);
+					newMap.populateMap(evtData.mapName);
 					Game.UIMode.gamePlay.setMap(newMap);
 					this.setConnectTo(newMap.attr._id);
 				} else {
