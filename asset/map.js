@@ -217,6 +217,12 @@ Game.Map.prototype.renderFovOn = function (display, camX, camY, radius) {
         if (ent) {
           ent.draw(display, x, y);
         }
+        var items = this.getItems(mapPos);
+        if (items.length == 1) {
+            items[0].draw(display, x, y);
+        } else if (items.length > 1) {
+            Game.Symbol.ITEM_PILE.draw(display,x,y);
+        }
       }
     }
   }
@@ -414,7 +420,10 @@ Game.Map.prototype.populateMapDesert = function(door) {
         this.addEntity(Game.EntityGenerator.create('fungus'),this.getRandomWalkableLocation());
         this.addEntity(Game.EntityGenerator.create('demon'), this.getRandomWalkableLocation());
         this.addEntity(Game.EntityGenerator.create('goblin'), this.getRandomWalkableLocation());
-       this.addItem(Game.ItemGenerator.create('folder'), this.getRandomWalkableLocation());
+        this.addItem(Game.ItemGenerator.create('folder'), this.getRandomWalkableLocation());
+        this.addItem(Game.ItemGenerator.create('printer'), this.getRandomWalkableLocation());
+        this.addItem(Game.ItemGenerator.create('pen'), this.getRandomWalkableLocation());
+        this.addItem(Game.ItemGenerator.create('keyboard'), this.getRandomWalkableLocation());
         var doorObj = Game.ItemGenerator.create('desertDoor');
          console.dir( Game.DATASTORE.MAP[door] );
         doorObj.setConnectTo( Game.DATASTORE.MAP[door].getId() );

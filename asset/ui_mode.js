@@ -341,7 +341,7 @@ Game.UIMode.gamePlay = {
         visibleCells: seenCells,
 
         maskedCells: this.getAvatar().getRememberedCoordsForMap(),
-        isUnmasked: true
+        // isUnmasked: true
 
       });
       this.getAvatar().rememberCoords(seenCells);
