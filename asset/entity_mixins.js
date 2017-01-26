@@ -37,7 +37,7 @@ Game.EntityMixin.WalkerCorporeal = {
     var targetX = Math.min(Math.max(0,this.getX() + dx),map.getWidth());
     var targetY = Math.min(Math.max(0,this.getY() + dy),map.getHeight());
     if(map.getEntity(targetX,targetY)){
-      console.dir( map.getEntity(targetX, targetY));
+      // console.dir( map.getEntity(targetX, targetY));
       this.raiseSymbolActiveEvent('bumpEntity', {actor:this, recipient:map.getEntity(targetX, targetY)});
       this.raiseSymbolActiveEvent('tookTurn');
       return true;
@@ -45,8 +45,8 @@ Game.EntityMixin.WalkerCorporeal = {
 
     var items = map.getItems( targetX, targetY );
     for( var i=0; i<items.length; i++ ) {
-      console.log( "raising event");
-      console.dir( items );
+      // console.log( "raising event");
+      // console.dir( items );
       items[i].raiseSymbolActiveEvent('walkedOn', {mapName: 'desert1', targetX: targetX, targetY: targetY});
 
     }
@@ -617,16 +617,16 @@ Game.EntityMixin.InventoryHolder = {
   _getContainer: function () {
     return Game.DATASTORE.ITEM[this.attr._InventoryHolder_attr.containerId];
   },
-  hasSpace: function () {
+  hasInventorySpace: function () {
     return this._getContainer().hasSpace();
   },
-  addItems: function (items_or_ids) {
+  addInventoryItems: function (items_or_ids) {
     return this._getContainer().addItems(items_or_ids);
   },
-  getItemIds: function () {
+  getInventoryItemIds: function () {
     return this._getContainer().getItemIds();
   },
-  extractItems: function (ids_or_idxs) {
+  extractInventoryItems: function (ids_or_idxs) {
     return this._getContainer().extractItems(ids_or_idxs);
   },
   pickupItems: function (ids_or_idxs) {

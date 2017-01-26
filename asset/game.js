@@ -115,6 +115,13 @@ var Game = {
     return null;
   },
 
+  getDisplayHeight: function (displayId) {
+    if (this._display.hasOwnProperty(displayId)) {
+      return this._display[displayId].h;
+    }
+    return null;
+  },
+
   renderAll: function() {
     this.renderMain();
     this.renderAvatar();

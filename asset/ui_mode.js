@@ -61,6 +61,8 @@ Game.UIMode.flavor = {
   }
 };
 
+//*****************************************************************************
+
 Game.UIMode.gamePersistence = {
   RANDOM_SEED_KEY: 'gameRandomSeed',
   _storedKeyBinding: '',
@@ -268,6 +270,7 @@ Game.UIMode.gamePersistence = {
   }
 };
 
+//*****************************************************************************
 
 Game.UIMode.gamePlay = {
   attr: {
@@ -325,16 +328,16 @@ Game.UIMode.gamePlay = {
       this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY, {
         isUnmasked: true
       });
-    } else {       
+    } else {
       var seenCells = this.getAvatar().getVisibleCells();
       this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY, {
-      visibleCells: seenCells,
-      maskedCells: this.getAvatar().getRememberedCoordsForMap()
+        visibleCells: seenCells,
+        maskedCells: this.getAvatar().getRememberedCoordsForMap()
       });
       this.getAvatar().rememberCoords(seenCells);
       this.getMap().rememberCoords(this.getMap().renderFovOn(display, this.attr._cameraX, this.attr._cameraY, this.getAvatar().getSightRadius()));
     }
-   
+
 
     // this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY, false, true, true);
 
@@ -370,7 +373,7 @@ Game.UIMode.gamePlay = {
   },
   handleInput: function (inputType, inputData) {
     var actionBinding = Game.KeyBinding.getInputBinding(inputType, inputData);
-    console.log(inputData);
+    // console.log(inputData);
     //var pressedKey = String.fromCharCode(inputData.charCode);
     var tookTurn = false;
     if (!actionBinding) {
@@ -405,15 +408,23 @@ Game.UIMode.gamePlay = {
       Game.switchUIMode('gameLose');
     } else if (actionBinding.actionKey == 'MOVE_WAIT') {
       tookTurn = true;
-
+    } else if (actionBinding.actionKey == 'INVENTORY') {
+      Game.addUIMode('LAYER_inventoryListing');
     } else if (actionBinding.actionKey == 'PICKUP') {
-      console.log('pickup');
-      var pickupRes = this.getAvatar().pickupItems(Game.util.objectArrayToIdArray(this.getAvatar().getMap().getItems(this.getAvatar().getPos())));
-      tookTurn = pickupRes.numItemsPickedUp > 0;
+      var pickUpList = Game.util.objectArrayToIdArray(this.getAvatar().getMap().getItems(this.getAvatar().getPos()));
+      if (pickUpList.length <= 1) {
+        var pickupRes = this.getAvatar().pickupItems(pickUpList);
+        tookTurn = pickupRes.numItemsPickedUp > 0;
+      } else {
+        // var pickupRes = this.getAvatar().pickupItems(Game.util.objectArrayToIdArray(this.getAvatar().getMap().getItems(this.getAvatar().getPos())));
+        // tookTurn = pickupRes.numItemsPickedUp > 0;
+        Game.addUIMode('LAYER_inventoryPickup');
+      }
     } else if (actionBinding.actionKey == 'DROP') {
       console.log('drop');
-      var dropRes = this.getAvatar().dropItems(this.getAvatar().getItemIds());
-      tookTurn = dropRes.numItemsDropped > 0;
+      // var dropRes = this.getAvatar().dropItems(this.getAvatar().getItemIds());
+      // tookTurn = dropRes.numItemsDropped > 0;
+      Game.addUIMode('LAYER_inventoryDrop');
     } else if (actionBinding.actionKey == 'HELP') {
       console.log('TODO: setup help for gameplay');
       Game.addUIMode('LAYER_textReading');
@@ -511,6 +522,7 @@ Game.UIMode.gamePlay = {
         this.getMap().addEntity(Game.EntityGenerator.create('demon'), this.getMap().getRandomWalkableLocation());
         this.getMap().addEntity(Game.EntityGenerator.create('binger'), this.getMap().getRandomWalkableLocation());
         this.getMap().addItem(Game.ItemGenerator.create('folder'), this.getMap().getRandomWalkableLocation());
+        this.getMap().addItem(Game.ItemGenerator.create('folder'), this.getMap().getRandomWalkableLocation());
         this.getMap().addItem(Game.ItemGenerator.create('desertDoor'), this.getMap().getRandomWallLocation());//{x: Math.round(this.getMap().getWidth()/2), y: 1})
       }
     }
@@ -526,6 +538,7 @@ Game.UIMode.gamePlay = {
   }
 };
 
+//*****************************************************************************
 
 Game.UIMode.LAYER_textReading = {
     _storedKeyBinding: '',
@@ -595,14 +608,15 @@ Game.UIMode.enterDoor = {
     if (actionBinding.actionKey == 'AFFIRMATIVE') {
       Game.DATASTORE.ITEM[this.attr._doorId].raiseSymbolActiveEvent('changeMaps');
 //      Game.UIMode.gamePlay.setMapName('desert1');
-      Game.switchUIMode(Game.UIMode.gamePlay);
+      Game.switchUIMode('gamePlay');
     } else if( actionBinding.actionKey == 'NEGATIVE' ) {
       Game.UIMode.gamePlay.setMap( this.getDoor().getMap() );
-      Game.switchUIMode(Game.UIMode.gamePlay);
+      Game.switchUIMode('gamePlay');
     }
   }
 };
 
+//*****************************************************************************
 
 Game.UIMode.gameWin = {
   enter: function() {
@@ -623,6 +637,8 @@ Game.UIMode.gameWin = {
   }
 };
 
+//*****************************************************************************
+
 Game.UIMode.gameLose = {
   enter: function() {
     console.log("entered gameLose");
@@ -640,4 +656,342 @@ Game.UIMode.gameLose = {
       Game.switchUIMode('gameStart');
     }
   }
+};
+
+//*****************************************************************************
+
+
+Game.UIMode.LAYER_itemListing = function(template) {
+  template = template ? template : {};
+
+  this._caption = template.caption || 'Items';
+  this._processingFunction = template.processingFunction;
+  this._filterListedItemsOnFunction = template.filterListedItemsOn || function(x) {
+      return x;
+  };
+  this._canSelectItem = template.canSelect || false;
+  this._canSelectMultipleItems = template.canSelectMultipleItems || false;
+  this._hasNoItemOption = template.hasNoItemOption || false;
+  this._origItemIdList= template.itemIdList ? JSON.parse(JSON.stringify(template.itemIdList)) : [];
+  this._itemIdList = [];
+  this._runFilterOnItemIdList();
+  this._keyBindingName= template.keyBindingName || 'LAYER_itemListing';
+
+  this._selectedItemIdxs= [];
+  this._displayItemsStartIndex = 0;
+  this._displayItems = [];
+  this._displayMaxNum = Game.getDisplayHeight('main')-3;
+};
+
+Game.UIMode.LAYER_itemListing.prototype._runFilterOnItemIdList = function () {
+  this._itemIdList = [];
+  for (var i = 0; i < this._origItemIdList.length; i++) {
+    if (this._filterListedItemsOnFunction(this._origItemIdList[i])) {
+      this._itemIdList.push(this._origItemIdList[i]);
+    }
+  }
+};
+
+Game.UIMode.LAYER_itemListing.prototype.enter = function () {
+  this._storedKeyBinding = Game.KeyBinding.getKeyBinding();
+  Game.KeyBinding.setKeyBinding(this._keyBindingName);
+  if ('doSetup' in this) {
+    this.doSetup();
+  }
+  Game.renderAll();
+  //Game.specialMessage("[Esc] to exit, [ and ] for scrolling");
+};
+Game.UIMode.LAYER_itemListing.prototype.exit = function () {
+  Game.KeyBinding.setKeyBinding(this._storedKeyBinding);
+  setTimeout(function(){
+     Game.renderAll();
+  }, 1);
+};
+Game.UIMode.LAYER_itemListing.prototype.setup = function(setupParams) {
+  setupParams = setupParams ? setupParams : {};
+
+  if (setupParams.hasOwnProperty('caption')) {
+    this._caption = setupParams.caption;
+  }
+  if (setupParams.hasOwnProperty('processingFunction')) {
+    this._processingFunction = setupParams.processingFunction;
+  }
+  if (setupParams.hasOwnProperty('filterListedItemsOn')) {
+    this._filterListedItemsOnFunction = setupParams.filterListedItemsOn;
+    this._runFilterOnItemIdList();
+  }
+  if (setupParams.hasOwnProperty('canSelect')) {
+    this._canSelectItem = setupParams.canSelect;
+  }
+  if (setupParams.hasOwnProperty('canSelectMultipleItems')) {
+    this._canSelectMultipleItems = setupParams.canSelectMultipleItems;
+  }
+  if (setupParams.hasOwnProperty('hasNoItemOption')) {
+    this._hasNoItemOption = setupParams.hasNoItemOption;
+  }
+  if (setupParams.hasOwnProperty('itemIdList')) {
+    this._origItemIdList= JSON.parse(JSON.stringify(setupParams.itemIdList));
+    this._runFilterOnItemIdList();
+  }
+  if (setupParams.hasOwnProperty('keyBindingName')) {
+    this._keyBindingName= setupParams.keyBindingName;
+  }
+
+  this._selectedItemIdxs= [];
+  this._displayItemsStartIndex = 0;
+  this._displayItems = [];
+  this.determineDisplayItems();
+};
+
+Game.UIMode.LAYER_itemListing.prototype.getItemList = function () {
+  return this._itemIdList;
+};
+Game.UIMode.LAYER_itemListing.prototype.setItemList = function (itemList) {
+  this._itemIdList = itemList;
+};
+Game.UIMode.LAYER_itemListing.prototype.getKeyBindingName = function () {
+  return this._keyBindingName;
+};
+Game.UIMode.LAYER_itemListing.prototype.setKeyBindingName = function (keyBindingName) {
+  this._keyBindingName = keyBindingName;
+};
+
+Game.UIMode.LAYER_itemListing.prototype.determineDisplayItems = function() {
+    this._displayItems = this._itemIdList.slice(this._displayItemsStartIndex,this._displayItemsStartIndex+this._displayMaxNum).map(function(itemId) { return Game.DATASTORE.ITEM[itemId]; });
+};
+Game.UIMode.LAYER_itemListing.prototype.handlePageUp = function() {
+    this._displayItemsStartIndex -= this._displayMaxNum;
+    if (this._displayItemsStartIndex < 0) {
+        this._displayItemsStartIndex = 0;
+    }
+    this.determineDisplayItems();
+    Game.renderAll();
+};
+Game.UIMode.LAYER_itemListing.prototype.handlePageDown = function() {
+    var numUnseenItems = this._itemIdList.length - (this._displayItemsStartIndex + this._displayItems.length);
+    this._displayItemsStartIndex += this._displayMaxNum;
+    if (this._displayItemsStartIndex > this._itemIdList.length) {
+        this._displayItemsStartIndex -= this._displayMaxNum;
+    }
+    this.determineDisplayItems();
+    Game.renderAll();
+};
+
+Game.UIMode.LAYER_itemListing.prototype.getCaptionText = function () {
+  var captionText = 'Items';
+  if (typeof this._caption == 'function') {
+    captionText = this._caption();
+  } else {
+    captionText = this._caption;
+  }
+  return captionText;
+};
+
+Game.UIMode.LAYER_itemListing.prototype.render = function (display) {
+  var selectionLetters = 'abcdefghijklmnopqrstuvwxyz';
+
+  display.drawText(0, 0, Game.UIMode.DEFAULT_COLOR_STR + this.getCaptionText());
+  // Render the caption in the top row
+  var row = 0;
+  if (this._hasNoItemOption) {
+    display.drawText(0, 1, Game.UIMode.DEFAULT_COLOR_STR + '0 - no item');
+    row++;
+  }
+  if (this._displayItemsStartIndex > 0) {
+    display.drawText(0, 1 + row, '%c{black}%b{yellow}[ for more');
+    row++;
+  }
+  for (var i = 0; i < this._displayItems.length; i++) {
+    var trueItemIndex = this._displayItemsStartIndex + i;
+    if (this._displayItems[i]) {
+      var selectionLetter = selectionLetters.substring(i, i + 1);
+
+      // If we have selected an item, show a +, else show a space between the selectionLetter and the item's name.
+      var selectionState = (this._canSelectItem && this._canSelectMultipleItems && this._selectedItemIdxs[trueItemIndex]) ? '+' : ' ';
+
+      var item_symbol = this._displayItems[i].getRepresentation()+Game.UIMode.DEFAULT_COLOR_STR;
+      display.drawText(0, 1 + row, Game.UIMode.DEFAULT_COLOR_STR + selectionLetter + ' ' + selectionState + ' ' + item_symbol + ' ' +this._displayItems[i].getName());
+      row++;
+    }
+  }
+  if ((this._displayItemsStartIndex + this._displayItems.length) < this._itemIdList.length) {
+    display.drawText(0, 1 + row, '%c{black}%b{yellow}] for more');
+    row++;
+  }
+};
+
+
+Game.UIMode.LAYER_itemListing.prototype.executeProcessingFunction = function() {
+  // Gather the selected item ids
+  var selectedItemIds = [];
+  for (var selectionIndex in this._selectedItemIdxs) {
+    if (this._selectedItemIdxs.hasOwnProperty(selectionIndex)) {
+      selectedItemIds.push(this._itemIdList[selectionIndex]);
+    }
+  }
+  Game.removeUIMode();
+  // Call the processing function and end the player's turn if it returns true.
+  if (this._processingFunction(selectedItemIds)) {
+    Game.UIMode.gamePlay.getAvatar().raiseSymbolActiveEvent('actionDone');
+    setTimeout(function() {
+      Game.Message.ageMessages();
+    }, 1);
+  }
+};
+
+Game.UIMode.LAYER_itemListing.prototype.getNumItemsShown = function () {
+   var numItemsShown = this._displayMaxNum;
+
+  if (this._hasNoItemOption) {
+    numItemsShown--;
+  }
+  if ((this._displayItemsStartIndex + this._displayItems.length) < this._itemIdList.length) {
+    numItemsShown--;
+  }
+  if (this._displayItemsStartIndex > 0) {
+    numItemsShown--;
+  }
+
+  return numItemsShown;
+};
+
+Game.UIMode.LAYER_itemListing.prototype.handleInput = function (inputType,inputData) {
+  // console.log(inputType);
+  // console.dir(inputData);
+  var actionBinding = Game.KeyBinding.getInputBinding(inputType,inputData);
+  // console.log('action binding is');
+  // console.dir(actionBinding);
+  // console.log('----------');
+  if (!actionBinding) {
+    console.log('no bound action - checking for selection stuff');
+    console.log("inputdata "+inputData.keyCode);
+    console.log(inputType);
+    console.log(inputData);
+    console.log(inputType==='keydown');
+    console.log(this._canSelectItem);
+    console.log(inputData.keyCode >= ROT.VK_A);
+    console.log(inputData.keyCode <= ROT.VK_Z);
+    if ((inputData.type === 'keydown') && this._canSelectItem && inputData.keyCode >= ROT.VK_A && inputData.keyCode <= ROT.VK_Z) {
+      // handle pressing a selection letter
+      console.log('handling selection '+inputData.keyCode);
+
+      // Check if it maps to a valid item by subtracting 'a' from the character
+      // to know what letter of the alphabet we used.
+      var index = inputData.keyCode - ROT.VK_A;
+      if (index > this.getNumItemsShown()) {
+        return false;
+      }
+      var trueItemIndex = this._displayItemsStartIndex + index;
+      console.log('index: '+index);
+      console.log('trueItemIndex: '+trueItemIndex);
+      console.log('this._itemIdList[trueItemIndex]: '+this._itemIdList[trueItemIndex]);
+
+      if (this._itemIdList[trueItemIndex]) {
+        // If multiple selection is allowed, toggle the selection status, else select the item and exit the screen
+        if (this._canSelectMultipleItems) {
+            if (this._selectedItemIdxs[trueItemIndex]) {
+              delete this._selectedItemIdxs[trueItemIndex];
+            } else {
+              this._selectedItemIdxs[trueItemIndex] = true;
+            }
+            Game.renderAll();
+        } else {
+          this._selectedItemIdxs[trueItemIndex] = true;
+          this.executeProcessingFunction();
+        }
+      } else {
+        return false;
+      }
+    }
+  }
+
+  if (actionBinding.actionKey == 'CANCEL') {
+    Game.removeUIMode();
+
+  } else if (actionBinding.actionKey == 'PROCESS_SELECTIONS') {
+    this.executeProcessingFunction();
+
+  } else if (this._canSelectItem && this._hasNoItemOption && (actionBinding.actionKey == 'SELECT_NOTHING')) {
+    this._selectedItemIdxs = {};
+
+  } else if ((inputType === 'keydown') && this._canSelectItem && inputData.keyCode >= ROT.VK_A && inputData.keyCode <= ROT.VK_Z) {
+    // handle pressing a selection letter
+
+    // Check if it maps to a valid item by subtracting 'a' from the character
+    // to know what letter of the alphabet we used.
+    var index = inputData.keyCode - ROT.VK_A;
+    var trueItemIndex = this._displayIndexLower + index;
+    if (this._itemIdList[trueItemIndex]) {
+      // If multiple selection is allowed, toggle the selection status, else select the item and exit the screen
+      if (this._canSelectMultipleItems) {
+          if (this._selectedItemIdxs[trueItemIndex]) {
+            delete this._selectedItemIdxs[trueItemIndex];
+          } else {
+            this._selectedItemIdxs[trueItemIndex] = true;
+          }
+          Game.renderAll();
+      } else {
+        this._selectedItemIdxs[trueItemIndex] = true;
+        this.executeProcessingFunction();
+      }
+    }
+  } else if (actionBinding.actionKey == 'DATA_NAV_UP') {
+    this.handlePageUp();
+
+  } else if (actionBinding.actionKey == 'DATA_NAV_DOWN') {
+    this.handlePageDown();
+
+  } else if (actionBinding.actionKey == 'HELP') {
+    var helpText = this.getCaptionText()+"\n";
+    if (this._canSelectItem || this._canSelectMultipleItems) {
+      var lastSelectionLetter = (String.fromCharCode(ROT.VK_A + this.getNumItemsShown())).toLowerCase();
+      helpText += "a-"+lastSelectionLetter+"   select the indicated item\n";
+    }
+    helpText += Game.KeyBinding.getBindingHelpText();
+    Game.UIMode.LAYER_textReading.setText(helpText);
+    Game.addUIMode('LAYER_textReading');
+  }
+
+  return false;
+};
+
+
+
+Game.UIMode.LAYER_inventoryListing = new Game.UIMode.LAYER_itemListing({
+    caption: 'Inventory',
+    canSelect: false,
+    keyBindingName: 'LAYER_inventoryListing'
+});
+Game.UIMode.LAYER_inventoryListing.doSetup = function () {
+  console.log(Game);
+  this.setup({itemIdList: Game.UIMode.gamePlay.getAvatar().getInventoryItemIds()});
+};
+
+
+Game.UIMode.LAYER_inventoryDrop = new Game.UIMode.LAYER_itemListing({
+    caption: 'Drop',
+    canSelect: true,
+    canSelectMultipleItems: true,
+    keyBindingName: 'LAYER_inventoryDrop',
+    processingFunction: function (selectedItemIds) {
+      var dropResult = Game.UIMode.gamePlay.getAvatar().dropItems(selectedItemIds);
+      return dropResult.numItemsDropped > 0;
+    }
+});
+Game.UIMode.LAYER_inventoryDrop.doSetup = function () {
+  this.setup({itemIdList: Game.UIMode.gamePlay.getAvatar().getInventoryItemIds()});
+};
+
+Game.UIMode.LAYER_inventoryPickup = new Game.UIMode.LAYER_itemListing({
+  caption: 'Pick up',
+  canSelect: true,
+  canSelectMultipleItems: true,
+  keyBindingName: 'LAYER_inventoryPickup',
+  processingFunction: function (selectedItemIds) {
+    var pickupResult = Game.UIMode.gamePlay.getAvatar().pickupItems(selectedItemIds);
+    return pickupResult.numItemsPickedUp > 0;
+  }
+});
+Game.UIMode.LAYER_inventoryPickup.doSetup = function () {
+  this.setup({itemIdList: Game.util.objectArrayToIdArray(Game.UIMode.gamePlay.getAvatar().getMap().getItems(Game.UIMode.gamePlay.getAvatar().getPos()))});
 };

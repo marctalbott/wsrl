@@ -97,10 +97,11 @@ Game.KeyBinding = {
     if (inputType === 'keypress') {
       bindingKey = String.fromCharCode(inputData.charCode);
     }
-    console.log("meta " +metaKey);
-    console.log("bindingkey " +bindingKey);
-    console.log("inputtype " +inputType);
-    console.log("inputtypetype " +inputType.type);
+    // console.log("meta " +metaKey);
+    // console.log("bindingkey " +bindingKey);
+    // console.log("inputtype " +inputType);
+    // console.log("inputtypetype " +inputType.type);
+    // console.dir(this._currentBindingLookup);
 
     //console.log("bindingLookup");
 //    console.log(this._currentBindingLookup[inputType][metaKey]);
@@ -109,16 +110,29 @@ Game.KeyBinding = {
     // console.log(inputType);
     // console.log(this._currentBindingLookup);
     // console.log (this._currentBindingLookup);
-    console.dir(this._currentBindingLookup);
     return this._currentBindingLookup[inputType.type][metaKey][bindingKey] || false;
   },
 
   getLabelForAction: function (actionLookupKey) {
+    if (!this.Action[actionLookupKey]) {
+      return;
+    }
     var bindingInfo = this.Action[actionLookupKey][this._curBindingKey] || this.Action[actionLookupKey].all;
     if (bindingInfo) {
       return bindingInfo.label;
     }
     return '';
+  },
+
+  getBindingForAction: function (actionLookupKey) {
+    if (!this.Action[actionLookupKey]) {
+      return;
+    }
+    var bindingInfo = this.Action[actionLookupKey][this._curBindingKey] || this.Action[actionLookupKey].all;
+    if (bindingInfo) {
+      return bindingInfo;
+    }
+    return;
   },
 
   // Action: {
@@ -145,7 +159,9 @@ Game.KeyBinding = {
   // }
   Action: {
     PERSISTENCE      : {action_group:'meta'    ,guid:Game.util.uniqueId() ,ordering:2 ,short:'games'    ,long :'save or load or restart',
-      all: {label:'='     ,inputMatch:'='      ,inputType:'keypress' ,inputMetaShift:false ,inputMetaCtrl:false}
+      numpad: {label:'='     ,inputMatch:'='      ,inputType:'keypress' ,inputMetaShift:false ,inputMetaCtrl:false},
+      vim: {label:'='     ,inputMatch:'='      ,inputType:'keypress' ,inputMetaShift:false ,inputMetaCtrl:false},
+      waxd: {label:'='     ,inputMatch:'='      ,inputType:'keypress' ,inputMetaShift:false ,inputMetaCtrl:false}
     },
     PERSISTENCE_SAVE : {action_group:'persist' ,guid:Game.util.uniqueId() ,ordering:2.1 ,short:'save'     ,long :'save the current game',
       persist: {label:'S' ,inputMatch:ROT.VK_S ,inputType:'keydown'  ,inputMetaShift:true  ,inputMetaCtrl:false}
@@ -203,6 +219,17 @@ Game.KeyBinding = {
       waxd  : {label:'c' ,inputMatch:ROT.VK_C       ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false}
     },
 
+    INVENTORY: {action_group:'inventory' ,guid:Game.util.uniqueId() ,ordering:5.0 ,short:'inventory'  ,long :'show items in inventory' ,
+      numpad: {label:'i' ,inputMatch:ROT.VK_I ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false} ,
+      vim: {label:'i' ,inputMatch:ROT.VK_I ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false} ,
+      waxd: {label:'i' ,inputMatch:ROT.VK_I ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false}
+    },
+
+    PROCESS_SELECTIONS  : {action_group:'inventory' ,guid:Game.util.uniqueId() ,ordering:5.01 ,short:'act on' ,long :'take action with/on selected items'         ,
+      LAYER_inventoryDrop: {label:'[Enter]' ,inputMatch:ROT.VK_RETURN ,inputType:'keydown' ,inputMetaShift:false  ,inputMetaCtrl:false},
+      LAYER_inventoryPickup: {label:'[Enter]' ,inputMatch:ROT.VK_RETURN ,inputType:'keydown' ,inputMetaShift:false  ,inputMetaCtrl:false}
+    },
+
     PICKUP : {action_group:'inventory' ,guid:Game.util.uniqueId() ,ordering:5.1 ,short:'get'  ,long :'get / pickup one or more items in the current space' ,
       numpad: {label:'g' ,inputMatch:ROT.VK_G ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false} ,
       vim: {label:'g' ,inputMatch:ROT.VK_G ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false} ,
@@ -213,11 +240,18 @@ Game.KeyBinding = {
       vim: {label:'D' ,inputMatch:ROT.VK_D ,inputType:'keydown' ,inputMetaShift:true  ,inputMetaCtrl:false} ,
       waxd  : {label:'D' ,inputMatch:ROT.VK_D ,inputType:'keydown' ,inputMetaShift:true  ,inputMetaCtrl:false}
     },
-    
+
     ENTER_DOOR  : {action_group: 'movement' , guid: Game.util.uniqueId() , ordering:3, short:'enter' , long: 'enter door',
       numpad: {label: '/' , inputMatch:ROT.VK_SLASH, inputType: 'keydown', inputMetaShift: false , inputMetaCtrl: false } ,
       vim: {label: '/' , inputMatch:ROT.VK_SLASH, inputType: 'keydown', inputMetaShift: false , inputMetaCtrl: false } ,
       waxd: {label: '/' , inputMatch:ROT.VK_SLASH, inputType: 'keydown', inputMetaShift: false , inputMetaCtrl: false }
+    },
+
+    DATA_NAV_UP   : {action_group:'data_nav' ,guid:Game.util.uniqueId() ,ordering:8.1 ,short:'up'   ,long :'scroll content up'   ,
+      all: {label:'['     ,inputMatch:'['      ,inputType:'keypress' ,inputMetaShift:false ,inputMetaCtrl:false}
+    },
+    DATA_NAV_DOWN   : {action_group:'data_nav' ,guid:Game.util.uniqueId() ,ordering:8.1 ,short:'down'   ,long :'scroll content down'   ,
+      all: {label:']'     ,inputMatch:']'      ,inputType:'keypress' ,inputMetaShift:false ,inputMetaCtrl:false}
     },
 
    //HELP action definition goes here
@@ -301,4 +335,3 @@ Game.KeyBinding = {
 // Game.KeyBinding.BindingSet.numpad.MOVE_DL   = {label:'1' ,inputMatch:ROT.VK_NUMPAD1 ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
 // Game.KeyBinding.BindingSet.numpad.MOVE_D    = {label:'2' ,inputMatch:ROT.VK_NUMPAD2 ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
 // Game.KeyBinding.BindingSet.numpad.MOVE_DR   = {label:'3' ,inputMatch:ROT.VK_NUMPAD3 ,inputType:'keydown' ,inputMetaShift:false ,inputMetaCtrl:false};
-

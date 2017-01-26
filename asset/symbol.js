@@ -44,6 +44,15 @@ Game.Symbol.prototype.draw = function(display, dispX, dispY, isMasked) {
   }
 };
 
+Game.Symbol.prototype.getColorDesignator = function(){
+  return '%c{'+this.attr._fg+'}%b{'+this.attr._bg+'}';
+};
+
+Game.Symbol.prototype.getRepresentation = function() {
+  return '%c{' + this.attr._fg + '}%b{' + this.attr._bg + '}' + this.attr._char;
+};
+
+
 Game.Symbol.NULL_SYMBOL = new Game.Symbol();
 Game.Symbol.AVATAR = new Game.Symbol({chr: '@', fg:'#dda'});
 Game.Symbol.FUNGUS = new Game.Symbol({chr: 'f', fg: '#228b22'});
