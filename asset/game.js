@@ -149,10 +149,10 @@ var Game = {
       // this.renderAll();
     }
   },
-  //
+  
   // switchUIMode: function(newMode) {
   //   // handle exit for old mode
-  //   if(this._curUIMode) {
+  //   if(this.getCurUIMode()) {
   //     this._curUIMode.exit();
   //   }
   //   // set new mode
@@ -170,6 +170,7 @@ var Game = {
     }
     this._uiModeNameStack[0] = newUIModeName;
     var newMode = Game.UIMode[newUIModeName];
+//    console.dir( Game.UIMode );
     if (newMode) {
       newMode.enter();
     }

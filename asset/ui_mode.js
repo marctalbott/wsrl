@@ -278,9 +278,9 @@ Game.UIMode.gamePlay = {
     _mapName: ''
   },
   JSON_KEY: 'UIMode_gamePlay',
-  enter: function( mapName ) {
-    console.log( 'entered' );
-    console.log( mapName );
+  enter: function( ) {
+   // console.log( 'entered' );
+//    console.log( mapName );
     console.log("entered gamePlay");
 
     // Game.Message.clear();
@@ -321,15 +321,16 @@ Game.UIMode.gamePlay = {
     //   maskedCells: this.getAvatar().getRememberedCoordsForMap()
     // });
     // this.getAvatar().rememberCoords(seenCells);
-    if( Game.DATASTORE.MAP[this.attr._mapId].attr._mapTileSetName == 'desert1' ) {
+    if( Game.DATASTORE.MAP[this.attr._mapId].attr._mapTileSetName == 'office' ) {
       this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY, {
         isUnmasked: true
       });
     } else {       
       var seenCells = this.getAvatar().getVisibleCells();
+      console.dir( this.getMap() );
       this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY, {
-      visibleCells: seenCells,
-      maskedCells: this.getAvatar().getRememberedCoordsForMap()
+        visibleCells: seenCells,
+        maskedCells: this.getAvatar().getRememberedCoordsForMap()
       });
       this.getAvatar().rememberCoords(seenCells);
       this.getMap().rememberCoords(this.getMap().renderFovOn(display, this.attr._cameraX, this.attr._cameraY, this.getAvatar().getSightRadius()));
@@ -370,7 +371,7 @@ Game.UIMode.gamePlay = {
   },
   handleInput: function (inputType, inputData) {
     var actionBinding = Game.KeyBinding.getInputBinding(inputType, inputData);
-    console.log(inputData);
+//    console.log(inputData);
     //var pressedKey = String.fromCharCode(inputData.charCode);
     var tookTurn = false;
     if (!actionBinding) {
@@ -418,18 +419,19 @@ Game.UIMode.gamePlay = {
       console.log('TODO: setup help for gameplay');
       Game.addUIMode('LAYER_textReading');
 
-    } else if (actionBinding.actionKey == 'ENTER_DOOR') {
-      console.log('enter door');
-//      console.dir( this.getMap().extractItemAt( this.getAvatar().getX(), this.getAvatar().getY()));
-//      console.dir(this.getMap().getTile( this.getAvatar().getX(), this.getAvatar().getY() ));
-       if( this.getMap().getItems( this.getAvatar().getX(), this.getAvatar().getY() ) ) {
-        console.log('changing map');
-  //      this.getAvatar().raiseSymbolActiveEvent('useDoor');
-        Game.switchUIMode( 'enterDoor' );
+    } 
+//     } else if (actionBinding.actionKey == 'ENTER_DOOR') {
+//       console.log('enter door');
+// //      console.dir( this.getMap().extractItemAt( this.getAvatar().getX(), this.getAvatar().getY()));
+// //      console.dir(this.getMap().getTile( this.getAvatar().getX(), this.getAvatar().getY() ));
+//        if( this.getMap().getItems( this.getAvatar().getX(), this.getAvatar().getY() ) ) {
+//         console.log('changing map');
+//   //      this.getAvatar().raiseSymbolActiveEvent('useDoor');
+//         Game.switchUIMode( 'enterDoor' );
 
-      }
+//       }
 
-    }
+//     }
 
     //Game.Message.ageMessages();
 //    } else if (inputType == 'keydown') {
@@ -484,7 +486,7 @@ Game.UIMode.gamePlay = {
     // this.setMap(new Game.Map('caves1'));
 //    this.setMap(new Game.Map('office'));
 //    console.dir(this.attr);
-    this.setMapName('desert1');
+    this.setMapName('office');
     this.setMap(new Game.Map(this.attr._mapName));
     // console.log( this.getMap());
     // console.log( "set map");
@@ -593,12 +595,12 @@ Game.UIMode.enterDoor = {
     // if (inputType == 'keypress') {
     // Game.Message.send("you pressed the '" + String.fromCharCode(inputData.charCode) + "' key");
     if (actionBinding.actionKey == 'AFFIRMATIVE') {
-      Game.DATASTORE.ITEM[this.attr._doorId].raiseSymbolActiveEvent('changeMaps');
+//      Game.DATASTORE.ITEM[this.attr._doorId].raiseSymbolActiveEvent('changeMaps');
 //      Game.UIMode.gamePlay.setMapName('desert1');
-      Game.switchUIMode(Game.UIMode.gamePlay);
+      Game.switchUIMode('gamePlay');
     } else if( actionBinding.actionKey == 'NEGATIVE' ) {
       Game.UIMode.gamePlay.setMap( this.getDoor().getMap() );
-      Game.switchUIMode(Game.UIMode.gamePlay);
+      Game.switchUIMode('gamePlay');
     }
   }
 };

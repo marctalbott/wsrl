@@ -97,10 +97,10 @@ Game.KeyBinding = {
     if (inputType === 'keypress') {
       bindingKey = String.fromCharCode(inputData.charCode);
     }
-    console.log("meta " +metaKey);
-    console.log("bindingkey " +bindingKey);
-    console.log("inputtype " +inputType);
-    console.log("inputtypetype " +inputType.type);
+    // console.log("meta " +metaKey);
+    // console.log("bindingkey " +bindingKey);
+    // console.log("inputtype " +inputType);
+    // console.log("inputtypetype " +inputType.type);
 
     //console.log("bindingLookup");
 //    console.log(this._currentBindingLookup[inputType][metaKey]);
@@ -109,7 +109,7 @@ Game.KeyBinding = {
     // console.log(inputType);
     // console.log(this._currentBindingLookup);
     // console.log (this._currentBindingLookup);
-    console.dir(this._currentBindingLookup);
+    //console.dir(this._currentBindingLookup);
     return this._currentBindingLookup[inputType.type][metaKey][bindingKey] || false;
   },
 
